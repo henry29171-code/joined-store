@@ -10,7 +10,8 @@ import {
 } from "react";
 import { Product } from "../types/Product";
 
-type CartItem = Product & { quantity: number };
+// Agregamos 'image' aquí para que TypeScript sepa que el carrito lo tiene
+type CartItem = Product & { quantity: number; image?: string };
 
 type CartState = {
   items: CartItem[];
