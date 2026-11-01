@@ -1,0 +1,448 @@
+"use client";
+import Link from "next/link";
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  Stack,
+  Grid,
+  Card,
+  CardContent,
+  Chip,
+} from "@mui/material";
+
+const featuredProducts = [
+  {
+    name: "Morral Urban Explorer",
+    price: "S/. 159.90",
+    description:
+      "Resistente al agua, compartimentos inteligentes y un diseño minimalista ideal para la ciudad.",
+    badge: "Best Seller",
+    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=600&auto=format&fit=crop",
+  },
+  {
+    name: "Reloj Minimalist Classic",
+    price: "S/. 289.00",
+    description:
+      "Malla de acero inoxidable, cristal de zafiro y un movimiento de precisión para un look elegante.",
+    badge: "Premium",
+    image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=600&auto=format&fit=crop",
+  },
+  {
+    name: "Perfume Dark Wood",
+    price: "S/. 199.90",
+    description:
+      "Notas amaderadas y especiadas que dejan una huella sofisticada y duradera.",
+    badge: "New Arrival",
+    image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=600&auto=format&fit=crop",
+  },
+];
+
+const brandPoints = [
+  {
+    title: "Materiales de alta calidad",
+    text: "Accesorios diseñados para durar, utilizando cuero genuino, acero inoxidable y textiles técnicos.",
+  },
+  {
+    title: "Diseño atemporal",
+    text: "Piezas versátiles que combinan con cualquier estilo, desde lo casual hasta lo formal, sin pasar de moda.",
+  },
+  {
+    title: "Detalles que importan",
+    text: "Cada correa, billetera o reloj está pensado para elevar tu día a día con funcionalidad y estilo.",
+  },
+];
+
+export default function HomePage() {
+  return (
+    <Box sx={{ background: "transparent" }}>
+      {/* Hero Section */}
+      <Box
+        sx={{
+          minHeight: { xs: "auto", md: "78vh" },
+          display: "flex",
+          alignItems: "center",
+          py: { xs: 10, md: 14 },
+        }}
+      >
+        <Container maxWidth="lg">
+          <Grid container spacing={6} alignItems="center">
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Stack spacing={3}>
+                <Chip
+                  label="Joined Accesorios" // Corregido
+                  sx={{
+                    width: "fit-content",
+                    fontWeight: 700,
+                    bgcolor: "rgba(20, 32, 56, 0.08)",
+                    color: "#1E2A3A",
+                  }}
+                />
+
+                <Typography
+                  variant="h2"
+                  sx={{
+                    fontWeight: 700, 
+                    lineHeight: 1.1, 
+                    color: "#142038",
+                    fontSize: { xs: "2.5rem", md: "3.8rem" }, 
+                    letterSpacing: "-0.02em", 
+                    maxWidth: 600,
+                  }}
+                >
+                  Eleva tu estilo con accesorios que hablan por ti.
+                </Typography>
+
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "rgba(20, 32, 56, 0.72)",
+                    fontWeight: 400,
+                    lineHeight: 1.6,
+                    maxWidth: 540,
+                    mt: 1,
+                  }}
+                >
+                  Descubre nuestra colección de morrales, correas, billeteras, relojes y más
+                  piezas seleccionadas para quienes valoran el diseño, la calidad
+                  y los detalles que marcan la diferencia.
+                </Typography>
+
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ pt: 1 }}>
+                  <Button
+                    component={Link}
+                    href="/products"
+                    variant="contained"
+                    size="large"
+                    sx={{
+                      px: 3.5,
+                      py: 1.4,
+                      borderRadius: 999,
+                      textTransform: "none",
+                      fontWeight: 700,
+                      bgcolor: "#0a0d15",
+                      "&:hover": {
+                        bgcolor: "#1a1d24",
+                      },
+                    }}
+                  >
+                    Explorar Colección
+                  </Button>
+
+                  <Button
+                    component={Link}
+                    href="/products"
+                    variant="outlined"
+                    size="large"
+                    sx={{
+                      px: 3.5,
+                      py: 1.4,
+                      borderRadius: 999,
+                      textTransform: "none",
+                      fontWeight: 700,
+                      borderColor: "rgba(20, 32, 56, 0.2)",
+                      color: "#0a0d15",
+                    }}
+                  >
+                    Ver Novedades
+                  </Button>
+                </Stack>
+              </Stack>
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Box
+                sx={{
+                  minHeight: { xs: 320, md: 500 },
+                  borderRadius: 8,
+                  background: "#0a0d15",
+                  boxShadow: "0 24px 60px rgba(25, 35, 52, 0.16)",
+                  position: "relative",
+                  overflow: "hidden",
+                  p: 4,
+                  display: "flex",
+                  alignItems: "flex-end",
+                }}
+              >
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: 32,
+                    right: 32,
+                    width: 180,
+                    height: 180,
+                    borderRadius: "50%",
+                    background: "rgba(255,255,255,0.08)",
+                    filter: "blur(8px)",
+                  }}
+                />
+                <Box
+                  sx={{
+                    position: "absolute",
+                    bottom: -30,
+                    left: -20,
+                    width: 220,
+                    height: 220,
+                    borderRadius: "50%",
+                    background: "rgba(255,255,255,0.06)",
+                    filter: "blur(12px)",
+                  }}
+                />
+
+                <Box
+                  sx={{
+                    position: "relative",
+                    zIndex: 2,
+                    maxWidth: 340,
+                    color: "white",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: 12,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.18em",
+                      opacity: 0.8,
+                      mb: 2,
+                      fontWeight: 600,
+                    }}
+                  >
+                    La esencia de la marca
+                  </Typography>
+
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      fontWeight: 700,
+                      lineHeight: 1.35, 
+                      mb: 2, 
+                      fontSize: { xs: "1.6rem", md: "1.9rem" }, 
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    Diseñado para destacar en cada detalle y acompañarte a donde vayas.
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      opacity: 0.86,
+                      lineHeight: 1.7,
+                      fontSize: "0.95rem",
+                    }}
+                  >
+                    Creemos que los accesorios adecuados transforman un outfit, 
+                    calidad, textura y durabilidad en una sola pieza.
+                  </Typography>
+                </Box>
+              </Box>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* Featured Products Section */}
+      <Box sx={{ pb: { xs: 10, md: 12 } }}>
+        <Container maxWidth="lg">
+          <Stack
+            direction={{ xs: "column", md: "row" }}
+            justifyContent="space-between"
+            alignItems={{ xs: "flex-start", md: "flex-end" }}
+            spacing={2}
+            sx={{ mb: 5 }}
+          >
+            <Box>
+              <Typography
+                variant="overline"
+                sx={{
+                  color: "#5E6B7E",
+                  fontWeight: 700,
+                  letterSpacing: "0.16em",
+                }}
+              >
+                Productos Destacados {/* Corregido */}
+              </Typography>
+              <Typography
+                variant="h4"
+                sx={{ fontWeight: 700, color: "#142038", mt: 1 }}
+              >
+                Lo más buscado.
+              </Typography>
+            </Box>
+
+            <Button
+              component={Link}
+              href="/products"
+              variant="text"
+              sx={{
+                textTransform: "none",
+                fontWeight: 700,
+                color: "#0a0d15",
+              }}
+            >
+              Ver todos los productos
+            </Button>
+          </Stack>
+
+          <Grid container spacing={3}>
+            {featuredProducts.map((product) => (
+              <Grid key={product.name} size={{ xs: 12, md: 4 }}>
+                <Card
+                  elevation={0}
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    borderRadius: 5,
+                    overflow: "hidden",
+                    bgcolor: "#FFFFFF",
+                    border: "1px solid rgba(20, 32, 56, 0.06)",
+                    boxShadow: "0 18px 40px rgba(25, 35, 52, 0.06)",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      height: 220,
+                      backgroundImage: `url(${product.image})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      position: "relative",
+                      display: "flex",
+                      alignItems: "flex-start",
+                      justifyContent: "flex-start",
+                      p: 2.5,
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        inset: 0,
+                        background:
+                          "linear-gradient(to top, rgba(0,0,0,0.28), transparent)",
+                      }}
+                    />
+
+                    <Chip
+                      label={product.badge}
+                      sx={{
+                        position: "relative",
+                        zIndex: 2,
+                        bgcolor: "rgba(255,255,255,0.88)",
+                        color: "#1E2A3A",
+                        fontWeight: 700,
+                      }}
+                    />
+                  </Box>
+
+                  <CardContent sx={{ p: 3, display: "flex", flexDirection: "column", flexGrow: 1 }}>
+                    <Stack spacing={1.5} sx={{ flexGrow: 1 }}>
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: 700, color: "#142038" }}
+                      >
+                        {product.name}
+                      </Typography>
+
+                      <Typography sx={{ color: "#5E6B7E", lineHeight: 1.6, fontSize: "0.95rem" }}>
+                        {product.description}
+                      </Typography>
+                      
+                      <Box sx={{ flexGrow: 1 }} />
+
+                      <Typography
+                        sx={{
+                          fontSize: "1.15rem",
+                          fontWeight: 700,
+                          color: "#142038",
+                          pt: 0.5,
+                        }}
+                      >
+                        {product.price}
+                      </Typography>
+
+                      <Button
+                        component={Link}
+                        href="/products"
+                        variant="contained"
+                        sx={{
+                          mt: 1,
+                          borderRadius: 999,
+                          textTransform: "none",
+                          fontWeight: 700,
+                          bgcolor: "#0a0d15",
+                          "&:hover": {
+                            bgcolor: "#1a1d24",
+                          },
+                        }}
+                      >
+                        Comprar ahora
+                      </Button>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* Brand Points Section */}
+      <Box sx={{ py: { xs: 8, md: 10 } }}>
+        <Container maxWidth="lg">
+          <Stack spacing={2} sx={{ mb: 5 }}>
+            <Typography
+              variant="overline"
+              sx={{
+                color: "#5E6B7E",
+                fontWeight: 700,
+                letterSpacing: "0.16em",
+              }}
+            >
+              Por qué Joined
+            </Typography>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                color: "#142038",
+                lineHeight: 1.2,
+              }}
+            >
+              Más que accesorios, una extensión de tu personalidad.
+            </Typography>
+          </Stack>
+
+          <Grid container spacing={3}>
+            {brandPoints.map((point) => (
+              <Grid key={point.title} size={{ xs: 12, md: 4 }}>
+                <Card
+                  elevation={0}
+                  sx={{
+                    height: "100%",
+                    borderRadius: 5,
+                    bgcolor: "rgba(255,255,255,0.72)",
+                    border: "1px solid rgba(20, 32, 56, 0.06)",
+                    backdropFilter: "blur(10px)",
+                  }}
+                >
+                  <CardContent sx={{ p: 3.5 }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: 700, color: "#142038", mb: 1.25 }}
+                    >
+                      {point.title}
+                    </Typography>
+                    <Typography sx={{ color: "#5E6B7E", lineHeight: 1.7, fontSize: "0.95rem" }}>
+                      {point.text}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+    </Box>
+  );
+}
