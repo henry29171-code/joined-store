@@ -2,7 +2,7 @@
 import { useCart } from "../context/CartContext";
 import { 
   Container, Typography, Box, Card, CardContent, Button, 
-  IconButton, Stack, Grid, Divider, Chip 
+  IconButton, Stack, Grid, Divider 
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
@@ -60,9 +60,11 @@ export default function CartPage() {
           <Stack spacing={2}>
             {state.items.map((item) => (
               <Card key={item.id} sx={{ display: "flex", p: 2, borderRadius: 3, boxShadow: "0 4px 15px rgba(0,0,0,0.05)" }}>
+                
+                {/* Imagen del producto con el fix para TypeScript */}
                 <Box 
                   component="img"
-                  src={item.image || "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=200&auto=format&fit=crop"}
+                  src={(item as any).image || "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=200&auto=format&fit=crop"}
                   alt={item.name}
                   sx={{ width: 100, height: 100, objectFit: "cover", borderRadius: 2, mr: 3 }}
                 />
