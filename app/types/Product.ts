@@ -1,9 +1,8 @@
 export interface Product {
   id: string;
   name: string;
-  description: string;
   price: number;
-  image_url: string;
+  description: string;
   category: string;
-  created_at?: string;
+  image?: string; // <--- AGREGA ESTA LÍNEA
 }
