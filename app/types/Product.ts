@@ -4,5 +4,6 @@ export interface Product {
   price: number;
   description: string;
   category: string;
-  image?: string; // <--- AGREGA ESTA LÍNEA
+  image?: string;       // Para el carrito
+  image_url?: string;   // Para la página de detalle
 }
