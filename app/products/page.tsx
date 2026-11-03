@@ -1,17 +1,19 @@
 "use client";
 import { useState } from "react";
-import { Container, Typography, Box, Grid, Card, CardContent, CardMedia, Button, Chip, Stack } from "@mui/material";
+import { Container, Typography, Box, Grid, Card, CardContent, CardMedia, Button, Chip } from "@mui/material";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useCart } from "../context/CartContext"; 
 
-// Datos de prueba (Luego los traeremos de Supabase)
+// Datos de prueba (con la pulsera corregida)
 const mockProducts = [
   { id: "1", name: "Morral Urban Explorer", price: 159.90, category: "Morrales", description: "Resistente al agua, compartimentos inteligentes.", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=600&auto=format&fit=crop" },
   { id: "2", name: "Reloj Minimalist Classic", price: 289.00, category: "Relojes", description: "Malla de acero inoxidable, cristal de zafiro.", image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=600&auto=format&fit=crop" },
   { id: "3", name: "Perfume Dark Wood", price: 199.90, category: "Perfumes", description: "Notas amaderadas y especiadas, huella duradera.", image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=600&auto=format&fit=crop" },
   { id: "4", name: "Billetera Slim Leather", price: 89.90, category: "Billeteras", description: "Cuero genuino, diseño delgado para el bolsillo.", image: "https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=600&auto=format&fit=crop" },
   { id: "5", name: "Correa Formal Classic", price: 119.90, category: "Correas", description: "Hebilla de acero, cuero de alta durabilidad.", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=600&auto=format&fit=crop" },
-  { id: "6", name: "Pulsera Urban Style", price: 49.90, category: "Pulseras", description: "Ajuste perfecto, estilo casual y moderno.", image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=600&auto=format&fit=crop" },
+  // Nueva imagen de pulsera, acorde a la estética oscura y de cuero
+  { id: "6", name: "Pulsera Leather Urban", price: 49.90, category: "Pulseras", description: "Ajuste perfecto, estilo casual y moderno.", image: "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=600&auto=format&fit=crop" },
 ];
 
 const categories = ["Todos", "Morrales", "Billeteras", "Correas", "Pulseras", "Relojes", "Perfumes"];
@@ -20,7 +22,6 @@ export default function ProductsPage() {
   const [activeCategory, setActiveCategory] = useState("Todos");
   const { addToCart } = useCart();
 
-  // Lógica para filtrar productos
   const filteredProducts = activeCategory === "Todos" 
     ? mockProducts 
     : mockProducts.filter(p => p.category === activeCategory);
@@ -33,7 +34,6 @@ export default function ProductsPage() {
         <Typography variant="overline" sx={{ color: "#5E6B7E", fontWeight: 700, letterSpacing: "0.16em" }}>
           Colección Joined
         </Typography>
-        {/* RAE: Productos en minúscula */}
         <Typography variant="h3" sx={{ fontWeight: 800, color: "#0a0d15", mt: 1, mb: 2, fontSize: { xs: "1.8rem", md: "2.5rem" } }}>
           Nuestros productos
         </Typography>
@@ -42,41 +42,65 @@ export default function ProductsPage() {
         </Typography>
       </Box>
 
-      {/* Filtro de Categorías (Mejorado para Móvil) */}
-      <Box 
-        sx={{ 
-          bgcolor: "white", 
-          p: 1.5, 
-          borderRadius: 3, 
-          mb: 6, 
-          display: "flex", 
-          gap: 1,
-          overflowX: "auto", // Permite scroll horizontal
-          flexWrap: "nowrap", // Evita que salten a otra línea
-          justifyContent: { xs: "flex-start", md: "center" },
-          boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-          "&::-webkit-scrollbar": { display: "none" }, // Oculta la barra de scroll
-          scrollbarWidth: "none", // Para Firefox
-        }}
-      >
-        {categories.map((cat) => (
-          <Chip
-            key={cat}
-            label={cat}
-            onClick={() => setActiveCategory(cat)}
-            sx={{
-              fontWeight: 600,
-              px: 2,
-              py: 2.5,
-              fontSize: "0.9rem",
-              flexShrink: 0, // Evita que se aplasten
-              bgcolor: activeCategory === cat ? "#0a0d15" : "#F8F9FA",
-              color: activeCategory === cat ? "white" : "#5E6B7E",
-              "&:hover": { bgcolor: activeCategory === cat ? "#1a1d24" : "#EAEAEA" },
-              transition: "all 0.3s"
-            }}
-          />
-        ))}
+      {/* Indicador de deslizamiento (Solo móvil) */}
+      <Box sx={{ display: { xs: "flex", md: "none" }, justifyContent: "flex-end", alignItems: "center", mb: 1, pr: 1 }}>
+        <Typography sx={{ fontSize: "0.75rem", color: "#9CA3AF", fontWeight: 600, display: "flex", alignItems: "center", gap: 0.5 }}>
+          Desliza para ver más <ArrowForwardIcon sx={{ fontSize: 14 }} />
+        </Typography>
+      </Box>
+
+      {/* Filtro de Categorías con degradado */}
+      <Box sx={{ position: "relative", mb: 6 }}>
+        <Box 
+          sx={{ 
+            bgcolor: "white", 
+            p: 1.5, 
+            borderRadius: 3, 
+            display: "flex", 
+            gap: 1,
+            overflowX: "auto", 
+            flexWrap: "nowrap", 
+            justifyContent: { xs: "flex-start", md: "center" },
+            boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+            "&::-webkit-scrollbar": { display: "none" }, 
+            scrollbarWidth: "none", 
+          }}
+        >
+          {categories.map((cat) => (
+            <Chip
+              key={cat}
+              label={cat}
+              onClick={() => setActiveCategory(cat)}
+              sx={{
+                fontWeight: 600,
+                px: 2,
+                py: 2.5,
+                fontSize: "0.9rem",
+                flexShrink: 0, 
+                bgcolor: activeCategory === cat ? "#0a0d15" : "#F8F9FA",
+                color: activeCategory === cat ? "white" : "#5E6B7E",
+                "&:hover": { bgcolor: activeCategory === cat ? "#1a1d24" : "#EAEAEA" },
+                transition: "all 0.3s"
+              }}
+            />
+          ))}
+        </Box>
+
+        {/* Degradado sutil en el borde derecho para indicar que hay más */}
+        <Box 
+          sx={{ 
+            position: "absolute", 
+            right: 0, 
+            top: 0, 
+            bottom: 0, 
+            width: "60px", 
+            background: "linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)",
+            pointerEvents: "none",
+            display: { xs: "block", md: "none" },
+            borderTopRightRadius: 12, 
+            borderBottomRightRadius: 12
+          }} 
+        />
       </Box>
 
       {/* Cuadrícula de Productos */}
@@ -97,13 +121,16 @@ export default function ProductsPage() {
                 "&:hover": { transform: "translateY(-8px)", boxShadow: "0 20px 40px rgba(10, 13, 21, 0.1)" }
               }}
             >
-              <Box sx={{ position: "relative" }}>
+              <Box sx={{ position: "relative", width: "100%" }}>
                 <CardMedia
                   component="img"
-                  height="250"
                   image={product.image}
                   alt={product.name}
-                  sx={{ objectFit: "cover" }}
+                  sx={{ 
+                    width: "100%",
+                    height: 260, // Altura fija para mantener la armonía en todas las tarjetas
+                    objectFit: "cover" 
+                  }}
                 />
                 <Chip 
                   label={product.category} 
@@ -146,7 +173,6 @@ export default function ProductsPage() {
         ))}
       </Grid>
 
-      {/* Mensaje si no hay productos */}
       {filteredProducts.length === 0 && (
         <Box sx={{ textAlign: "center", py: 10, bgcolor: "#F8F9FA", borderRadius: 4, border: "1px dashed #CBD5E1" }}>
           <Typography variant="h6" sx={{ color: "#5E6B7E", fontWeight: 600 }}>
