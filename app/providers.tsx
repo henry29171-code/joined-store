@@ -6,6 +6,7 @@ import { CartProvider } from "./context/CartContext";
 import Navbar from "./components/Navbar";
 import { NotificationProvider } from "./context/NotificationContext";
 import Footer from "./components/Footer";
+import WhatsAppButton from "./components/WhatsAppButton"; // <-- Importación del botón
 
 export function Providers({ children }: { children: React.ReactNode }) {
   let theme = createTheme({
@@ -61,6 +62,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
             </Box>
             <Footer />
           </Box>
+          
+          {/* Botón Flotante de WhatsApp Global */}
+          <WhatsAppButton />
+          
         </CartProvider>
       </NotificationProvider>
     </ThemeProvider>

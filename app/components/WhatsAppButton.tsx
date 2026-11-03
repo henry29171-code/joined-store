@@ -19,16 +19,16 @@ export default function WhatsAppButton() {
           position: "fixed",
           bottom: { xs: 20, md: 30 },
           right: { xs: 20, md: 30 },
-          bgcolor: "#0a0d15", // Color principal de la marca
-          color: "white", // Color del ícono
+          bgcolor: "#0a0d15", // Color de tu marca
+          color: "white",
           zIndex: 9999,
           width: { xs: 56, md: 64 },
           height: { xs: 56, md: 64 },
-          boxShadow: "0 10px 25px rgba(10, 13, 21, 0.4)", // Sombra del mismo tono oscuro
+          boxShadow: "0 10px 25px rgba(10, 13, 21, 0.4)",
           transition: "all 0.3s ease",
-          border: "1px solid rgba(255,255,255,0.1)", // Borde sutil para que resalte en fondos oscuros
+          border: "1px solid rgba(255,255,255,0.1)", 
           "&:hover": {
-            bgcolor: "#1a1d24", // Tono ligeramente más claro al pasar el mouse
+            bgcolor: "#1a1d24",
             transform: "scale(1.1) translateY(-5px)",
             boxShadow: "0 15px 30px rgba(10, 13, 21, 0.6)",
           },
