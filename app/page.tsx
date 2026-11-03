@@ -13,58 +13,69 @@ export default function HomePage() {
     <Box sx={{ background: "transparent" }}>
       
       {/* 1. Hero Section */}
-      <Box sx={{ display: "flex", alignItems: "center", py: { xs: 6, md: 12 } }}>
+      <Box sx={{ display: "flex", alignItems: "center", py: { xs: 6, md: 10 } }}>
         <Container maxWidth="lg">
           <Grid container spacing={{ xs: 4, md: 8 }} alignItems="center">
             <Grid size={{ xs: 12, md: 6 }}>
               <Stack spacing={3}>
-                <Chip label="Joined Accesorios" sx={{ width: "fit-content", fontWeight: 700, bgcolor: "rgba(20, 32, 56, 0.08)", color: "#1E2A3A" }} />
+                {/* RAE: Adjetivo/sustantivo común en minúscula */}
+                <Chip label="Joined accesorios" sx={{ width: "fit-content", fontWeight: 700, bgcolor: "rgba(20, 32, 56, 0.08)", color: "#1E2A3A" }} />
                 
-                <Typography variant="h2" sx={{ color: "#142038", fontSize: { xs: "2.2rem", sm: "2.8rem", md: "3.8rem" }, lineHeight: 1.1, fontWeight: 800 }}>
+                {/* Título ajustado: menor tamaño y más espacio para respirar */}
+                <Typography 
+                  variant="h2" 
+                  sx={{ 
+                    color: "#142038", 
+                    fontSize: { xs: "2.2rem", sm: "2.6rem", md: "3.2rem" }, 
+                    lineHeight: 1.2, 
+                    fontWeight: 800,
+                    maxWidth: 550 // Evita que se apriete demasiado
+                  }}
+                >
                   Eleva tu estilo con accesorios que hablan por ti.
                 </Typography>
 
-                {/* Texto acortado para no sobrecargar */}
-                <Typography sx={{ color: "#5E6B7E", fontSize: { xs: "1rem", md: "1.1rem" }, lineHeight: 1.6, maxWidth: 500 }}>
-                  Descubre nuestra colección de morrales, relojes y perfumes. Piezas seleccionadas para quienes valoran el diseño y la calidad.
+                {/* Párrafo más directo */}
+                <Typography sx={{ color: "#5E6B7E", fontSize: { xs: "1rem", md: "1.05rem" }, lineHeight: 1.7, maxWidth: 500 }}>
+                  Explora nuestra colección de morrales, relojes y perfumes. Piezas seleccionadas para quienes valoran el diseño y la calidad.
                 </Typography>
 
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ pt: 1 }}>
                   <Button component={Link} href="/products" variant="contained" sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, px: 4, py: 1.5 }}>
-                    Explorar Colección
+                    Explorar colección
                   </Button>
                   <Button component={Link} href="/products" variant="outlined" sx={{ borderColor: "rgba(20, 32, 56, 0.2)", color: "#0a0d15", px: 4, py: 1.5 }}>
-                    Ver Novedades
+                    Ver novedades
                   </Button>
                 </Stack>
               </Stack>
             </Grid>
 
-            {/* Cuadrado Negro Mejorado */}
+            {/* Cuadrado Negro */}
             <Grid size={{ xs: 12, md: 6 }}>
               <Box 
                 sx={{ 
                   minHeight: { xs: 300, md: 450 }, 
                   borderRadius: 6, 
-                  background: "linear-gradient(145deg, #0a0d15 0%, #1a1d24 100%)", // Gradiente sutil
+                  background: "linear-gradient(145deg, #0a0d15 0%, #1a1d24 100%)", 
                   boxShadow: "0 24px 60px rgba(10, 13, 21, 0.2)", 
                   position: "relative", 
                   overflow: "hidden", 
                   p: { xs: 4, md: 6 }, 
                   display: "flex", 
-                  alignItems: "center", // Centrado verticalmente
-                  justifyContent: "center" // Centrado horizontalmente
+                  alignItems: "center", 
+                  justifyContent: "center" 
                 }}
               >
-                {/* Círculo decorativo de fondo */}
                 <Box sx={{ position: "absolute", top: -50, right: -50, width: 250, height: 250, borderRadius: "50%", background: "radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%)" }} />
                 
                 <Box sx={{ position: "relative", zIndex: 2, maxWidth: 380, color: "white", textAlign: "center" }}>
+                  {/* RAE aplicada en el texto del cuadrado */}
                   <Typography sx={{ fontSize: 12, textTransform: "uppercase", letterSpacing: "0.2em", opacity: 0.7, mb: 2, fontWeight: 600 }}>
                     La esencia de la marca
                   </Typography>
-                  <Typography variant="h4" sx={{ fontWeight: 800, lineHeight: 1.25, mb: 2, fontSize: { xs: "1.5rem", md: "2rem" } }}>
-                    Diseñado para destacar en cada detalle.
+                  <Typography variant="h4" sx={{ fontWeight: 800, lineHeight: 1.3, mb: 2, fontSize: { xs: "1.5rem", md: "2rem" } }}>
+                    Diseñado para destacar en cada detalle
                   </Typography>
                   <Typography sx={{ opacity: 0.8, lineHeight: 1.6, fontSize: { xs: "0.9rem", md: "1rem" } }}>
                     Calidad, textura y durabilidad en una sola pieza.
@@ -82,8 +93,9 @@ export default function HomePage() {
           
           <Stack direction={{ xs: "column", md: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", md: "flex-end" }} spacing={1} sx={{ mb: 4 }}>
             <Box>
-              <Typography variant="overline" sx={{ color: "#5E6B7E", fontWeight: 700, letterSpacing: "0.16em", fontSize: "0.8rem" }}>Productos Destacados</Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: "#142038", mt: 0.5, fontSize: { xs: "1.6rem", md: "2rem" } }}>Lo más buscado.</Typography>
+              {/* RAE: Minúsculas en palabras comunes */}
+              <Typography variant="overline" sx={{ color: "#5E6B7E", fontWeight: 700, letterSpacing: "0.16em", fontSize: "0.8rem" }}>Productos destacados</Typography>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: "#142038", mt: 0.5, fontSize: { xs: "1.6rem", md: "2rem" } }}>Lo más buscado</Typography>
             </Box>
             <Button component={Link} href="/products" variant="text" sx={{ textTransform: "none", fontWeight: 700, color: "#0a0d15", fontSize: "0.9rem" }}>Ver todos los productos</Button>
           </Stack>
@@ -102,7 +114,6 @@ export default function HomePage() {
                       {product.name}
                     </Typography>
                     
-                    {/* Descripción limitada a 2 líneas para mantener armonía */}
                     <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem", lineHeight: 1.5, mb: 2, flexGrow: 1, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                       {product.description}
                     </Typography>
