@@ -33,7 +33,7 @@ export default function Footer() {
           {/* Columna 1: Marca */}
           <Grid size={{ xs: 12, md: 4 }}>
             <Typography variant="h5" sx={{ fontWeight: 800, mb: 2, letterSpacing: "-0.02em" }}>
-              Joined | Accesorios de cuero
+              Joined | Accesorios en cuero
             </Typography>
             <Typography sx={{ opacity: 0.7, lineHeight: 1.6, mb: 3, maxWidth: 300 }}>
               Accesorios premium diseñados para elevar tu estilo diario, calidad, diseño y durabilidad en cada pieza.
