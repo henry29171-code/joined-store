@@ -70,10 +70,10 @@ export default function Navbar() {
             "@keyframes marquee": { "0%": { transform: "translateX(100vw)" }, "100%": { transform: "translateX(-100%)" } },
           }}>
           <Typography component="span" sx={{ mx: 4, fontWeight: 700, fontSize: "0.8rem" }}>
-            🚚 ¡Envíos 100% gratis a Lima Metropolitana exclusivo para miembros de la Comunidad!
+            🚚 ¡Envíos 100% gratis a nivel nacional exclusivo para miembros de la comunidad!
           </Typography>
           <Typography component="span" sx={{ mx: 4, fontWeight: 700, fontSize: "0.8rem" }}>
-            ✨ Únete al Club Joined VIP y accede a beneficios exclusivos
+            ✨ Únete al club Joined VIP y accede a beneficios exclusivos
           </Typography>
         </Box>
       </Box>
