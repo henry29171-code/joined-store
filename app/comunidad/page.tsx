@@ -17,7 +17,7 @@ export default function ComunidadPage() {
         <Typography variant="overline" sx={{ color: "#5E6B7E", fontWeight: 700 }}>Únete al movimiento</Typography>
         <Typography variant="h3" sx={{ color: "#0a0d15", mt: 1, mb: 2, fontSize: { xs: "1.8rem", md: "2.5rem" } }}>Comunidad Joined</Typography>
         <Typography sx={{ color: "#5E6B7E", maxWidth: 600, mx: "auto", fontSize: { xs: "0.95rem", md: "1.1rem" }, textAlign: { xs: "left", md: "center" } }}>
-          Elige el nivel de experiencia que mejor se adapte a ti. Desde beneficios gratuitos hasta un servicio de cuidado de lujo para tus accesorios.
+          Elige el nivel de experiencia que mejor se adapte a ti, desde beneficios gratuitos hasta un servicio de cuidado de lujo para tus accesorios.
         </Typography>
       </Box>
 
@@ -63,7 +63,7 @@ export default function ComunidadPage() {
                 <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem", mb: 3 }}>El equilibrio perfecto entre cuidado y estilo.</Typography>
                 <Divider sx={{ mb: 3 }} />
                 <Stack spacing={2}>
-                  {["Todo lo del plan Miembro", "Limpieza de cuero (hasta 2 prendas al mes)", "Envíos gratis a todo el Perú", "10% de descuento en toda la tienda"].map((item) => (
+                  {["Todo lo del plan miembro", "Limpieza de cuero (hasta 2 prendas al mes)", "Envíos gratis a todo el Perú", "10% de descuento en toda la tienda"].map((item) => (
                     <Stack key={item} direction="row" spacing={1.5} alignItems="flex-start">
                       <CheckCircleIcon sx={{ color: "#0a0d15", fontSize: 20, mt: 0.2 }} />
                       <Typography sx={{ color: "#0a0d15", fontSize: "0.9rem", fontWeight: 500 }}>{item}</Typography>
