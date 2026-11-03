@@ -1,28 +1,64 @@
 "use client";
 import { useState } from "react";
-import { Container, Typography, Box, Grid, Button, Chip } from "@mui/material";
+import { Container, Typography, Box, Grid, Card, CardContent, CardMedia, Button, Chip, Stack } from "@mui/material";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import { useCart } from "../context/CartContext"; 
+
+// Datos de prueba (Luego los traeremos de Supabase)
+const mockProducts = [
+  { id: "1", name: "Morral Urban Explorer", price: 159.90, category: "Morrales", description: "Resistente al agua, compartimentos inteligentes.", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=600&auto=format&fit=crop" },
+  { id: "2", name: "Reloj Minimalist Classic", price: 289.00, category: "Relojes", description: "Malla de acero inoxidable, cristal de zafiro.", image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=600&auto=format&fit=crop" },
+  { id: "3", name: "Perfume Dark Wood", price: 199.90, category: "Perfumes", description: "Notas amaderadas y especiadas, huella duradera.", image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=600&auto=format&fit=crop" },
+  { id: "4", name: "Billetera Slim Leather", price: 89.90, category: "Billeteras", description: "Cuero genuino, diseño delgado para el bolsillo.", image: "https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=600&auto=format&fit=crop" },
+  { id: "5", name: "Correa Formal Classic", price: 119.90, category: "Correas", description: "Hebilla de acero, cuero de alta durabilidad.", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=600&auto=format&fit=crop" },
+  { id: "6", name: "Pulsera Urban Style", price: 49.90, category: "Pulseras", description: "Ajuste perfecto, estilo casual y moderno.", image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=600&auto=format&fit=crop" },
+];
 
 const categories = ["Todos", "Morrales", "Billeteras", "Correas", "Pulseras", "Relojes", "Perfumes"];
 
 export default function ProductsPage() {
   const [activeCategory, setActiveCategory] = useState("Todos");
+  const { addToCart } = useCart();
+
+  // Lógica para filtrar productos
+  const filteredProducts = activeCategory === "Todos" 
+    ? mockProducts 
+    : mockProducts.filter(p => p.category === activeCategory);
 
   return (
-    <Container maxWidth="lg" sx={{ py: 8 }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 6, md: 8 } }}>
+      
+      {/* Encabezado */}
       <Box sx={{ textAlign: "center", mb: 6 }}>
         <Typography variant="overline" sx={{ color: "#5E6B7E", fontWeight: 700, letterSpacing: "0.16em" }}>
-          
+          Colección Joined
         </Typography>
-        <Typography variant="h3" sx={{ fontWeight: 800, color: "#0a0d15", mt: 1, mb: 2 }}>
-          Nuestros Productos
+        {/* RAE: Productos en minúscula */}
+        <Typography variant="h3" sx={{ fontWeight: 800, color: "#0a0d15", mt: 1, mb: 2, fontSize: { xs: "1.8rem", md: "2.5rem" } }}>
+          Nuestros productos
         </Typography>
-        <Typography sx={{ color: "#5E6B7E" }}>
-          Explora nuestra colección de accesorios diseñados para elevar tu estilo.
+        <Typography sx={{ color: "#5E6B7E", fontSize: { xs: "0.95rem", md: "1.05rem" }, maxWidth: 600, mx: "auto" }}>
+          Explora nuestra colección de accesorios diseñados para elevar tu estilo y durar toda la vida.
         </Typography>
       </Box>
 
-      {/* Filtro de Categorías */}
-      <Box sx={{ bgcolor: "white", p: 2, borderRadius: 3, mb: 4, display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 1, boxShadow: "0 4px 20px rgba(0,0,0,0.05)" }}>
+      {/* Filtro de Categorías (Mejorado para Móvil) */}
+      <Box 
+        sx={{ 
+          bgcolor: "white", 
+          p: 1.5, 
+          borderRadius: 3, 
+          mb: 6, 
+          display: "flex", 
+          gap: 1,
+          overflowX: "auto", // Permite scroll horizontal
+          flexWrap: "nowrap", // Evita que salten a otra línea
+          justifyContent: { xs: "flex-start", md: "center" },
+          boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+          "&::-webkit-scrollbar": { display: "none" }, // Oculta la barra de scroll
+          scrollbarWidth: "none", // Para Firefox
+        }}
+      >
         {categories.map((cat) => (
           <Chip
             key={cat}
@@ -31,24 +67,94 @@ export default function ProductsPage() {
             sx={{
               fontWeight: 600,
               px: 2,
-              py: 1,
-              bgcolor: activeCategory === cat ? "#0a0d15" : "transparent",
+              py: 2.5,
+              fontSize: "0.9rem",
+              flexShrink: 0, // Evita que se aplasten
+              bgcolor: activeCategory === cat ? "#0a0d15" : "#F8F9FA",
               color: activeCategory === cat ? "white" : "#5E6B7E",
-              "&:hover": { bgcolor: activeCategory === cat ? "#1a1d24" : "#F0F0F0" },
+              "&:hover": { bgcolor: activeCategory === cat ? "#1a1d24" : "#EAEAEA" },
+              transition: "all 0.3s"
             }}
           />
         ))}
       </Box>
 
-      {/* Mensaje por ahora (Mañana conectamos Supabase aquí) */}
-      <Box sx={{ textAlign: "center", py: 10, bgcolor: "#F8F9FA", borderRadius: 4, border: "1px dashed #CBD5E1" }}>
-        <Typography variant="h6" sx={{ color: "#5E6B7E", fontWeight: 600 }}>
-          No hay productos disponibles en esta categoría.
-        </Typography>
-        <Typography sx={{ color: "#9CA3AF", mt: 1 }}>
-          (Pronto podrás agregar productos desde el Panel de Administración)
-        </Typography>
-      </Box>
+      {/* Cuadrícula de Productos */}
+      <Grid container spacing={{ xs: 2, md: 4 }}>
+        {filteredProducts.map((product) => (
+          <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
+            <Card 
+              elevation={0} 
+              sx={{ 
+                height: "100%", 
+                display: "flex", 
+                flexDirection: "column", 
+                borderRadius: 4, 
+                overflow: "hidden", 
+                bgcolor: "#FFFFFF", 
+                border: "1px solid rgba(20, 32, 56, 0.06)",
+                transition: "transform 0.3s, box-shadow 0.3s",
+                "&:hover": { transform: "translateY(-8px)", boxShadow: "0 20px 40px rgba(10, 13, 21, 0.1)" }
+              }}
+            >
+              <Box sx={{ position: "relative" }}>
+                <CardMedia
+                  component="img"
+                  height="250"
+                  image={product.image}
+                  alt={product.name}
+                  sx={{ objectFit: "cover" }}
+                />
+                <Chip 
+                  label={product.category} 
+                  size="small"
+                  sx={{ position: "absolute", top: 16, left: 16, bgcolor: "rgba(255,255,255,0.9)", fontWeight: 700, color: "#0a0d15" }} 
+                />
+              </Box>
+              
+              <CardContent sx={{ p: 3, display: "flex", flexDirection: "column", flexGrow: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 800, color: "#142038", fontSize: "1.1rem", mb: 1 }}>
+                  {product.name}
+                </Typography>
+                <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem", lineHeight: 1.5, mb: 2, flexGrow: 1 }}>
+                  {product.description}
+                </Typography>
+                <Typography sx={{ fontSize: "1.2rem", fontWeight: 800, color: "#142038", mb: 2 }}>
+                  S/. {product.price.toFixed(2)}
+                </Typography>
+                
+                <Button 
+                  variant="contained" 
+                  fullWidth 
+                  startIcon={<ShoppingBagIcon />}
+                  onClick={() => addToCart(product as any)}
+                  sx={{ 
+                    bgcolor: "#0a0d15", 
+                    "&:hover": { bgcolor: "#1a1d24" }, 
+                    py: 1.2, 
+                    fontSize: "0.95rem",
+                    borderRadius: 2,
+                    textTransform: "none",
+                    fontWeight: 700
+                  }}
+                >
+                  Añadir al carrito
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+
+      {/* Mensaje si no hay productos */}
+      {filteredProducts.length === 0 && (
+        <Box sx={{ textAlign: "center", py: 10, bgcolor: "#F8F9FA", borderRadius: 4, border: "1px dashed #CBD5E1" }}>
+          <Typography variant="h6" sx={{ color: "#5E6B7E", fontWeight: 600 }}>
+            No hay productos disponibles en esta categoría.
+          </Typography>
+        </Box>
+      )}
+
     </Container>
   );
 }
