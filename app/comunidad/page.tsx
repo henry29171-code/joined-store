@@ -5,9 +5,9 @@ import StarIcon from "@mui/icons-material/Star";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 
 const blogPosts = [
-  { title: "Cómo mantener tu morral de cuero", excerpt: "Descubre los secretos de limpieza para que dure años.", image: "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=800&h=600&auto=format&fit=crop", date: "15 de Octubre, 2026" },
-  { title: "5 combinaciones de relojes", excerpt: "Encuentra el reloj perfecto para cada ocasión.", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&h=600&auto=format&fit=crop", date: "10 de Octubre, 2026" },
-  { title: "El aroma correcto: Guía de perfumes", excerpt: "Te ayudamos a elegir tu firma olfativa ideal.", image: "https://images.unsplash.com/photo-1592914610354-fd354ea45e48?q=80&w=800&h=600&auto=format&fit=crop", date: "05 de Octubre, 2026" },
+  { title: "Cómo mantener tu morral de cuero", excerpt: "Descubre los secretos de limpieza para que dure años.", image: "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=800&h=600&auto=format&fit=crop", date: "15 de octubre, 2026" },
+  { title: "5 combinaciones de relojes", excerpt: "Encuentra el reloj perfecto para cada ocasión.", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&h=600&auto=format&fit=crop", date: "10 de octubre, 2026" },
+  { title: "El aroma correcto: guía de perfumes", excerpt: "Te ayudamos a elegir tu firma olfativa ideal.", image: "https://images.unsplash.com/photo-1592914610354-fd354ea45e48?q=80&w=800&h=600&auto=format&fit=crop", date: "5 de octubre, 2026" },
 ];
 
 export default function ComunidadPage() {
@@ -29,12 +29,12 @@ export default function ComunidadPage() {
           <Grid size={{ xs: 12, md: 4 }}>
             <Card sx={{ height: "100%", display: "flex", flexDirection: "column", borderRadius: 4, border: "1px solid rgba(10,13,21,0.1)", boxShadow: "none" }}>
               <CardContent sx={{ p: 4, flexGrow: 1 }}>
-                <Typography variant="h6" sx={{ fontWeight: 800, color: "#5E6B7E", mb: 1 }}>Joined Member</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 800, color: "#5E6B7E", mb: 1 }}>Miembro Joined</Typography>
                 <Typography variant="h3" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2 }}>Gratis</Typography>
                 <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem", mb: 3 }}>Solo por registrarte en la tienda.</Typography>
                 <Divider sx={{ mb: 3 }} />
                 <Stack spacing={2}>
-                  {["Envíos gratis en Lima Metropolitana", "Seguimiento de pedido (Tracking)", "Asesoría de vestimenta básica vía WhatsApp", "Acceso a guías de estilo (Blog)"].map((item) => (
+                  {["Envíos gratis en Lima Metropolitana", "Seguimiento de pedido (tracking)", "Asesoría de vestimenta básica vía WhatsApp", "Acceso a guías de estilo (blog)"].map((item) => (
                     <Stack key={item} direction="row" spacing={1.5} alignItems="flex-start">
                       <CheckCircleIcon sx={{ color: "#5E6B7E", fontSize: 20, mt: 0.2 }} />
                       <Typography sx={{ color: "#0a0d15", fontSize: "0.9rem" }}>{item}</Typography>
@@ -63,7 +63,7 @@ export default function ComunidadPage() {
                 <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem", mb: 3 }}>El equilibrio perfecto entre cuidado y estilo.</Typography>
                 <Divider sx={{ mb: 3 }} />
                 <Stack spacing={2}>
-                  {["Todo lo del plan Member", "Limpieza de cuero (hasta 2 prendas al mes)", "Envíos gratis a todo el Perú", "10% de descuento en toda la tienda"].map((item) => (
+                  {["Todo lo del plan Miembro", "Limpieza de cuero (hasta 2 prendas al mes)", "Envíos gratis a todo el Perú", "10% de descuento en toda la tienda"].map((item) => (
                     <Stack key={item} direction="row" spacing={1.5} alignItems="flex-start">
                       <CheckCircleIcon sx={{ color: "#0a0d15", fontSize: 20, mt: 0.2 }} />
                       <Typography sx={{ color: "#0a0d15", fontSize: "0.9rem", fontWeight: 500 }}>{item}</Typography>
@@ -114,7 +114,7 @@ export default function ComunidadPage() {
 
         {/* Sección del Blog */}
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" sx={{ color: "#0a0d15", fontSize: { xs: "1.5rem", md: "2rem" } }}>Estilo y Tendencias</Typography>
+          <Typography variant="h4" sx={{ color: "#0a0d15", fontSize: { xs: "1.5rem", md: "2rem" } }}>Estilo y tendencias</Typography>
         </Box>
 
         <Grid container spacing={3}>
