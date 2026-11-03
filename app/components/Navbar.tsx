@@ -42,14 +42,12 @@ export default function Navbar() {
   const drawerContent = (
     <Box sx={{ width: 260, bgcolor: "#0a0d15", height: "100%", color: "white" }} role="presentation">
       <Box sx={{ p: 3, display: "flex", justifyContent: "center", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-        {/* Logo en el menú móvil con zoom ajustado */}
-        <Box sx={{ width: 120, height: 40, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <img 
-            src="/logo.png" 
-            alt="Joined" 
-            style={{ width: "100%", height: "auto", transform: "scale(1.8)", objectFit: "contain" }} 
-          />
-        </Box>
+        {/* Logo en el menú móvil sin recortes */}
+        <img 
+          src="/logo.png" 
+          alt="Joined" 
+          style={{ height: "45px", width: "auto", objectFit: "contain" }} 
+        />
       </Box>
       <List sx={{ pt: 2 }}>
         {navLinks.map((link) => (
@@ -86,7 +84,7 @@ export default function Navbar() {
       </Box>
 
       <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#0a0d15", color: "#F8FAF8" }}>
-        <Toolbar sx={{ justifyContent: "space-between", minHeight: { xs: 70, md: 80 }, px: { xs: 1, md: 3 } }}>
+        <Toolbar sx={{ justifyContent: "space-between", minHeight: { xs: 70, md: 85 }, px: { xs: 1, md: 3 } }}>
           
           {/* Lado Izquierdo */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -98,34 +96,22 @@ export default function Navbar() {
               <MenuIcon />
             </IconButton>
 
-            {/* Logo Principal con Zoom Corregido */}
+            {/* Logo Principal - Tamaño Natural Ajustado */}
             <Link href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center" }}>
-              <Box 
-                sx={{ 
-                  width: { xs: 130, md: 180 }, // Ventana más ancha
-                  height: { xs: 40, md: 50 },  // Altura controlada
-                  overflow: "hidden", 
-                  display: "flex", 
-                  alignItems: "center", 
-                  justifyContent: "center",
-                  ml: 1 
-                }}
-              >
-                <img 
-                  src="/logo.png" 
-                  alt="Joined" 
-                  style={{ 
-                    width: "100%", 
-                    height: "auto", 
-                    transform: "scale(1.8)", // Zoom balanceado
-                    objectFit: "contain" 
-                  }} 
-                />
-              </Box>
+              <img 
+                src="/logo.png" 
+                alt="Joined" 
+                style={{ 
+                  height: "65px", // Altura perfecta para que se lea sin cortarse
+                  width: "auto",
+                  objectFit: "contain",
+                  marginRight: "20px" // Espacio para que no choque con los links
+                }} 
+              />
             </Link>
 
             {/* Links Escritorio */}
-            <Stack direction="row" spacing={2} alignItems="center" sx={{ display: { xs: "none", md: "flex" }, ml: 4 }}>
+            <Stack direction="row" spacing={2.5} alignItems="center" sx={{ display: { xs: "none", md: "flex" }, ml: 2 }}>
               {navLinks.map((link) => (
                 <Link key={link.label} href={link.href} style={{ textDecoration: "none" }}>
                   <Typography sx={{ color: "white", opacity: 0.8, fontWeight: 600, fontSize: "0.9rem", "&:hover": { opacity: 1 } }}>{link.label}</Typography>
