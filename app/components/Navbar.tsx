@@ -42,7 +42,8 @@ export default function Navbar() {
   const drawerContent = (
     <Box sx={{ width: 260, bgcolor: "#0a0d15", height: "100%", color: "white" }} role="presentation">
       <Box sx={{ p: 3, display: "flex", justifyContent: "center", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-        <Typography variant="h5" sx={{ fontWeight: 800 }}>Joined</Typography>
+        {/* Logo en el menú móvil */}
+        <img src="/logo.png" alt="Joined" style={{ height: "35px", width: "auto" }} />
       </Box>
       <List sx={{ pt: 2 }}>
         {navLinks.map((link) => (
@@ -63,17 +64,17 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Cinta de Anuncios (Actualizada) */}
+      {/* Cinta de Anuncios */}
       <Box sx={{ bgcolor: "#D7E0DA", color: "#0a0d15", py: 0.8, overflow: "hidden", whiteSpace: "nowrap" }}>
         <Box sx={{
             display: "inline-block", animation: "marquee 25s linear infinite",
             "@keyframes marquee": { "0%": { transform: "translateX(100vw)" }, "100%": { transform: "translateX(-100%)" } },
           }}>
           <Typography component="span" sx={{ mx: 4, fontWeight: 700, fontSize: "0.8rem" }}>
-            🚚 ¡Envíos 100% gratis a nivel nacional exclusivo para miembros de la comunidad!
+            🚚 ¡Envíos 100% gratis a Lima Metropolitana exclusivo para miembros de la Comunidad!
           </Typography>
           <Typography component="span" sx={{ mx: 4, fontWeight: 700, fontSize: "0.8rem" }}>
-            ✨ Únete al club Joined VIP y accede a beneficios exclusivos
+            ✨ Únete al Club Joined VIP y accede a beneficios exclusivos
           </Typography>
         </Box>
       </Box>
@@ -91,8 +92,17 @@ export default function Navbar() {
               <MenuIcon />
             </IconButton>
 
-            <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
-              <Typography variant="h5" sx={{ fontWeight: 800, fontSize: { xs: "1.3rem", md: "1.5rem" } }}>Joined</Typography>
+            {/* Logo Imagen */}
+            <Link href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center" }}>
+              <img 
+                src="/logo.png" 
+                alt="Joined" 
+                style={{ 
+                  height: "40px", 
+                  width: "auto",
+                  objectFit: "contain" 
+                }} 
+              />
             </Link>
 
             {/* Links Escritorio */}
