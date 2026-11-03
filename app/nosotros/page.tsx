@@ -14,31 +14,33 @@ export default function NosotrosPage() {
           Nuestra historia
         </Typography>
         
+        {/* Título principal igualado al tamaño de los subtítulos */}
         <Typography 
           variant="h3" 
           sx={{ 
             color: "#0a0d15", 
             mt: 1, 
             mb: 3, 
-            fontSize: { xs: "1.8rem", md: "2.5rem" }, // Tamaño unificado para el título principal
+            fontSize: { xs: "1.5rem", md: "1.8rem" }, // <-- Mismo tamaño que los h4
             fontWeight: 800, 
-            lineHeight: 1.2 
+            lineHeight: 1.3 
           }}
         >
           Diseñados para durar, creados con propósito
         </Typography>
         
+        {/* Párrafo centrado para evitar los espacios raros del justificado */}
         <Typography 
           sx={{ 
             color: "#5E6B7E", 
-            maxWidth: 750, 
+            maxWidth: 700, 
             mx: "auto", 
-            fontSize: { xs: "0.95rem", md: "1.05rem" }, // Tamaño de texto estándar
+            fontSize: { xs: "0.95rem", md: "1.05rem" },
             lineHeight: 1.7,
-            textAlign: { xs: "left", md: "justify" } // Justificado en PC, izquierda en móvil para evitar huecos
+            textAlign: "center" // <-- Centrado en lugar de justificado
           }}
         >
-          Joined nace de una inconformidad con el mundo actual. Estamos cansados de la moda rápida y de la contaminación que genera el consumo desmedido. Decidimos crear una marca que ofrezca accesorios atemporales, resistentes y con un fuerte compromiso ético.
+          Joined nace de una inconformidad con el mundo actual, estamos cansados de la moda rápida y de la contaminación que genera el consumo desmedido. Decidimos crear una marca que ofrezca accesorios atemporales, resistentes y con un fuerte compromiso ético.
         </Typography>
       </Box>
 
@@ -60,24 +62,25 @@ export default function NosotrosPage() {
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
+            {/* Subtítulo igualado al tamaño del principal */}
             <Typography 
               variant="h4" 
               sx={{ 
                 color: "#0a0d15", 
                 mb: 3, 
-                fontSize: { xs: "1.5rem", md: "1.8rem" }, // Un poco más pequeño que el título principal
+                fontSize: { xs: "1.5rem", md: "1.8rem" }, // <-- Mismo tamaño
                 fontWeight: 800,
                 lineHeight: 1.3
               }}
             >
-              Contra la moda rápida, a favor de lo eterno
+              Contra la moda rápida a favor de lo eterno.
             </Typography>
             
-            <Typography sx={{ color: "#5E6B7E", mb: 2, fontSize: { xs: "0.95rem", md: "1.05rem" }, lineHeight: 1.7, textAlign: { xs: "left", md: "justify" } }}>
-              No creemos en lo desechable. Creemos en piezas que envejecen bien. Al elegir materiales de alta calidad, garantizamos que cada producto soporte el paso del tiempo, reduciendo la necesidad de reemplazarlos.
+            <Typography sx={{ color: "#5E6B7E", mb: 2, fontSize: { xs: "0.95rem", md: "1.05rem" }, lineHeight: 1.7 }}>
+              No creemos en lo desechable, creemos en piezas que envejecen bien. Al elegir materiales de alta calidad, garantizamos que cada producto soporte el paso del tiempo, reduciendo la necesidad de reemplazarlos.
             </Typography>
             
-            <Typography sx={{ color: "#5E6B7E", fontSize: { xs: "0.95rem", md: "1.05rem" }, lineHeight: 1.7, textAlign: { xs: "left", md: "justify" } }}>
+            <Typography sx={{ color: "#5E6B7E", fontSize: { xs: "0.95rem", md: "1.05rem" }, lineHeight: 1.7 }}>
               Asumimos una profunda responsabilidad social, trabajando de la mano con artesanos locales y garantizando condiciones laborales justas.
             </Typography>
           </Grid>
@@ -89,7 +92,7 @@ export default function NosotrosPage() {
             variant="h4" 
             sx={{ 
               color: "#0a0d15", 
-              fontSize: { xs: "1.5rem", md: "1.8rem" }, // Mismo tamaño que el título de arriba
+              fontSize: { xs: "1.5rem", md: "1.8rem" }, // <-- Mismo tamaño
               fontWeight: 800 
             }}
           >
@@ -107,7 +110,7 @@ export default function NosotrosPage() {
                   Diseño atemporal
                 </Typography>
                 <Typography sx={{ color: "#5E6B7E", fontSize: "0.95rem", lineHeight: 1.6 }}>
-                  Evitamos tendencias pasajeras. Nuestros diseños son funcionales y elegantes.
+                  Evitamos tendencias pasajeras, nuestros diseños son funcionales y elegantes.
                 </Typography>
               </CardContent>
             </Card>
