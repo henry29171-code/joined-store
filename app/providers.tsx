@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { ThemeProvider, CssBaseline, createTheme, Box } from "@mui/material";
-import { responsiveFontSizes } from "@mui/material/styles"; // <-- Importamos esto
+import { responsiveFontSizes } from "@mui/material/styles";
 import { CartProvider } from "./context/CartContext";
 import Navbar from "./components/Navbar";
 import { NotificationProvider } from "./context/NotificationContext";
@@ -11,27 +11,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
   let theme = createTheme({
     palette: {
       mode: "light",
-      primary: {
-        main: "#0a0d15",
-        dark: "#1a1d24",
-        contrastText: "#FFFFFF",
-      },
-      secondary: {
-        main: "#D7E0DA",
-        contrastText: "#223127",
-      },
-      background: {
-        default: "#F8F9FA",
-        paper: "#FFFFFF",
-      },
-      text: {
-        primary: "#0a0d15",
-        secondary: "#5E6B7E",
-      },
+      primary: { main: "#0a0d15", dark: "#1a1d24", contrastText: "#FFFFFF" },
+      secondary: { main: "#D7E0DA", contrastText: "#223127" },
+      background: { default: "#F8F9FA", paper: "#FFFFFF" },
+      text: { primary: "#0a0d15", secondary: "#5E6B7E" },
     },
-    shape: {
-      borderRadius: 10,
-    },
+    shape: { borderRadius: 10 },
     typography: {
       fontFamily: `"Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`,
       h1: { fontWeight: 800, letterSpacing: "-0.02em" },
@@ -41,62 +26,35 @@ export function Providers({ children }: { children: React.ReactNode }) {
       h5: { fontWeight: 800 },
       h6: { fontWeight: 700 },
       button: { textTransform: "none", fontWeight: 700 },
-      body1: { lineHeight: 1.7 },
+      body1: { lineHeight: 1.7, fontSize: "1rem" },
+      body2: { lineHeight: 1.6, fontSize: "0.9rem" },
     },
     components: {
       MuiCssBaseline: {
         styleOverrides: {
-          body: {
-            backgroundColor: "#F8F9FA",
-            color: "#5E6B7E",
-            overflowX: "hidden", // Evita scroll horizontal accidental
-          },
+          body: { backgroundColor: "#F8F9FA", color: "#5E6B7E", overflowX: "hidden" },
         },
       },
       MuiAppBar: {
-        styleOverrides: {
-          root: {
-            backgroundColor: "#0a0d15",
-            color: "#FFFFFF",
-          },
-        },
+        styleOverrides: { root: { backgroundColor: "#0a0d15", color: "#FFFFFF" } },
       },
       MuiButton: {
-        styleOverrides: {
-          root: {
-            borderRadius: 999,
-            boxShadow: "none",
-            padding: "10px 24px",
-          },
-        },
+        styleOverrides: { root: { borderRadius: 999, boxShadow: "none", padding: "10px 24px" } },
       },
       MuiCard: {
-        styleOverrides: {
-          root: {
-            boxShadow: "0 10px 30px rgba(10, 13, 21, 0.05)",
-            backgroundImage: "none",
-          },
-        },
+        styleOverrides: { root: { boxShadow: "0 10px 30px rgba(10, 13, 21, 0.05)", backgroundImage: "none" } },
       },
     },
   });
 
-  // Esta función ajusta automáticamente los h1-h6 para móviles
-  theme = responsiveFontSizes(theme, { factor: 2.5 });
+  theme = responsiveFontSizes(theme);
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <NotificationProvider>
         <CartProvider>
-          <Box
-            sx={{
-              minHeight: "100vh",
-              display: "flex",
-              flexDirection: "column",
-              background: "#F8F9FA",
-            }}
-          >
+          <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#F8F9FA" }}>
             <Navbar />
             <Box component="main" sx={{ flex: 1 }}>
               {children}
