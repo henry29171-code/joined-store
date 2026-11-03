@@ -1,17 +1,18 @@
 "use client";
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link"; // <-- Importante para que la imagen sea clickeable
 import { Container, Typography, Box, Grid, Card, CardContent, CardMedia, Button, Chip } from "@mui/material";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { useCart } from "../context/CartContext"; 
 
 const mockProducts = [
-  { id: "1", name: "Morral Urban Explorer", price: 159.90, category: "Morrales", description: "Resistente al agua, compartimentos inteligentes.", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=600&auto=format&fit=crop" },
-  { id: "2", name: "Reloj Minimalist Classic", price: 289.00, category: "Relojes", description: "Malla de acero inoxidable, cristal de zafiro.", image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=600&auto=format&fit=crop" },
-  { id: "3", name: "Perfume Dark Wood", price: 199.90, category: "Perfumes", description: "Notas amaderadas y especiadas, huella duradera.", image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=600&auto=format&fit=crop" },
-  { id: "4", name: "Billetera Slim Leather", price: 89.90, category: "Billeteras", description: "Cuero genuino, diseño delgado para el bolsillo.", image: "https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=600&auto=format&fit=crop" },
-  { id: "5", name: "Correa Formal Classic", price: 119.90, category: "Correas", description: "Hebilla de acero, cuero de alta durabilidad.", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=600&auto=format&fit=crop" },
-  { id: "6", name: "Pulsera Leather Urban", price: 49.90, category: "Pulseras", description: "Ajuste perfecto, estilo casual y moderno.", image: "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=600&auto=format&fit=crop" },
+  { id: "1", name: "Morral Urban Explorer", price: 159.90, category: "Morrales", description: "Resistente al agua, compartimentos inteligentes.", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop" },
+  { id: "2", name: "Reloj Minimalist Classic", price: 289.00, category: "Relojes", description: "Malla de acero inoxidable, cristal de zafiro.", image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=800&auto=format&fit=crop" },
+  { id: "3", name: "Perfume Dark Wood", price: 199.90, category: "Perfumes", description: "Notas amaderadas y especiadas, huella duradera.", image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800&auto=format&fit=crop" },
+  { id: "4", name: "Billetera Slim Leather", price: 89.90, category: "Billeteras", description: "Cuero genuino, diseño delgado para el bolsillo.", image: "https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=800&auto=format&fit=crop" },
+  { id: "5", name: "Correa Formal Classic", price: 119.90, category: "Correas", description: "Hebilla de acero, cuero de alta durabilidad.", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop" },
+  { id: "6", name: "Pulsera Leather Urban", price: 49.90, category: "Pulseras", description: "Ajuste perfecto, estilo casual y moderno.", image: "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=800&auto=format&fit=crop" },
 ];
 
 const categories = ["Todos", "Morrales", "Billeteras", "Correas", "Pulseras", "Relojes", "Perfumes"];
@@ -70,18 +71,26 @@ function ProductsContent() {
           <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
             <Card elevation={0} sx={{ height: "100%", display: "flex", flexDirection: "column", borderRadius: 4, overflow: "hidden", bgcolor: "#FFFFFF", border: "1px solid rgba(20, 32, 56, 0.06)", transition: "transform 0.3s, box-shadow 0.3s", "&:hover": { transform: "translateY(-8px)", boxShadow: "0 20px 40px rgba(10, 13, 21, 0.1)" } }}>
               
-              {/* Imagen vertical (300px) */}
-              <Box sx={{ position: "relative", width: "100%" }}>
-                <CardMedia 
-                  component="img" 
-                  image={product.image} 
-                  alt={product.name} 
-                  sx={{ width: "100%", height: 300, objectFit: "cover" }} 
-                />
+              {/* Imagen vertical clickeable */}
+              <Box sx={{ position: "relative", width: "100%", overflow: "hidden" }}>
+                <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
+                  <CardMedia 
+                    component="img" 
+                    image={product.image} 
+                    alt={product.name} 
+                    sx={{ 
+                      width: "100%", 
+                      aspectRatio: "4/5", 
+                      objectFit: "cover",
+                      transition: "transform 0.4s ease",
+                      "&:hover": { transform: "scale(1.05)" } // Efecto zoom sutil
+                    }} 
+                  />
+                </Link>
                 <Chip 
                   label={product.category} 
                   size="small" 
-                  sx={{ position: "absolute", top: 16, left: 16, bgcolor: "rgba(255,255,255,0.9)", fontWeight: 700, color: "#0a0d15" }} 
+                  sx={{ position: "absolute", top: 16, left: 16, bgcolor: "rgba(255,255,255,0.9)", fontWeight: 700, color: "#0a0d15", zIndex: 2 }} 
                 />
               </Box>
               
@@ -90,27 +99,22 @@ function ProductsContent() {
                 <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem", lineHeight: 1.5, mb: 2, flexGrow: 1 }}>{product.description}</Typography>
                 <Typography sx={{ fontSize: "1.2rem", fontWeight: 800, color: "#142038", mb: 2 }}>S/. {product.price.toFixed(2)}</Typography>
                 
-                {/* Botón Blanco que se pinta de negro al pasar el mouse */}
                 <Button 
                   variant="outlined" 
                   fullWidth 
                   startIcon={<ShoppingBagIcon />} 
                   onClick={() => addToCart(product as any)} 
                   sx={{ 
-                    bgcolor: "white",
-                    color: "#0a0d15",
-                    borderColor: "#0a0d15",
+                    bgcolor: "white", 
+                    color: "#0a0d15", 
+                    borderColor: "#0a0d15", 
                     py: 1.2, 
                     fontSize: "0.95rem", 
                     borderRadius: 2, 
                     textTransform: "none", 
-                    fontWeight: 700,
-                    transition: "all 0.3s",
-                    "&:hover": { 
-                      bgcolor: "#0a0d15", 
-                      color: "white",
-                      borderColor: "#0a0d15"
-                    } 
+                    fontWeight: 700, 
+                    transition: "all 0.3s", 
+                    "&:hover": { bgcolor: "#0a0d15", color: "white", borderColor: "#0a0d15" } 
                   }}
                 >
                   Añadir al carrito

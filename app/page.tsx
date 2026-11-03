@@ -17,9 +17,10 @@ function TikTokIcon(props: any) {
 }
 
 const featuredProducts = [
-  { id: "1", name: "Morral Urban Explorer", price: "S/. 159.90", description: "Resistente al agua y con un diseño minimalista ideal para la ciudad.", badge: "Best Seller", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop" },
+  // RAE: Corrección en las etiquetas (solo primera letra en mayúscula)
+  { id: "1", name: "Morral Urban Explorer", price: "S/. 159.90", description: "Resistente al agua y con un diseño minimalista ideal para la ciudad.", badge: "Best seller", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop" },
   { id: "2", name: "Reloj Minimalist Classic", price: "S/. 289.00", description: "Malla de acero inoxidable y movimiento de precisión para un look elegante.", badge: "Premium", image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=800&auto=format&fit=crop" },
-  { id: "3", name: "Perfume Dark Wood", price: "S/. 199.90", description: "Notas amaderadas y especiadas que dejan una huella sofisticada.", badge: "New Arrival", image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800&auto=format&fit=crop" },
+  { id: "3", name: "Perfume Dark Wood", price: "S/. 199.90", description: "Notas amaderadas y especiadas que dejan una huella sofisticada.", badge: "New arrival", image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800&auto=format&fit=crop" },
 ];
 
 export default function HomePage() {
@@ -63,7 +64,7 @@ export default function HomePage() {
         </Container>
       </Box>
 
-      {/* Productos Destacados - CON IMÁGENES ALARGADAS */}
+      {/* Productos Destacados */}
       <Box sx={{ pb: { xs: 8, md: 10 }, pt: { xs: 4, md: 6 } }}>
         <Container maxWidth="lg">
           <Stack direction={{ xs: "column", md: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", md: "flex-end" }} spacing={1} sx={{ mb: 4 }}>
@@ -79,15 +80,23 @@ export default function HomePage() {
               <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Card elevation={0} sx={{ height: "100%", display: "flex", flexDirection: "column", borderRadius: 4, overflow: "hidden", bgcolor: "#FFFFFF", border: "1px solid rgba(20, 32, 56, 0.06)", transition: "transform 0.3s", "&:hover": { transform: "translateY(-5px)" } }}>
                   
-                  {/* Imagen vertical usando aspectRatio */}
-                  <Box sx={{ position: "relative" }}>
-                    <CardMedia
-                      component="img"
-                      image={product.image}
-                      alt={product.name}
-                      sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover" }}
-                    />
-                    <Chip label={product.badge} sx={{ position: "absolute", top: 16, left: 16, bgcolor: "rgba(255,255,255,0.9)", color: "#1E2A3A", fontWeight: 700, fontSize: "0.75rem" }} />
+                  {/* Imagen vertical clickeable */}
+                  <Box sx={{ position: "relative", overflow: "hidden" }}>
+                    <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
+                      <CardMedia
+                        component="img"
+                        image={product.image}
+                        alt={product.name}
+                        sx={{ 
+                          width: "100%", 
+                          aspectRatio: "4/5", 
+                          objectFit: "cover",
+                          transition: "transform 0.4s ease",
+                          "&:hover": { transform: "scale(1.05)" } // Efecto sutil al pasar el mouse
+                        }}
+                      />
+                    </Link>
+                    <Chip label={product.badge} sx={{ position: "absolute", top: 16, left: 16, bgcolor: "rgba(255,255,255,0.9)", color: "#1E2A3A", fontWeight: 700, fontSize: "0.75rem", zIndex: 2 }} />
                   </Box>
                   
                   <CardContent sx={{ p: 3, display: "flex", flexDirection: "column", flexGrow: 1 }}>
@@ -106,7 +115,7 @@ export default function HomePage() {
         </Container>
       </Box>
 
-      {/* Explora por categorías, promesa, VIP y redes sociales (Mismo código anterior) */}
+      {/* Explora por categorías */}
       <Box sx={{ py: { xs: 8, md: 10 }, bgcolor: "#FFFFFF" }}>
         <Container maxWidth="lg">
           <Box sx={{ textAlign: "center", mb: 5 }}><Typography variant="h4" sx={{ fontWeight: 800, color: "#142038", fontSize: { xs: "1.6rem", md: "2rem" } }}>Explora por categorías</Typography></Box>
@@ -125,6 +134,7 @@ export default function HomePage() {
         </Container>
       </Box>
 
+      {/* Nuestra promesa */}
       <Box sx={{ py: { xs: 8, md: 10 } }}>
         <Container maxWidth="lg">
           <Grid container spacing={4} textAlign="center">
@@ -135,6 +145,7 @@ export default function HomePage() {
         </Container>
       </Box>
 
+      {/* Club VIP */}
       <Box sx={{ py: { xs: 6, md: 8 } }}>
         <Container maxWidth="lg">
           <Box sx={{ bgcolor: "#0a0d15", borderRadius: 6, p: { xs: 4, md: 8 }, display: "flex", flexDirection: { xs: "column", md: "row" }, alignItems: "center", justifyContent: "space-between", gap: 4 }}>
@@ -144,6 +155,7 @@ export default function HomePage() {
         </Container>
       </Box>
 
+      {/* Redes sociales */}
       <Box sx={{ py: { xs: 6, md: 8 }, borderTop: "1px solid rgba(10, 13, 21, 0.05)" }}>
         <Container maxWidth="lg">
           <Box sx={{ textAlign: "center" }}>
