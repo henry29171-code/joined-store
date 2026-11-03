@@ -42,8 +42,8 @@ export default function Navbar() {
   const drawerContent = (
     <Box sx={{ width: 260, bgcolor: "#0a0d15", height: "100%", color: "white" }} role="presentation">
       <Box sx={{ p: 3, display: "flex", justifyContent: "center", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-        {/* Logo en el menú móvil */}
-        <img src="/logo.png" alt="Joined" style={{ height: "35px", width: "auto" }} />
+        {/* Logo más grande en el menú móvil */}
+        <img src="/logo.png" alt="Joined" style={{ height: "50px", width: "auto" }} />
       </Box>
       <List sx={{ pt: 2 }}>
         {navLinks.map((link) => (
@@ -80,7 +80,8 @@ export default function Navbar() {
       </Box>
 
       <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#0a0d15", color: "#F8FAF8" }}>
-        <Toolbar sx={{ justifyContent: "space-between", minHeight: { xs: 60, md: 72 }, px: { xs: 1, md: 3 } }}>
+        {/* Aumentamos un poco la altura de la barra para que el logo respire */}
+        <Toolbar sx={{ justifyContent: "space-between", minHeight: { xs: 70, md: 90 }, px: { xs: 1, md: 3 } }}>
           
           {/* Lado Izquierdo */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -92,16 +93,19 @@ export default function Navbar() {
               <MenuIcon />
             </IconButton>
 
-            {/* Logo Imagen */}
+            {/* Logo Imagen Aumentado */}
             <Link href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center" }}>
               <img 
                 src="/logo.png" 
                 alt="Joined" 
                 style={{ 
-                  height: "40px", 
+                  height: "55px", // Más grande para escritorio
                   width: "auto",
-                  objectFit: "contain" 
+                  objectFit: "contain",
+                  marginTop: "5px" // Pequeño ajuste visual
                 }} 
+                // Para celular, usamos un poco menos de altura para que no ocupe toda la pantalla
+                className="logo-navbar"
               />
             </Link>
 
