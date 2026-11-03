@@ -42,12 +42,12 @@ export default function Navbar() {
   const drawerContent = (
     <Box sx={{ width: 260, bgcolor: "#0a0d15", height: "100%", color: "white" }} role="presentation">
       <Box sx={{ p: 3, display: "flex", justifyContent: "center", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-        {/* Logo en el menú móvil con zoom */}
-        <Box sx={{ width: 100, height: 40, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {/* Logo en el menú móvil con zoom ajustado */}
+        <Box sx={{ width: 120, height: 40, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <img 
             src="/logo.png" 
             alt="Joined" 
-            style={{ width: "100%", height: "auto", transform: "scale(2.3)", objectFit: "contain" }} 
+            style={{ width: "100%", height: "auto", transform: "scale(1.8)", objectFit: "contain" }} 
           />
         </Box>
       </Box>
@@ -98,13 +98,13 @@ export default function Navbar() {
               <MenuIcon />
             </IconButton>
 
-            {/* Logo Principal con Zoom (Elimina espacio vacío) */}
+            {/* Logo Principal con Zoom Corregido */}
             <Link href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center" }}>
               <Box 
                 sx={{ 
-                  width: { xs: 100, md: 150 }, // Ancho de la "ventana" del logo
-                  height: { xs: 40, md: 50 },  // Alto de la "ventana" del logo
-                  overflow: "hidden",          // Recorta lo que sobresalga
+                  width: { xs: 130, md: 180 }, // Ventana más ancha
+                  height: { xs: 40, md: 50 },  // Altura controlada
+                  overflow: "hidden", 
                   display: "flex", 
                   alignItems: "center", 
                   justifyContent: "center",
@@ -117,7 +117,7 @@ export default function Navbar() {
                   style={{ 
                     width: "100%", 
                     height: "auto", 
-                    transform: "scale(2.5)", // 🔍 El nivel de zoom (ajusta este número si lo quieres más grande o pequeño)
+                    transform: "scale(1.8)", // Zoom balanceado
                     objectFit: "contain" 
                   }} 
                 />
