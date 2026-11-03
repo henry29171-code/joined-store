@@ -42,11 +42,11 @@ export default function Navbar() {
   const drawerContent = (
     <Box sx={{ width: 260, bgcolor: "#0a0d15", height: "100%", color: "white" }} role="presentation">
       <Box sx={{ p: 3, display: "flex", justifyContent: "center", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-        {/* Logo en el menú móvil sin recortes */}
+        {/* Logo en el menú móvil - Tamaño ajustado */}
         <img 
           src="/logo.png" 
           alt="Joined" 
-          style={{ height: "45px", width: "auto", objectFit: "contain" }} 
+          style={{ height: "35px", width: "auto", objectFit: "contain" }} 
         />
       </Box>
       <List sx={{ pt: 2 }}>
@@ -75,7 +75,7 @@ export default function Navbar() {
             "@keyframes marquee": { "0%": { transform: "translateX(100vw)" }, "100%": { transform: "translateX(-100%)" } },
           }}>
           <Typography component="span" sx={{ mx: 4, fontWeight: 700, fontSize: "0.8rem" }}>
-            🚚 ¡Envíos 100% gratis a Lima Metropolitana exclusivo para miembros de la Comunidad!
+            🚚 ¡Envíos 100% gratis a todo el Perú exclusivo para miembros de la comunidad!
           </Typography>
           <Typography component="span" sx={{ mx: 4, fontWeight: 700, fontSize: "0.8rem" }}>
             ✨ Únete al Club Joined VIP y accede a beneficios exclusivos
@@ -84,7 +84,7 @@ export default function Navbar() {
       </Box>
 
       <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#0a0d15", color: "#F8FAF8" }}>
-        <Toolbar sx={{ justifyContent: "space-between", minHeight: { xs: 70, md: 85 }, px: { xs: 1, md: 3 } }}>
+        <Toolbar sx={{ justifyContent: "space-between", minHeight: { xs: 65, md: 75 }, px: { xs: 1, md: 3 } }}>
           
           {/* Lado Izquierdo */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -96,16 +96,16 @@ export default function Navbar() {
               <MenuIcon />
             </IconButton>
 
-            {/* Logo Principal - Tamaño Natural Ajustado */}
+            {/* Logo Principal - Tamaño Perfecto */}
             <Link href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center" }}>
               <img 
                 src="/logo.png" 
                 alt="Joined" 
                 style={{ 
-                  height: "65px", // Altura perfecta para que se lea sin cortarse
+                  height: "40px", // Altura perfecta para un navbar elegante
                   width: "auto",
                   objectFit: "contain",
-                  marginRight: "20px" // Espacio para que no choque con los links
+                  marginRight: "30px" // Espacio para separarlo de los links
                 }} 
               />
             </Link>
