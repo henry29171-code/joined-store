@@ -29,10 +29,15 @@ export default function ComunidadPage() {
           <Grid size={{ xs: 12, md: 4 }}>
             <Card sx={{ height: "100%", display: "flex", flexDirection: "column", borderRadius: 4, border: "1px solid rgba(10,13,21,0.1)", boxShadow: "none" }}>
               <CardContent sx={{ p: 4, flexGrow: 1 }}>
-                <Typography variant="h6" sx={{ fontWeight: 800, color: "#5E6B7E", mb: 1 }}>Miembro Joined</Typography>
-                <Typography variant="h3" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2 }}>Gratis</Typography>
-                <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem", mb: 3 }}>Solo por registrarte en la tienda.</Typography>
-                <Divider sx={{ mb: 3 }} />
+                {/* Altura mínima agregada para alinear la línea divisoria */}
+                <Box sx={{ minHeight: { xs: "auto", md: "160px" } }}>
+                  <Typography variant="h6" sx={{ fontWeight: 800, color: "#5E6B7E", mb: 1 }}>Miembro Joined</Typography>
+                  <Typography variant="h3" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2 }}>Gratis</Typography>
+                  <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem" }}>Solo por registrarte en la tienda.</Typography>
+                </Box>
+                
+                <Divider sx={{ my: 3 }} />
+                
                 <Stack spacing={2}>
                   {["Envíos gratis en Lima Metropolitana", "Seguimiento de pedido (tracking)", "Asesoría de vestimenta básica vía WhatsApp", "Acceso a guías de estilo (blog)"].map((item) => (
                     <Stack key={item} direction="row" spacing={1.5} alignItems="flex-start">
@@ -55,15 +60,19 @@ export default function ComunidadPage() {
             <Card sx={{ height: "100%", display: "flex", flexDirection: "column", borderRadius: 4, border: "2px solid #0a0d15", position: "relative" }}>
               <Chip label="Recomendado" sx={{ position: "absolute", top: 16, right: 16, bgcolor: "#D7E0DA", color: "#0a0d15", fontWeight: 800 }} />
               <CardContent sx={{ p: 4, flexGrow: 1 }}>
-                <Typography variant="h6" sx={{ fontWeight: 800, color: "#0a0d15", mb: 1 }}>Joined Premium</Typography>
-                <Box sx={{ display: "flex", alignItems: "baseline", mb: 2 }}>
-                  <Typography variant="h3" sx={{ fontWeight: 800, color: "#0a0d15" }}>S/ 19</Typography>
-                  <Typography sx={{ color: "#5E6B7E", ml: 1 }}>/ mes</Typography>
+                <Box sx={{ minHeight: { xs: "auto", md: "160px" } }}>
+                  <Typography variant="h6" sx={{ fontWeight: 800, color: "#0a0d15", mb: 1 }}>Joined Premium</Typography>
+                  <Box sx={{ display: "flex", alignItems: "baseline", mb: 2 }}>
+                    <Typography variant="h3" sx={{ fontWeight: 800, color: "#0a0d15" }}>S/ 19</Typography>
+                    <Typography sx={{ color: "#5E6B7E", ml: 1 }}>/ mes</Typography>
+                  </Box>
+                  <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem" }}>El equilibrio perfecto entre cuidado y estilo.</Typography>
                 </Box>
-                <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem", mb: 3 }}>El equilibrio perfecto entre cuidado y estilo.</Typography>
-                <Divider sx={{ mb: 3 }} />
+                
+                <Divider sx={{ my: 3 }} />
+                
                 <Stack spacing={2}>
-                  {["Todo lo del plan miembro", "Limpieza de cuero (hasta 2 prendas al mes)", "Envíos gratis a todo el Perú", "10% de descuento en toda la tienda"].map((item) => (
+                  {["Todo lo del plan miembro", "Limpieza de cuero (hasta 2 articulos al mes)", "Envíos gratis a todo el Perú", "10% de descuento en toda la tienda"].map((item) => (
                     <Stack key={item} direction="row" spacing={1.5} alignItems="flex-start">
                       <CheckCircleIcon sx={{ color: "#0a0d15", fontSize: 20, mt: 0.2 }} />
                       <Typography sx={{ color: "#0a0d15", fontSize: "0.9rem", fontWeight: 500 }}>{item}</Typography>
@@ -83,18 +92,22 @@ export default function ComunidadPage() {
           <Grid size={{ xs: 12, md: 4 }}>
             <Card sx={{ height: "100%", display: "flex", flexDirection: "column", borderRadius: 4, bgcolor: "#0a0d15", color: "white", boxShadow: "0 20px 40px rgba(10,13,21,0.2)" }}>
               <CardContent sx={{ p: 4, flexGrow: 1 }}>
-                <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-                  <WorkspacePremiumIcon sx={{ color: "#D7E0DA" }} />
-                  <Typography variant="h6" sx={{ fontWeight: 800, color: "#D7E0DA" }}>Joined Elite</Typography>
-                </Stack>
-                <Box sx={{ display: "flex", alignItems: "baseline", mb: 2 }}>
-                  <Typography variant="h3" sx={{ fontWeight: 800, color: "white" }}>S/ 49</Typography>
-                  <Typography sx={{ color: "rgba(255,255,255,0.6)", ml: 1 }}>/ mes</Typography>
+                <Box sx={{ minHeight: { xs: "auto", md: "160px" } }}>
+                  <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+                    <WorkspacePremiumIcon sx={{ color: "#D7E0DA" }} />
+                    <Typography variant="h6" sx={{ fontWeight: 800, color: "#D7E0DA" }}>Joined Elite</Typography>
+                  </Stack>
+                  <Box sx={{ display: "flex", alignItems: "baseline", mb: 2 }}>
+                    <Typography variant="h3" sx={{ fontWeight: 800, color: "white" }}>S/ 49</Typography>
+                    <Typography sx={{ color: "rgba(255,255,255,0.6)", ml: 1 }}>/ mes</Typography>
+                  </Box>
+                  <Typography sx={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem" }}>La experiencia definitiva para tu colección.</Typography>
                 </Box>
-                <Typography sx={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", mb: 3 }}>La experiencia definitiva para tu colección.</Typography>
-                <Divider sx={{ mb: 3, borderColor: "rgba(255,255,255,0.2)" }} />
+                
+                <Divider sx={{ my: 3, borderColor: "rgba(255,255,255,0.2)" }} />
+                
                 <Stack spacing={2}>
-                  {["Todo lo del plan Premium", "Kit de limpieza premium a domicilio (mensual)", "20% de descuento en toda la tienda", "Acceso anticipado a ediciones limitadas"].map((item) => (
+                  {["Todo lo del plan premium", "Kit de limpieza premium a domicilio (mensual)", "20% de descuento en toda la tienda", "Acceso anticipado a ediciones limitadas"].map((item) => (
                     <Stack key={item} direction="row" spacing={1.5} alignItems="flex-start">
                       <StarIcon sx={{ color: "#4ADE80", fontSize: 20, mt: 0.2 }} />
                       <Typography sx={{ color: "white", fontSize: "0.9rem", fontWeight: 500 }}>{item}</Typography>
