@@ -42,8 +42,14 @@ export default function Navbar() {
   const drawerContent = (
     <Box sx={{ width: 260, bgcolor: "#0a0d15", height: "100%", color: "white" }} role="presentation">
       <Box sx={{ p: 3, display: "flex", justifyContent: "center", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-        {/* Logo más grande en el menú móvil */}
-        <img src="/logo.png" alt="Joined" style={{ height: "50px", width: "auto" }} />
+        {/* Logo en el menú móvil con zoom */}
+        <Box sx={{ width: 100, height: 40, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <img 
+            src="/logo.png" 
+            alt="Joined" 
+            style={{ width: "100%", height: "auto", transform: "scale(2.3)", objectFit: "contain" }} 
+          />
+        </Box>
       </Box>
       <List sx={{ pt: 2 }}>
         {navLinks.map((link) => (
@@ -80,8 +86,7 @@ export default function Navbar() {
       </Box>
 
       <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#0a0d15", color: "#F8FAF8" }}>
-        {/* Aumentamos un poco la altura de la barra para que el logo respire */}
-        <Toolbar sx={{ justifyContent: "space-between", minHeight: { xs: 70, md: 90 }, px: { xs: 1, md: 3 } }}>
+        <Toolbar sx={{ justifyContent: "space-between", minHeight: { xs: 70, md: 80 }, px: { xs: 1, md: 3 } }}>
           
           {/* Lado Izquierdo */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -93,20 +98,30 @@ export default function Navbar() {
               <MenuIcon />
             </IconButton>
 
-            {/* Logo Imagen Aumentado */}
+            {/* Logo Principal con Zoom (Elimina espacio vacío) */}
             <Link href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center" }}>
-              <img 
-                src="/logo.png" 
-                alt="Joined" 
-                style={{ 
-                  height: "55px", // Más grande para escritorio
-                  width: "auto",
-                  objectFit: "contain",
-                  marginTop: "5px" // Pequeño ajuste visual
-                }} 
-                // Para celular, usamos un poco menos de altura para que no ocupe toda la pantalla
-                className="logo-navbar"
-              />
+              <Box 
+                sx={{ 
+                  width: { xs: 100, md: 150 }, // Ancho de la "ventana" del logo
+                  height: { xs: 40, md: 50 },  // Alto de la "ventana" del logo
+                  overflow: "hidden",          // Recorta lo que sobresalga
+                  display: "flex", 
+                  alignItems: "center", 
+                  justifyContent: "center",
+                  ml: 1 
+                }}
+              >
+                <img 
+                  src="/logo.png" 
+                  alt="Joined" 
+                  style={{ 
+                    width: "100%", 
+                    height: "auto", 
+                    transform: "scale(2.5)", // 🔍 El nivel de zoom (ajusta este número si lo quieres más grande o pequeño)
+                    objectFit: "contain" 
+                  }} 
+                />
+              </Box>
             </Link>
 
             {/* Links Escritorio */}
