@@ -1,7 +1,7 @@
 "use client";
 import { useCart } from "../context/CartContext";
 import { 
-  Container, Typography, Box, Card, CardContent, Button, 
+  Container, Typography, Box, Card, Button, 
   IconButton, Stack, Grid, Divider 
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -22,10 +22,10 @@ export default function CartPage() {
   if (state.items.length === 0) {
     return (
       <Container maxWidth="md" sx={{ py: 12, textAlign: "center" }}>
-        <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2 }}>
+        <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2, fontSize: { xs: "1.5rem", md: "2rem" } }}>
           Tu carrito está vacío
         </Typography>
-        <Typography sx={{ color: "#5E6B7E", mb: 4 }}>
+        <Typography sx={{ color: "#5E6B7E", mb: 4, fontSize: { xs: "0.95rem", md: "1rem" } }}>
           Parece que aún no has añadido ningún accesorio a tu colección.
         </Typography>
         <Button 
@@ -43,14 +43,14 @@ export default function CartPage() {
 
   // Estado con productos
   return (
-    <Container maxWidth="lg" sx={{ py: 8 }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
       <Box sx={{ mb: 4, display: "flex", alignItems: "center", gap: 2 }}>
         <Button component={Link} href="/products" startIcon={<ArrowBackIcon />} sx={{ color: "#5E6B7E", textTransform: "none" }}>
           Seguir comprando
         </Button>
       </Box>
 
-      <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 4 }}>
+      <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 4, fontSize: { xs: "1.5rem", md: "2rem" } }}>
         Tu Carrito ({state.items.length} {state.items.length === 1 ? 'artículo' : 'artículos'})
       </Typography>
 
@@ -66,34 +66,34 @@ export default function CartPage() {
                   component="img"
                   src={(item as any).image || "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=200&auto=format&fit=crop"}
                   alt={item.name}
-                  sx={{ width: 100, height: 100, objectFit: "cover", borderRadius: 2, mr: 3 }}
+                  sx={{ width: 80, height: 80, md: { width: 100, height: 100 }, objectFit: "cover", borderRadius: 2, mr: 2 }}
                 />
                 
                 <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <Box>
-                    <Typography variant="h6" sx={{ fontWeight: 700, color: "#0a0d15" }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, color: "#0a0d15", fontSize: { xs: "1rem", md: "1.2rem" } }}>
                       {item.name}
                     </Typography>
-                    <Typography sx={{ color: "#5E6B7E", fontWeight: 600 }}>
+                    <Typography sx={{ color: "#5E6B7E", fontWeight: 600, fontSize: "0.9rem" }}>
                       S/. {item.price.toFixed(2)}
                     </Typography>
                   </Box>
 
-                  <Stack direction="row" alignItems="center" spacing={2} sx={{ mt: 2 }}>
+                  <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 1 }}>
                     <Box sx={{ display: "flex", alignItems: "center", border: "1px solid #E0E0E0", borderRadius: 2 }}>
                       <IconButton size="small" onClick={() => decrement(item.id)}><RemoveIcon fontSize="small" /></IconButton>
-                      <Typography sx={{ mx: 2, fontWeight: 700 }}>{item.quantity}</Typography>
+                      <Typography sx={{ mx: 1, fontWeight: 700, fontSize: "0.9rem" }}>{item.quantity}</Typography>
                       <IconButton size="small" onClick={() => increment(item.id)}><AddIcon fontSize="small" /></IconButton>
                     </Box>
                     
                     <IconButton onClick={() => removeFromCart(item.id)} sx={{ color: "#d32f2f" }}>
-                      <DeleteIcon />
+                      <DeleteIcon fontSize="small" />
                     </IconButton>
                   </Stack>
                 </Box>
                 
-                <Box sx={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-end", minWidth: 100 }}>
-                  <Typography sx={{ fontWeight: 800, fontSize: "1.2rem", color: "#0a0d15" }}>
+                <Box sx={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-end", minWidth: 80 }}>
+                  <Typography sx={{ fontWeight: 800, fontSize: { xs: "1rem", md: "1.2rem" }, color: "#0a0d15" }}>
                     S/. {(item.price * item.quantity).toFixed(2)}
                   </Typography>
                 </Box>
@@ -105,7 +105,7 @@ export default function CartPage() {
         {/* Resumen de Compra */}
         <Grid size={{ xs: 12, md: 4 }}>
           <Card sx={{ p: 3, borderRadius: 3, bgcolor: "#0a0d15", color: "white", position: "sticky", top: 100 }}>
-            <Typography variant="h5" sx={{ fontWeight: 800, mb: 3 }}>
+            <Typography variant="h5" sx={{ fontWeight: 800, mb: 3, fontSize: "1.3rem" }}>
               Resumen
             </Typography>
             
@@ -116,7 +116,8 @@ export default function CartPage() {
               </Box>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography>Envío</Typography>
-                <Typography>Gratis</Typography>
+                {/* Texto actualizado para la nueva estrategia VIP */}
+                <Typography sx={{ fontWeight: 700, color: "#4ADE80" }}>Gratis (Miembro VIP)</Typography>
               </Box>
             </Stack>
             

@@ -6,7 +6,7 @@ import { supabase } from "@/app/lib/supabase";
 import { useCart } from "@/app/context/CartContext";
 import { 
   AppBar, Toolbar, Typography, Button, Box, IconButton, Badge, Stack, InputBase,
-  Drawer, List, ListItem, ListItemText, ListItemButton, Divider
+  Drawer, List, ListItem, ListItemText, ListItemButton
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -63,14 +63,18 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Cinta de Anuncios */}
+      {/* Cinta de Anuncios (Actualizada) */}
       <Box sx={{ bgcolor: "#D7E0DA", color: "#0a0d15", py: 0.8, overflow: "hidden", whiteSpace: "nowrap" }}>
         <Box sx={{
             display: "inline-block", animation: "marquee 25s linear infinite",
             "@keyframes marquee": { "0%": { transform: "translateX(100vw)" }, "100%": { transform: "translateX(-100%)" } },
           }}>
-          <Typography component="span" sx={{ mx: 4, fontWeight: 700, fontSize: "0.8rem" }}>🚚 ¡Envíos gratis a Lima Metropolitana por compras mayores a S/. 150!</Typography>
-          <Typography component="span" sx={{ mx: 4, fontWeight: 700, fontSize: "0.8rem" }}>✨ Nueva colección de morrales disponible</Typography>
+          <Typography component="span" sx={{ mx: 4, fontWeight: 700, fontSize: "0.8rem" }}>
+            🚚 ¡Envíos 100% gratis a Lima Metropolitana exclusivo para miembros de la Comunidad!
+          </Typography>
+          <Typography component="span" sx={{ mx: 4, fontWeight: 700, fontSize: "0.8rem" }}>
+            ✨ Únete al Club Joined VIP y accede a beneficios exclusivos
+          </Typography>
         </Box>
       </Box>
 
@@ -79,7 +83,6 @@ export default function Navbar() {
           
           {/* Lado Izquierdo */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            {/* Botón Hamburguesa - Forzado a mostrarse en móvil */}
             <IconButton 
               color="inherit" 
               onClick={handleDrawerToggle} 

@@ -39,13 +39,13 @@ export default function Footer() {
               Accesorios premium diseñados para elevar tu estilo diario, calidad, diseño y durabilidad en cada pieza.
             </Typography>
             <Stack direction="row" spacing={1}>
-              <IconButton component="a" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" sx={{ color: "white", "&:hover": { color: "#4267B2" } }} aria-label="Facebook">
+              <IconButton component="a" href="https://www.facebook.com/Joined.pe" target="_blank" rel="noopener noreferrer" sx={{ color: "white", "&:hover": { color: "#4267B2" } }} aria-label="Facebook">
                 <FacebookIcon />
               </IconButton>
-              <IconButton component="a" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" sx={{ color: "white", "&:hover": { color: "#E1306C" } }} aria-label="Instagram">
+              <IconButton component="a" href="https://www.instagram.com/joinedperu" target="_blank" rel="noopener noreferrer" sx={{ color: "white", "&:hover": { color: "#E1306C" } }} aria-label="Instagram">
                 <InstagramIcon />
               </IconButton>
-              <IconButton component="a" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer" sx={{ color: "white", "&:hover": { color: "#00f2ea" } }} aria-label="TikTok">
+              <IconButton component="a" href="https://www.tiktok.com/@joined_pe" target="_blank" rel="noopener noreferrer" sx={{ color: "white", "&:hover": { color: "#00f2ea" } }} aria-label="TikTok">
                 <TikTokIcon />
               </IconButton>
               <IconButton component="a" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" sx={{ color: "white", "&:hover": { color: "#FF0000" } }} aria-label="YouTube">
