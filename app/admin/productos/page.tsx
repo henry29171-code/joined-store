@@ -11,6 +11,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CloseIcon from "@mui/icons-material/Close";
 import { supabase } from "../../lib/supabase";
 
 export default function AdminProductos() {
@@ -23,10 +24,11 @@ export default function AdminProductos() {
   const [form, setForm] = useState({
     name: "",
     price: "",
-    sale_price: "", // <-- NUEVO CAMPO
+    sale_price: "",
     category: "Morrales",
     description: "",
     image_url: "",
+    gallery_images: [] as string[], // <-- GALERÍA DE IMÁGENES
     stock: "0",
     sizes: "", 
     colors: "", 
@@ -50,6 +52,7 @@ export default function AdminProductos() {
     fetchProducts();
   }, []);
 
+  // Subir imagen principal
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       setUploading(true);
@@ -57,7 +60,7 @@ export default function AdminProductos() {
       
       const file = event.target.files[0];
       const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}.${fileExt}`;
+      const fileName = `${Date.now()}-main.${fileExt}`;
       const filePath = `${fileName}`;
 
       const { error: uploadError } = await supabase.storage.from('products').upload(filePath, file);
@@ -70,6 +73,37 @@ export default function AdminProductos() {
     } finally {
       setUploading(false);
     }
+  };
+
+  // Subir galería de imágenes múltiples
+  const handleGalleryUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setUploading(true);
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+      
+      const newUrls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}-${i}.${fileExt}`;
+        
+        const { error } = await supabase.storage.from('products').upload(fileName, file);
+        if (!error) {
+          const { data } = supabase.storage.from('products').getPublicUrl(fileName);
+          newUrls.push(data.publicUrl);
+        }
+      }
+      setForm(prev => ({ ...prev, gallery_images: [...prev.gallery_images, ...newUrls] }));
+    } catch (error: any) {
+      alert('Error subiendo galería: ' + error.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeGalleryImage = (urlToRemove: string) => {
+    setForm(prev => ({ ...prev, gallery_images: prev.gallery_images.filter(url => url !== urlToRemove) }));
   };
 
   const handleEdit = (product: any) => {
@@ -87,10 +121,11 @@ export default function AdminProductos() {
     setForm({
       name: product.name,
       price: product.price.toString(),
-      sale_price: product.sale_price ? product.sale_price.toString() : "", // <-- CARGAR OFERTA
+      sale_price: product.sale_price ? product.sale_price.toString() : "",
       category: product.category,
       description: product.description || "",
       image_url: product.image_url || "",
+      gallery_images: product.gallery_images || [],
       stock: (product.stock || 0).toString(),
       sizes: sizesString,
       colors: colorsString,
@@ -106,12 +141,12 @@ export default function AdminProductos() {
   const handleClose = () => {
     setOpen(false);
     setEditingId(null);
-    setForm({ name: "", price: "", sale_price: "", category: "Morrales", description: "", image_url: "", stock: "0", sizes: "", colors: "", characteristics: "", specs_material: "", specs_dimensions: "", specs_weight: "", specs_warranty: "" });
+    setForm({ name: "", price: "", sale_price: "", category: "Morrales", description: "", image_url: "", gallery_images: [], stock: "0", sizes: "", colors: "", characteristics: "", specs_material: "", specs_dimensions: "", specs_weight: "", specs_warranty: "" });
   };
 
   const handleSave = async () => {
     if (!form.name || !form.price || !form.image_url) {
-      alert("Por favor, completa los campos obligatorios (nombre, precio e imagen).");
+      alert("Por favor, completa los campos obligatorios (nombre, precio e imagen principal).");
       return;
     }
 
@@ -122,10 +157,11 @@ export default function AdminProductos() {
     const productData = {
       name: form.name,
       price: parseFloat(form.price),
-      sale_price: form.sale_price ? parseFloat(form.sale_price) : null, // <-- GUARDAR OFERTA
+      sale_price: form.sale_price ? parseFloat(form.sale_price) : null,
       category: form.category,
       description: form.description,
       image_url: form.image_url,
+      gallery_images: form.gallery_images, // <-- GUARDAR GALERÍA
       stock: parseInt(form.stock),
       sizes: sizesArray,
       colors: colorsArray,
@@ -228,13 +264,33 @@ export default function AdminProductos() {
             </FormControl>
             <TextField fullWidth label="Stock" type="number" value={form.stock} onChange={(e) => setForm({...form, stock: e.target.value})} />
 
+            {/* IMAGEN PRINCIPAL */}
             <Box sx={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", gap: 2 }}>
-              <Button variant="outlined" component="label" sx={{ textTransform: "none" }}>
-                {uploading ? "Subiendo..." : "Subir imagen"}
+              <Button variant="outlined" component="label" sx={{ textTransform: "none", minWidth: 120 }}>
+                {uploading ? "Subiendo..." : "Subir principal"}
                 <input type="file" hidden accept="image/*" onChange={handleImageUpload} />
               </Button>
-              {form.image_url && <Typography sx={{ fontSize: "0.8rem", color: "green" }}>✓ Imagen cargada</Typography>}
-              <TextField fullWidth size="small" label="O pega una URL de imagen" value={form.image_url} onChange={(e) => setForm({...form, image_url: e.target.value})} />
+              {form.image_url && <Box component="img" src={form.image_url} sx={{ width: 40, height: 40, objectFit: "cover", borderRadius: 1 }} />}
+              <TextField fullWidth size="small" label="O pega URL principal" value={form.image_url} onChange={(e) => setForm({...form, image_url: e.target.value})} />
+            </Box>
+
+            {/* GALERÍA DE IMÁGENES */}
+            <Box sx={{ gridColumn: "1 / -1" }}>
+              <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, mb: 1 }}>Galería de imágenes (Fotos adicionales)</Typography>
+              <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
+                {form.gallery_images.map((img, idx) => (
+                  <Box key={idx} sx={{ position: "relative" }}>
+                    <Box component="img" src={img} sx={{ width: 60, height: 60, objectFit: "cover", borderRadius: 1 }} />
+                    <IconButton size="small" onClick={() => removeGalleryImage(img)} sx={{ position: "absolute", top: -5, right: -5, bgcolor: "white", boxShadow: 1, "&:hover": { bgcolor: "#eee" } }}>
+                      <CloseIcon fontSize="small" color="error" />
+                    </IconButton>
+                  </Box>
+                ))}
+                <Button variant="outlined" component="label" sx={{ width: 60, height: 60, minWidth: 0, borderRadius: 1 }}>
+                  <AddIcon />
+                  <input type="file" hidden multiple accept="image/*" onChange={handleGalleryUpload} />
+                </Button>
+              </Box>
             </Box>
 
             <TextField fullWidth label="Descripción corta" multiline rows={2} value={form.description} onChange={(e) => setForm({...form, description: e.target.value})} sx={{ gridColumn: "1 / -1" }} />

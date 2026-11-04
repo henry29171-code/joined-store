@@ -20,6 +20,7 @@ export default function ProductDetailPage() {
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [mainImage, setMainImage] = useState(""); // <-- Imagen activa
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
 
@@ -30,8 +31,8 @@ export default function ProductDetailPage() {
       const { data: productData } = await supabase.from("products").select("*").eq("id", params.id).single();
       if (productData) {
         setProduct(productData);
+        setMainImage(productData.image_url); // Inicializar imagen principal
         
-        // Inicializar tallas y colores con el primer valor disponible
         if (productData.sizes && productData.sizes.length > 0) setSelectedSize(productData.sizes[0]);
         if (productData.colors && productData.colors.length > 0) setSelectedColor(productData.colors[0]);
 
@@ -46,11 +47,13 @@ export default function ProductDetailPage() {
   if (loading) return <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}><CircularProgress sx={{ color: "#0a0d15" }} /></Box>;
   if (!product) return <Container maxWidth="md" sx={{ py: 15, textAlign: "center" }}><Typography variant="h4">Producto no encontrado</Typography></Container>;
 
-  // Parsear características (vienen guardadas como JSON string)
   let characteristicsList = [];
   try {
     if (product.characteristics) characteristicsList = JSON.parse(product.characteristics);
   } catch (e) { characteristicsList = []; }
+
+  // Unir imagen principal con las de la galería
+  const allImages = [product.image_url, ...(product.gallery_images || [])];
 
   const handleComprarAhora = () => {
     addToCart({ ...product, image: product.image_url });
@@ -70,40 +73,51 @@ export default function ProductDetailPage() {
       <Grid container spacing={{ xs: 4, md: 8 }} alignItems="flex-start">
         
         <Grid size={{ xs: 12, md: 6 }}>
+          {/* Imagen Principal */}
           <Box sx={{ width: "100%", bgcolor: "#F3F4F6", borderRadius: "16px", p: 2, mb: 2, boxShadow: "0 15px 35px rgba(0,0,0,0.06)" }}>
-            <Box component="img" src={product.image_url} alt={product.name} sx={{ width: "100%", aspectRatio: "1/1", objectFit: "contain", display: "block" }} />
+            <Box component="img" src={mainImage} alt={product.name} sx={{ width: "100%", aspectRatio: "1/1", objectFit: "contain", display: "block" }} />
           </Box>
+          
+          {/* Miniaturas de la Galería */}
+          {allImages.length > 1 && (
+            <Stack direction="row" spacing={1} sx={{ overflowX: "auto", pb: 1 }}>
+              {allImages.map((img, idx) => (
+                <Box 
+                  key={idx} 
+                  onClick={() => setMainImage(img)}
+                  sx={{ 
+                    width: 70, height: 70, bgcolor: "#F3F4F6", borderRadius: "8px", 
+                    border: mainImage === img ? "2px solid #0a0d15" : "1px solid #E5E7EB", 
+                    overflow: "hidden", cursor: "pointer", flexShrink: 0,
+                    opacity: mainImage === img ? 1 : 0.6,
+                    transition: "all 0.2s",
+                    "&:hover": { opacity: 1 }
+                  }}
+                >
+                  <Box component="img" src={img} sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                </Box>
+              ))}
+            </Stack>
+          )}
         </Grid>
 
         <Grid size={{ xs: 12, md: 6 }}>
           <Stack spacing={2}>
             <Typography variant="h4" sx={{ fontWeight: 600, color: "#0a0d15", fontSize: { xs: "1.8rem", md: "2.2rem" } }}>{product.name}</Typography>
             
-            {/* LÓGICA DE PRECIO PROMOCIONAL */}
             {product.sale_price ? (
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <Typography variant="h4" sx={{ fontWeight: 700, color: "#d32f2f" }}>
-                  S/. {Number(product.sale_price).toFixed(2)}
-                </Typography>
-                <Typography variant="h6" sx={{ color: "#888", textDecoration: "line-through" }}>
-                  S/. {Number(product.price).toFixed(2)}
-                </Typography>
+                <Typography variant="h4" sx={{ fontWeight: 700, color: "#d32f2f" }}>S/. {Number(product.sale_price).toFixed(2)}</Typography>
+                <Typography variant="h6" sx={{ color: "#888", textDecoration: "line-through" }}>S/. {Number(product.price).toFixed(2)}</Typography>
                 <Chip label="Oferta" size="small" sx={{ bgcolor: "#d32f2f", color: "white", fontWeight: 600 }} />
               </Box>
             ) : (
-              <Typography variant="h6" sx={{ fontWeight: 500, color: "#333" }}>
-                S/. {Number(product.price).toFixed(2)}
-              </Typography>
+              <Typography variant="h6" sx={{ fontWeight: 500, color: "#333" }}>S/. {Number(product.price).toFixed(2)}</Typography>
             )}
 
-            {/* DESCRIPCIÓN DEL PRODUCTO (En lugar del stock) */}
-            <Typography sx={{ color: "#4A5568", fontSize: "1rem", lineHeight: 1.6, mt: 1 }}>
-              {product.description}
-            </Typography>
-
+            <Typography sx={{ color: "#4A5568", fontSize: "1rem", lineHeight: 1.6, mt: 1 }}>{product.description}</Typography>
             <Divider sx={{ my: 2, borderColor: "#E5E7EB" }} />
 
-            {/* SELECTOR DE TALLA DINÁMICO */}
             {product.sizes && product.sizes.length > 0 && (
               <Box>
                 <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Seleccionar tamaño</Typography>
@@ -117,7 +131,6 @@ export default function ProductDetailPage() {
               </Box>
             )}
 
-            {/* SELECTOR DE COLOR DINÁMICO */}
             {product.colors && product.colors.length > 0 && (
               <Box>
                 <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Color</Typography>
