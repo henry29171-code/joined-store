@@ -20,7 +20,7 @@ export default function ProductDetailPage() {
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [selectedSize, setSelectedSize] = useState("Única");
+  const [selectedSize, setSelectedSize] = useState("O/S");
   const [selectedColor, setSelectedColor] = useState("Negro");
 
   useEffect(() => {
@@ -41,15 +41,16 @@ export default function ProductDetailPage() {
   if (loading) return <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}><CircularProgress sx={{ color: "#0a0d15" }} /></Box>;
   if (!product) return <Container maxWidth="md" sx={{ py: 15, textAlign: "center" }}><Typography variant="h4">Producto no encontrado</Typography></Container>;
 
-  // En el futuro, esta info vendrá de la BD. Por ahora mostramos opciones genéricas para que se vea el diseño.
-  const isStandard = product.category === "Perfumes"; // Ejemplo: perfumes no tienen talla
-  
+  // LÓGICA DE TALLAS SEGÚN LO SOLICITADO
   const getSizeOptions = () => {
-    if (product.category === "Morrales" || product.category === "Billeteras" || product.category === "Correas") return ["Única"];
-    if (product.category === "Pulseras") return ["S", "M", "L"];
-    if (product.category === "Relojes") return ["38mm", "40mm", "42mm", "44mm"]; // Tallas en números
-    return ["Única"];
+    if (product.category === "Correas") return ["28", "30", "32", "34", "36", "38"];
+    if (product.category === "Pulseras") return ["150mm", "160mm", "170mm", "180mm", "190mm"];
+    // Relojes, Billeteras, Morrales, Perfumes
+    return ["O/S"]; 
   };
+
+  // LÓGICA DE COLOR: Todos excepto perfumes
+  const showColor = product.category !== "Perfumes";
 
   const handleComprarAhora = () => {
     addToCart({ ...product, image: product.image_url });
@@ -102,43 +103,44 @@ export default function ProductDetailPage() {
 
             <Divider sx={{ my: 1, borderColor: "#E5E7EB" }} />
 
-            {/* SELECTORES DE VARIANTES (Visibles para que veas el diseño) */}
-            {!isStandard && (
-              <>
-                <Box>
-                  <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Seleccionar tamaño</Typography>
-                  <FormControl fullWidth size="small">
-                    <Select 
-                      value={selectedSize} 
-                      onChange={(e) => setSelectedSize(e.target.value)}
-                      sx={{ borderRadius: "8px", bgcolor: "#FFF", "& .MuiOutlinedInput-notchedOutline": { borderColor: "#E5E7EB" } }}
-                    >
-                      {getSizeOptions().map((size) => (
-                        <MenuItem key={size} value={size}>{size === "Única" ? "Única (Ajuste estándar)" : `Talla ${size}`}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Box>
+            {/* SELECTOR DE TALLA (Siempre visible, muestra O/S o las tallas específicas) */}
+            <Box>
+              <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Seleccionar tamaño</Typography>
+              <FormControl fullWidth size="small">
+                <Select 
+                  value={selectedSize} 
+                  onChange={(e) => setSelectedSize(e.target.value)}
+                  sx={{ borderRadius: "8px", bgcolor: "#FFF", "& .MuiOutlinedInput-notchedOutline": { borderColor: "#E5E7EB" } }}
+                >
+                  {getSizeOptions().map((size) => (
+                    <MenuItem key={size} value={size}>
+                      {size === "O/S" ? "Talla única (O/S)" : size}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
 
-                <Box>
-                  <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Color</Typography>
-                  <Stack direction="row" spacing={1}>
-                    {["Negro", "Marrón", "Azul"].map((color) => (
-                      <Box 
-                        key={color} onClick={() => setSelectedColor(color)}
-                        sx={{ 
-                          px: 2, py: 1, border: "1px solid", borderColor: selectedColor === color ? "#0a0d15" : "#E5E7EB",
-                          cursor: "pointer", fontSize: "0.85rem", fontWeight: selectedColor === color ? 600 : 400,
-                          color: selectedColor === color ? "#0a0d15" : "#718096", bgcolor: selectedColor === color ? "#F3F4F6" : "transparent",
-                          borderRadius: "8px"
-                        }}
-                      >
-                        {color}
-                      </Box>
-                    ))}
-                  </Stack>
-                </Box>
-              </>
+            {/* SELECTOR DE COLOR (Oculto para perfumes) */}
+            {showColor && (
+              <Box>
+                <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Color</Typography>
+                <Stack direction="row" spacing={1}>
+                  {["Negro", "Marrón", "Azul"].map((color) => (
+                    <Box 
+                      key={color} onClick={() => setSelectedColor(color)}
+                      sx={{ 
+                        px: 2, py: 1, border: "1px solid", borderColor: selectedColor === color ? "#0a0d15" : "#E5E7EB",
+                        cursor: "pointer", fontSize: "0.85rem", fontWeight: selectedColor === color ? 600 : 400,
+                        color: selectedColor === color ? "#0a0d15" : "#718096", bgcolor: selectedColor === color ? "#F3F4F6" : "transparent",
+                        borderRadius: "8px"
+                      }}
+                    >
+                      {color}
+                    </Box>
+                  ))}
+                </Stack>
+              </Box>
             )}
 
             {/* BOTONES */}

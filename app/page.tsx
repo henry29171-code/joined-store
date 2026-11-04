@@ -23,6 +23,15 @@ const featuredProducts = [
 ];
 
 export default function HomePage() {
+  // Efecto 3D reutilizable para las tarjetas grises
+  const card3DStyle = {
+    bgcolor: "#B0B3B8",
+    borderRadius: "16px",
+    boxShadow: "0 15px 35px rgba(0,0,0,0.15), inset 0 -5px 0 rgba(0,0,0,0.1)", // Sombra exterior + borde interno oscuro para dar volumen
+    position: "relative",
+    overflow: "hidden"
+  };
+
   return (
     <Box sx={{ background: "transparent" }}>
       
@@ -57,26 +66,22 @@ export default function HomePage() {
             <Grid size={{ xs: 12, md: 6 }}>
               <Box 
                 sx={{ 
+                  ...card3DStyle,
                   minHeight: { xs: 300, md: 450 }, 
-                  borderRadius: "16px", 
-                  bgcolor: "#F3F4F6", 
                   p: { xs: 4, md: 6 }, 
                   display: "flex", 
                   alignItems: "center", 
                   justifyContent: "center",
-                  position: "relative",
-                  overflow: "hidden",
-                  boxShadow: "0 15px 35px rgba(0,0,0,0.06)"
                 }}
               >
                 <Box sx={{ position: "relative", zIndex: 2, maxWidth: 380, textAlign: "center" }}>
-                  <Typography sx={{ fontSize: 12, textTransform: "uppercase", letterSpacing: "0.2em", color: "#9CA3AF", mb: 2, fontWeight: 600 }}>
+                  <Typography sx={{ fontSize: 12, textTransform: "uppercase", letterSpacing: "0.2em", color: "#4A5568", mb: 2, fontWeight: 700 }}>
                     La esencia de la marca
                   </Typography>
                   <Typography variant="h4" sx={{ fontWeight: 600, lineHeight: 1.3, mb: 2, fontSize: { xs: "1.5rem", md: "2rem" }, color: "#0a0d15" }}>
                     Diseñado para destacar en cada detalle
                   </Typography>
-                  <Typography sx={{ color: "#666", lineHeight: 1.6, fontSize: { xs: "0.9rem", md: "1rem" } }}>
+                  <Typography sx={{ color: "#374151", lineHeight: 1.6, fontSize: { xs: "0.9rem", md: "1rem" } }}>
                     Calidad, textura y durabilidad en una sola pieza.
                   </Typography>
                 </Box>
@@ -102,7 +107,6 @@ export default function HomePage() {
               <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Box sx={{ display: "flex", flexDirection: "column", bgcolor: "transparent" }}>
                   
-                  {/* Imagen con fondo gris y sombra 3D */}
                   <Box sx={{ bgcolor: "#F3F4F6", position: "relative", overflow: "hidden", mb: 2, borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.05)" }}>
                     <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
                       <Box component="img" src={product.image} alt={product.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.4s ease", "&:hover": { transform: "scale(1.04)" } }} />
@@ -114,7 +118,6 @@ export default function HomePage() {
                     <Typography sx={{ color: "#666", fontSize: "0.9rem", lineHeight: 1.5, mb: 2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{product.description}</Typography>
                     <Typography sx={{ fontSize: "1rem", fontWeight: 500, color: "#333", mb: 2 }}>{product.price}</Typography>
                     
-                    {/* Botón Gris 3D */}
                     <Button component={Link} href={`/products/${product.id}`} variant="contained" fullWidth disableElevation sx={{ bgcolor: "#B0B3B8", color: "#111827", py: 1.2, fontSize: "0.9rem", fontWeight: 700, borderRadius: "8px", boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", transition: "all 0.3s ease", "&:hover": { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
                       Comprar ahora
                     </Button>
@@ -158,13 +161,13 @@ export default function HomePage() {
         </Container>
       </Box>
 
-      {/* 5. Banner VIP */}
+      {/* 5. Banner VIP - Ahora con Gris 3D */}
       <Box sx={{ py: { xs: 6, md: 8 } }}>
         <Container maxWidth="lg">
-          <Box sx={{ bgcolor: "#F3F4F6", borderRadius: "16px", p: { xs: 4, md: 8 }, display: "flex", flexDirection: { xs: "column", md: "row" }, alignItems: "center", justifyContent: "space-between", gap: 4, boxShadow: "0 15px 35px rgba(0,0,0,0.06)" }}>
+          <Box sx={{ ...card3DStyle, p: { xs: 4, md: 8 }, display: "flex", flexDirection: { xs: "column", md: "row" }, alignItems: "center", justifyContent: "space-between", gap: 4 }}>
             <Box sx={{ maxWidth: 600 }}>
               <Typography variant="h4" sx={{ color: "#0a0d15", fontWeight: 600, mb: 2, fontSize: { xs: "1.6rem", md: "2rem" } }}>Únete al club Joined VIP</Typography>
-              <Typography sx={{ color: "#666", fontSize: "1rem", lineHeight: 1.6 }}>Obtén envíos gratuitos a todo el Perú, servicio de limpieza de cuero y acceso anticipado a nuestras nuevas colecciones.</Typography>
+              <Typography sx={{ color: "#374151", fontSize: "1rem", lineHeight: 1.6 }}>Obtén envíos gratuitos a todo el Perú, servicio de limpieza de cuero y acceso anticipado a nuestras nuevas colecciones.</Typography>
             </Box>
             <Button component={Link} href="/comunidad" variant="contained" size="large" endIcon={<ArrowForwardIcon />} disableElevation sx={{ bgcolor: "#0a0d15", color: "white", fontWeight: 600, px: 5, py: 1.5, borderRadius: "8px", flexShrink: 0, boxShadow: "0 4px 14px 0 rgba(10, 13, 21, 0.2)", "&:hover": { bgcolor: "#1a1d24", transform: "translateY(-2px)", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.4)" } }}>
               Conocer beneficios
