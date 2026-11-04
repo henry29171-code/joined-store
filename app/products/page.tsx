@@ -1,19 +1,11 @@
 "use client";
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link"; // <-- Importante para que la imagen sea clickeable
-import { Container, Typography, Box, Grid, Card, CardContent, CardMedia, Button, Chip } from "@mui/material";
+import Link from "next/link";
+import { Container, Typography, Box, Grid, Card, CardContent, CardMedia, Button, Chip, CircularProgress } from "@mui/material";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { useCart } from "../context/CartContext"; 
-
-const mockProducts = [
-  { id: "1", name: "Morral Urban Explorer", price: 159.90, category: "Morrales", description: "Resistente al agua, compartimentos inteligentes.", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop" },
-  { id: "2", name: "Reloj Minimalist Classic", price: 289.00, category: "Relojes", description: "Malla de acero inoxidable, cristal de zafiro.", image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=800&auto=format&fit=crop" },
-  { id: "3", name: "Perfume Dark Wood", price: 199.90, category: "Perfumes", description: "Notas amaderadas y especiadas, huella duradera.", image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800&auto=format&fit=crop" },
-  { id: "4", name: "Billetera Slim Leather", price: 89.90, category: "Billeteras", description: "Cuero genuino, diseño delgado para el bolsillo.", image: "https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=800&auto=format&fit=crop" },
-  { id: "5", name: "Correa Formal Classic", price: 119.90, category: "Correas", description: "Hebilla de acero, cuero de alta durabilidad.", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop" },
-  { id: "6", name: "Pulsera Leather Urban", price: 49.90, category: "Pulseras", description: "Ajuste perfecto, estilo casual y moderno.", image: "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=800&auto=format&fit=crop" },
-];
+import { supabase } from "../lib/supabase"; // Importamos Supabase
 
 const categories = ["Todos", "Morrales", "Billeteras", "Correas", "Pulseras", "Relojes", "Perfumes"];
 
@@ -21,11 +13,43 @@ function ProductsContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get('category') || "Todos";
   const [activeCategory, setActiveCategory] = useState(initialCategory);
+  
+  // Estados para los productos de la base de datos
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const { addToCart } = useCart();
 
+  // Cargar productos desde Supabase al iniciar
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      // Consultamos la tabla 'products'
+      const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
+      
+      if (error) {
+        console.error("Error cargando productos:", error);
+      } else if (data) {
+        setProducts(data);
+      }
+      setLoading(false);
+    };
+
+    fetchProducts();
+  }, []);
+
+  // Filtrar productos por categoría
   const filteredProducts = activeCategory === "Todos" 
-    ? mockProducts 
-    : mockProducts.filter(p => p.category === activeCategory);
+    ? products 
+    : products.filter(p => p.category === activeCategory);
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
+        <CircularProgress sx={{ color: "#0a0d15" }} />
+      </Box>
+    );
+  }
 
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 6, md: 8 } }}>
@@ -76,46 +100,26 @@ function ProductsContent() {
                 <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
                   <CardMedia 
                     component="img" 
-                    image={product.image} 
+                    // Usamos product.image_url que es como lo definimos en SQL
+                    image={product.image_url || "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop"} 
                     alt={product.name} 
-                    sx={{ 
-                      width: "100%", 
-                      aspectRatio: "4/5", 
-                      objectFit: "cover",
-                      transition: "transform 0.4s ease",
-                      "&:hover": { transform: "scale(1.05)" } // Efecto zoom sutil
-                    }} 
+                    sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.4s ease", "&:hover": { transform: "scale(1.05)" } }} 
                   />
                 </Link>
-                <Chip 
-                  label={product.category} 
-                  size="small" 
-                  sx={{ position: "absolute", top: 16, left: 16, bgcolor: "rgba(255,255,255,0.9)", fontWeight: 700, color: "#0a0d15", zIndex: 2 }} 
-                />
+                <Chip label={product.category} size="small" sx={{ position: "absolute", top: 16, left: 16, bgcolor: "rgba(255,255,255,0.9)", fontWeight: 700, color: "#0a0d15", zIndex: 2 }} />
               </Box>
               
               <CardContent sx={{ p: 3, display: "flex", flexDirection: "column", flexGrow: 1 }}>
                 <Typography variant="h6" sx={{ fontWeight: 800, color: "#142038", fontSize: "1.1rem", mb: 1 }}>{product.name}</Typography>
                 <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem", lineHeight: 1.5, mb: 2, flexGrow: 1 }}>{product.description}</Typography>
-                <Typography sx={{ fontSize: "1.2rem", fontWeight: 800, color: "#142038", mb: 2 }}>S/. {product.price.toFixed(2)}</Typography>
+                <Typography sx={{ fontSize: "1.2rem", fontWeight: 800, color: "#142038", mb: 2 }}>S/. {Number(product.price).toFixed(2)}</Typography>
                 
                 <Button 
                   variant="outlined" 
                   fullWidth 
                   startIcon={<ShoppingBagIcon />} 
-                  onClick={() => addToCart(product as any)} 
-                  sx={{ 
-                    bgcolor: "white", 
-                    color: "#0a0d15", 
-                    borderColor: "#0a0d15", 
-                    py: 1.2, 
-                    fontSize: "0.95rem", 
-                    borderRadius: 2, 
-                    textTransform: "none", 
-                    fontWeight: 700, 
-                    transition: "all 0.3s", 
-                    "&:hover": { bgcolor: "#0a0d15", color: "white", borderColor: "#0a0d15" } 
-                  }}
+                  onClick={() => addToCart({ ...product, image: product.image_url })} 
+                  sx={{ bgcolor: "white", color: "#0a0d15", borderColor: "#0a0d15", py: 1.2, fontSize: "0.95rem", borderRadius: 2, textTransform: "none", fontWeight: 700, transition: "all 0.3s", "&:hover": { bgcolor: "#0a0d15", color: "white", borderColor: "#0a0d15" } }}
                 >
                   Añadir al carrito
                 </Button>
@@ -128,6 +132,7 @@ function ProductsContent() {
       {filteredProducts.length === 0 && (
         <Box sx={{ textAlign: "center", py: 10, bgcolor: "#F8F9FA", borderRadius: 4, border: "1px dashed #CBD5E1" }}>
           <Typography variant="h6" sx={{ color: "#5E6B7E", fontWeight: 600 }}>No hay productos disponibles en esta categoría.</Typography>
+          <Typography sx={{ color: "#9CA3AF", mt: 1, fontSize: "0.9rem" }}>Agrega productos desde el panel de administración.</Typography>
         </Box>
       )}
     </Container>
@@ -136,7 +141,7 @@ function ProductsContent() {
 
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<div style={{ textAlign: 'center', padding: '50px' }}>Cargando productos...</div>}>
+    <Suspense fallback={<div style={{ textAlign: 'center', padding: '50px' }}>Cargando...</div>}>
       <ProductsContent />
     </Suspense>
   );
