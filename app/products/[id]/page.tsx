@@ -66,30 +66,28 @@ export default function ProductDetailPage() {
 
       <Grid container spacing={{ xs: 4, md: 8 }} alignItems="flex-start">
         
-        {/* Lado Izquierdo: Imagen con Efecto 3D */}
         <Grid size={{ xs: 12, md: 6 }}>
           <Box 
             sx={{ 
               width: "100%", 
-              bgcolor: "#F0F2F5", 
+              bgcolor: "#F3F4F6", 
               borderRadius: "16px", 
               p: 2, 
               mb: 2,
-              boxShadow: "0 15px 35px rgba(0,0,0,0.05)"
+              boxShadow: "0 15px 35px rgba(0,0,0,0.06)"
             }}
           >
             <Box component="img" src={product.image_url} alt={product.name} sx={{ width: "100%", aspectRatio: "1/1", objectFit: "contain", display: "block" }} />
           </Box>
           <Stack direction="row" spacing={1}>
             {[1, 2, 3, 4].map((i) => (
-              <Box key={i} sx={{ width: 60, height: 60, bgcolor: "#F0F2F5", borderRadius: "8px", border: i === 1 ? "2px solid #0a0d15" : "1px solid #E2E8F0", overflow: "hidden", cursor: "pointer", boxShadow: i === 1 ? "0 4px 10px rgba(0,0,0,0.1)" : "none" }}>
+              <Box key={i} sx={{ width: 60, height: 60, bgcolor: "#F3F4F6", borderRadius: "8px", border: i === 1 ? "2px solid #0a0d15" : "1px solid #E5E7EB", overflow: "hidden", cursor: "pointer", boxShadow: i === 1 ? "0 4px 10px rgba(0,0,0,0.1)" : "none" }}>
                 <Box component="img" src={product.image_url} sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </Box>
             ))}
           </Stack>
         </Grid>
 
-        {/* Lado Derecho: Información y Botones */}
         <Grid size={{ xs: 12, md: 6 }}>
           <Stack spacing={2.5}>
             <Typography variant="h4" sx={{ fontWeight: 600, color: "#0a0d15", fontSize: { xs: "1.8rem", md: "2.2rem" } }}>
@@ -100,7 +98,7 @@ export default function ProductDetailPage() {
               S/. {Number(product.price).toFixed(2)}
             </Typography>
 
-            <Divider sx={{ my: 1, borderColor: "#E2E8F0" }} />
+            <Divider sx={{ my: 1, borderColor: "#E5E7EB" }} />
 
             {!hideVariants && (
               <>
@@ -110,7 +108,7 @@ export default function ProductDetailPage() {
                     <Select 
                       value={selectedSize} 
                       onChange={(e) => setSelectedSize(e.target.value)}
-                      sx={{ borderRadius: "8px", bgcolor: "#FFF", "& .MuiOutlinedInput-notchedOutline": { borderColor: "#CBD5E0" } }}
+                      sx={{ borderRadius: "8px", bgcolor: "#FFF", "& .MuiOutlinedInput-notchedOutline": { borderColor: "#E5E7EB" } }}
                     >
                       {getSizeOptions().map((size) => (
                         <MenuItem key={size} value={size}>{size === "Única" ? "Única (Ajuste estándar)" : `Talla ${size}`}</MenuItem>
@@ -126,9 +124,9 @@ export default function ProductDetailPage() {
                       <Box 
                         key={color} onClick={() => setSelectedColor(color)}
                         sx={{ 
-                          px: 2, py: 1, border: "1px solid", borderColor: selectedColor === color ? "#0a0d15" : "#CBD5E0",
+                          px: 2, py: 1, border: "1px solid", borderColor: selectedColor === color ? "#0a0d15" : "#E5E7EB",
                           cursor: "pointer", fontSize: "0.85rem", fontWeight: selectedColor === color ? 600 : 400,
-                          color: selectedColor === color ? "#0a0d15" : "#718096", bgcolor: selectedColor === color ? "#F0F2F5" : "transparent",
+                          color: selectedColor === color ? "#0a0d15" : "#718096", bgcolor: selectedColor === color ? "#F3F4F6" : "transparent",
                           borderRadius: "8px"
                         }}
                       >
@@ -140,25 +138,25 @@ export default function ProductDetailPage() {
               </>
             )}
 
-            {/* BOTÓN PRINCIPAL (Gris 3D que se vuelve azul oscuro) */}
+            {/* BOTÓN PRINCIPAL CON EL NUEVO GRIS #cdced1 */}
             <Button 
-              variant="outlined" onClick={handleComprarAhora} fullWidth
+              variant="contained" onClick={handleComprarAhora} fullWidth
+              disableElevation
               sx={{ 
-                bgcolor: "#F1F5F9", 
-                color: "#0a0d15", 
-                borderColor: "#CBD5E0", 
+                bgcolor: "#cdced1", 
+                color: "#111827", 
+                border: "none",
                 py: 1.5, 
                 borderRadius: "8px", 
-                fontWeight: 600, 
+                fontWeight: 700, 
                 fontSize: "1rem", 
-                boxShadow: "0 4px 6px rgba(0,0,0,0.05)", 
+                boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", 
                 mt: 2, 
                 transition: "all 0.3s ease",
                 "&:hover": { 
                   bgcolor: "#0a0d15", 
                   color: "white", 
-                  borderColor: "#0a0d15",
-                  boxShadow: "0 8px 15px rgba(10, 13, 21, 0.2)",
+                  boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)",
                   transform: "translateY(-2px)"
                 } 
               }}
@@ -166,7 +164,7 @@ export default function ProductDetailPage() {
               Añadir a la cesta
             </Button>
             
-            {/* BOTÓN SECUNDARIO (Borde gris, sin fondo) */}
+            {/* BOTÓN SECUNDARIO */}
             <Button 
               variant="text" onClick={() => addToCart({ ...product, image: product.image_url })} fullWidth
               sx={{ 
@@ -175,7 +173,7 @@ export default function ProductDetailPage() {
                 borderRadius: "8px", 
                 fontWeight: 600, 
                 fontSize: "1rem", 
-                "&:hover": { bgcolor: "#F7FAFC" } 
+                "&:hover": { bgcolor: "#F9FAFB" } 
               }}
             >
               Comprar ahora
@@ -194,7 +192,7 @@ export default function ProductDetailPage() {
       </Grid>
 
       {/* Acordeones */}
-      <Box sx={{ mt: 8, borderTop: "1px solid #E2E8F0", pt: 4 }}>
+      <Box sx={{ mt: 8, borderTop: "1px solid #E5E7EB", pt: 4 }}>
         <Accordion elevation={0} sx={{ bgcolor: "transparent", "&:before": { display: "none" } }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ px: 0 }}>
             <Typography sx={{ fontWeight: 500, fontSize: "1.1rem", color: "#0a0d15" }}>Características</Typography>
@@ -207,7 +205,7 @@ export default function ProductDetailPage() {
             </ul>
           </AccordionDetails>
         </Accordion>
-        <Divider sx={{ borderColor: "#E2E8F0" }} />
+        <Divider sx={{ borderColor: "#E5E7EB" }} />
         <Accordion elevation={0} sx={{ bgcolor: "transparent", "&:before": { display: "none" } }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ px: 0 }}>
             <Typography sx={{ fontWeight: 500, fontSize: "1.1rem", color: "#0a0d15" }}>Especificaciones</Typography>
@@ -225,7 +223,7 @@ export default function ProductDetailPage() {
 
       {/* Relacionados */}
       {relatedProducts.length > 0 && (
-        <Box sx={{ mt: 8, pt: 6, borderTop: "1px solid #E2E8F0" }}>
+        <Box sx={{ mt: 8, pt: 6, borderTop: "1px solid #E5E7EB" }}>
           <Box sx={{ mb: 4 }}>
             <Typography variant="h5" sx={{ fontWeight: 500, color: "#0a0d15" }}>También te puede interesar</Typography>
           </Box>
@@ -233,7 +231,7 @@ export default function ProductDetailPage() {
             {relatedProducts.map((relProduct) => (
               <Grid key={relProduct.id} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Box sx={{ bgcolor: "transparent" }}>
-                  <Box sx={{ bgcolor: "#F0F2F5", mb: 2, overflow: "hidden", borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.04)" }}>
+                  <Box sx={{ bgcolor: "#F3F4F6", mb: 2, overflow: "hidden", borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.05)" }}>
                     <Link href={`/products/${relProduct.id}`} style={{ display: "block" }}>
                       <Box component="img" src={relProduct.image_url} alt={relProduct.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.3s", "&:hover": { transform: "scale(1.04)" } }} />
                     </Link>

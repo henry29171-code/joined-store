@@ -77,15 +77,15 @@ function ProductsContent() {
           <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
             <Box sx={{ display: "flex", flexDirection: "column", bgcolor: "transparent" }}>
               
-              {/* Contenedor de Imagen con Efecto 3D */}
+              {/* Contenedor de Imagen */}
               <Box 
                 sx={{ 
-                  bgcolor: "#F0F2F5", 
+                  bgcolor: "#F3F4F6", 
                   position: "relative", 
                   overflow: "hidden", 
                   mb: 2, 
                   borderRadius: "12px",
-                  boxShadow: "0 10px 25px rgba(0,0,0,0.04)"
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.05)" 
                 }}
               >
                 <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
@@ -118,27 +118,27 @@ function ProductsContent() {
                   {product.category}
                 </Typography>
 
-                {/* BOTÓN CON EFECTO 3D Y HOVER AZUL OSCURO */}
+                {/* BOTÓN GRIS #cdced1 CON SOMBRA 3D */}
                 <Button 
-                  variant="outlined" 
+                  variant="contained" 
                   fullWidth 
                   onClick={() => addToCart({ ...product, image: product.image_url })} 
+                  disableElevation
                   sx={{ 
-                    bgcolor: "#F1F5F9", // Gris claro
-                    color: "#0a0d15", // Texto oscuro
-                    borderColor: "#CBD5E0", // Borde suave
+                    bgcolor: "#cdced1", // El gris que solicitaste
+                    color: "#111827", // Texto muy oscuro para contraste
+                    border: "none", // Sin borde
                     py: 1.2, 
                     fontSize: "0.9rem", 
-                    fontWeight: 600,
+                    fontWeight: 700, // Un poco más grueso para resaltar
                     borderRadius: "8px",
-                    boxShadow: "0 4px 6px rgba(0,0,0,0.05)", // Sombra sutil
+                    boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", // Sombra más definida para efecto 3D
                     transition: "all 0.3s ease",
                     "&:hover": { 
-                      bgcolor: "#0a0d15", // Cambia a azul oscuro
+                      bgcolor: "#0a0d15", 
                       color: "white", 
-                      borderColor: "#0a0d15",
-                      boxShadow: "0 8px 15px rgba(10, 13, 21, 0.2)", // Sombra más pronunciada
-                      transform: "translateY(-2px)" // Efecto de elevación
+                      boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)",
+                      transform: "translateY(-2px)"
                     } 
                   }}
                 >
