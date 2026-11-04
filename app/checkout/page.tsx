@@ -18,6 +18,10 @@ export default function CheckoutPage() {
     0
   );
 
+  // Cálculo del IGV (18%)
+  const subtotal = total / 1.18;
+  const igv = total - subtotal;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSuccess(true);
@@ -30,19 +34,13 @@ export default function CheckoutPage() {
         <Alert severity="success" sx={{ mb: 4, justifyContent: "center" }}>
           ¡Pedido realizado con éxito!
         </Alert>
-        <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2, fontSize: { xs: "1.5rem", md: "2rem" } }}>
+        <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2 }}>
           Gracias por tu compra
         </Typography>
-        <Typography sx={{ color: "#5E6B7E", mb: 4, fontSize: { xs: "0.95rem", md: "1rem" } }}>
+        <Typography sx={{ color: "#5E6B7E", mb: 4 }}>
           Hemos recibido tu pedido. Pronto nos pondremos en contacto contigo para coordinar el envío.
         </Typography>
-        <Button 
-          component={Link} 
-          href="/" 
-          variant="contained" 
-          size="large"
-          sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, borderRadius: 999, px: 4, py: 1.5 }}
-        >
+        <Button component={Link} href="/" variant="contained" size="large" sx={{ bgcolor: "#0a0d15", borderRadius: 999, px: 4, py: 1.5 }}>
           Volver a la tienda
         </Button>
       </Container>
@@ -52,15 +50,10 @@ export default function CheckoutPage() {
   if (state.items.length === 0) {
     return (
       <Container maxWidth="md" sx={{ py: 12, textAlign: "center" }}>
-        <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2, fontSize: { xs: "1.5rem", md: "2rem" } }}>
+        <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2 }}>
           No hay productos para pagar
         </Typography>
-        <Button 
-          component={Link} 
-          href="/products" 
-          variant="contained" 
-          sx={{ bgcolor: "#0a0d15", mt: 2, borderRadius: 999 }}
-        >
+        <Button component={Link} href="/products" variant="contained" sx={{ bgcolor: "#0a0d15", mt: 2, borderRadius: 999 }}>
           Ir a la tienda
         </Button>
       </Container>
@@ -76,37 +69,25 @@ export default function CheckoutPage() {
       </Box>
 
       <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 4, fontSize: { xs: "1.5rem", md: "2rem" } }}>
-        Finalizar Compra
+        Finalizar compra
       </Typography>
 
       <Grid container spacing={5}>
-        {/* Formulario de Envío */}
+        {/* Formulario */}
         <Grid size={{ xs: 12, md: 7 }}>
           <Box component="form" onSubmit={handleSubmit}>
-            <Typography variant="h6" sx={{ fontWeight: 700, mb: 3, color: "#0a0d15", fontSize: { xs: "1.1rem", md: "1.25rem" } }}>
-              1. Datos de Envío
+            <Typography variant="h6" sx={{ fontWeight: 700, mb: 3, color: "#0a0d15", fontSize: "1.1rem" }}>
+              1. Datos de envío
             </Typography>
             
             <Grid container spacing={2.5}>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField fullWidth label="Nombre" required size="small" />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField fullWidth label="Apellidos" required size="small" />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <TextField fullWidth label="Correo electrónico" type="email" required size="small" />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField fullWidth label="DNI / RUC" required size="small" />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField fullWidth label="Teléfono" required size="small" />
-              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Nombre" required size="small" /></Grid>
+              <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Apellidos" required size="small" /></Grid>
+              <Grid size={{ xs: 12 }}><TextField fullWidth label="Correo electrónico" type="email" required size="small" /></Grid>
+              <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="DNI / RUC" required size="small" /></Grid>
+              <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Teléfono" required size="small" /></Grid>
               
-              <Grid size={{ xs: 12 }}>
-                <Divider sx={{ my: 1 }} />
-              </Grid>
+              <Grid size={{ xs: 12 }}><Divider sx={{ my: 1 }} /></Grid>
 
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField fullWidth select label="Departamento" defaultValue="Lima" required size="small">
@@ -117,22 +98,16 @@ export default function CheckoutPage() {
                   <MenuItem value="Otro">Otro</MenuItem>
                 </TextField>
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField fullWidth label="Provincia / Distrito" required size="small" />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <TextField fullWidth label="Dirección completa" required size="small" />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <TextField fullWidth label="Referencia (opcional)" size="small" />
-              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Provincia / Distrito" required size="small" /></Grid>
+              <Grid size={{ xs: 12 }}><TextField fullWidth label="Dirección completa" required size="small" /></Grid>
+              <Grid size={{ xs: 12 }}><TextField fullWidth label="Referencia (opcional)" size="small" /></Grid>
             </Grid>
 
-            <Typography variant="h6" sx={{ fontWeight: 700, mt: 5, mb: 3, color: "#0a0d15", fontSize: { xs: "1.1rem", md: "1.25rem" } }}>
-              2. Método de Pago
+            <Typography variant="h6" sx={{ fontWeight: 700, mt: 4, mb: 3, color: "#0a0d15", fontSize: "1.1rem" }}>
+              2. Método de pago
             </Typography>
             
-            <Card sx={{ p: { xs: 2, md: 3 }, borderRadius: 3, border: "1px solid #E0E0E0", boxShadow: "none", bgcolor: "transparent" }}>
+            <Card sx={{ p: 2.5, borderRadius: 2, border: "1px solid #E0E0E0", boxShadow: "none", bgcolor: "transparent" }}>
               <Typography sx={{ mb: 1, fontWeight: 600, color: "#0a0d15", fontSize: "0.95rem" }}>
                 Pago contra entrega o transferencia
               </Typography>
@@ -142,20 +117,10 @@ export default function CheckoutPage() {
             </Card>
 
             <Button 
-              type="submit" 
-              variant="contained" 
-              size="large"
-              fullWidth
-              sx={{ 
-                mt: 4, 
-                bgcolor: "#0a0d15", 
-                "&:hover": { bgcolor: "#1a1d24" }, 
-                py: 1.8, 
-                borderRadius: 999,
-                fontSize: { xs: "1rem", md: "1.1rem" }
-              }}
+              type="submit" variant="contained" size="large" fullWidth
+              sx={{ mt: 4, bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, py: 1.8, borderRadius: 999, fontSize: { xs: "1rem", md: "1.1rem" } }}
             >
-              Confirmar Pedido (S/. {total.toFixed(2)})
+              Confirmar pedido (S/. {total.toFixed(2)})
             </Button>
           </Box>
         </Grid>
@@ -163,8 +128,8 @@ export default function CheckoutPage() {
         {/* Resumen del Pedido */}
         <Grid size={{ xs: 12, md: 5 }}>
           <Card sx={{ p: { xs: 3, md: 4 }, borderRadius: 4, bgcolor: "#0a0d15", color: "white", position: "sticky", top: 100 }}>
-            <Typography variant="h5" sx={{ fontWeight: 800, mb: 3, fontSize: { xs: "1.2rem", md: "1.5rem" } }}>
-              Resumen del Pedido
+            <Typography variant="h5" sx={{ fontWeight: 800, mb: 3, fontSize: "1.2rem" }}>
+              Resumen del pedido
             </Typography>
             
             <Stack spacing={2} sx={{ mb: 3 }}>
@@ -172,17 +137,8 @@ export default function CheckoutPage() {
                 <Box key={item.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                     <Box sx={{ position: "relative" }}>
-                      <Box 
-                        component="img" 
-                        // Fix de TypeScript para Vercel
-                        src={(item as any).image || "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=100&auto=format&fit=crop"} 
-                        sx={{ width: 45, height: 45, borderRadius: 1, objectFit: "cover" }} 
-                      />
-                      <Box sx={{ 
-                        position: "absolute", top: -6, right: -6, bgcolor: "white", color: "#0a0d15", 
-                        borderRadius: "50%", width: 18, height: 18, display: "flex", 
-                        alignItems: "center", justifyContent: "center", fontSize: "0.65rem", fontWeight: 800 
-                      }}>
+                      <Box component="img" src={(item as any).image || "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=100&auto=format&fit=crop"} sx={{ width: 45, height: 45, borderRadius: 1, objectFit: "cover" }} />
+                      <Box sx={{ position: "absolute", top: -6, right: -6, bgcolor: "white", color: "#0a0d15", borderRadius: "50%", width: 18, height: 18, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.65rem", fontWeight: 800 }}>
                         {item.quantity}
                       </Box>
                     </Box>
@@ -199,16 +155,21 @@ export default function CheckoutPage() {
 
             <Divider sx={{ bgcolor: "rgba(255,255,255,0.2)", my: 2 }} />
             
-            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1.5, opacity: 0.8 }}>
-              <Typography sx={{ fontSize: "0.9rem" }}>Subtotal</Typography>
-              <Typography sx={{ fontSize: "0.9rem" }}>S/. {total.toFixed(2)}</Typography>
-            </Box>
-            
-            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2, opacity: 0.9 }}>
-              <Typography sx={{ fontSize: "0.9rem" }}>Envío</Typography>
-              {/* Texto actualizado VIP */}
-              <Typography sx={{ fontWeight: 700, color: "#4ADE80", fontSize: "0.9rem" }}>Gratis (Miembro VIP)</Typography>
-            </Box>
+            {/* DESGLOSE CON IGV */}
+            <Stack spacing={1.5} sx={{ mb: 2, opacity: 0.9 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Typography sx={{ fontSize: "0.85rem" }}>Subtotal (sin IGV)</Typography>
+                <Typography sx={{ fontSize: "0.85rem" }}>S/. {subtotal.toFixed(2)}</Typography>
+              </Box>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Typography sx={{ fontSize: "0.85rem" }}>IGV (18%)</Typography>
+                <Typography sx={{ fontSize: "0.85rem" }}>S/. {igv.toFixed(2)}</Typography>
+              </Box>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Typography sx={{ fontSize: "0.85rem" }}>Envío</Typography>
+                <Typography sx={{ fontWeight: 700, color: "#4ADE80", fontSize: "0.85rem" }}>Gratis (VIP)</Typography>
+              </Box>
+            </Stack>
 
             <Divider sx={{ bgcolor: "rgba(255,255,255,0.2)", mb: 2 }} />
 
@@ -219,7 +180,7 @@ export default function CheckoutPage() {
             
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 3, opacity: 0.6 }}>
               <LockIcon fontSize="small" />
-              <Typography sx={{ fontSize: "0.75rem" }}>Pago 100% Seguro</Typography>
+              <Typography sx={{ fontSize: "0.75rem" }}>Pago 100% seguro</Typography>
             </Box>
           </Card>
         </Grid>
