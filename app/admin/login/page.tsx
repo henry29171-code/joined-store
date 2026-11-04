@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import { Box, Button, Container, TextField, Typography, Alert, InputAdornment, IconButton } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
@@ -12,23 +11,27 @@ export default function LoginAdmin() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     
-    const cleanEmail = email.toLowerCase().trim();
-    const { error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
+    try {
+      const cleanEmail = email.toLowerCase().trim();
+      const { error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
 
-    if (error) {
-      setError(`Error: ${error.message}`);
+      if (error) {
+        setError(`Error: ${error.message}`);
+        setLoading(false);
+      } else {
+        // Usamos window.location.href para recargar la página por completo.
+        // Esto asegura que el Middleware lea la cookie de sesión correctamente.
+        window.location.href = "/admin";
+      }
+    } catch (err: any) {
+      setError("Ocurrió un error inesperado de red. Por favor, intenta de nuevo.");
       setLoading(false);
-    } else {
-      // Usamos router.push en lugar de window.location para evitar recargas bruscas
-      router.push("/admin");
-      router.refresh();
     }
   };
 
