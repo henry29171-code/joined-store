@@ -12,45 +12,43 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SettingsIcon from "@mui/icons-material/Settings";
 import GroupIcon from "@mui/icons-material/Group";
 import PersonIcon from "@mui/icons-material/Person";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // Nuevo ícono
 import SearchIcon from "@mui/icons-material/Search";
 import MenuIcon from "@mui/icons-material/Menu";
 
 export default function Navbar() {
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { state } = useCart();
   const totalItems = state.items.reduce((sum, item) => sum + item.quantity, 0);
   const pathname = usePathname();
 
   useEffect(() => {
+    // Verificamos el usuario al cargar y cada vez que cambia de ruta
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setIsAdmin(!!user);
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user);
     };
     checkUser();
   }, [pathname]);
 
-  const navLinks = [
-    { label: "Inicio", href: "/" },
-    { label: "Colección", href: "/products" },
-    { label: "Nosotros", href: "/nosotros" },
-    { label: "Contacto", href: "/contacto" },
-  ];
-
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+
+  // Lógica: ¿Es admin?
+  const isAdmin = user?.email === 'henry29171@gmail.com';
 
   const drawerContent = (
     <Box sx={{ width: 260, bgcolor: "#0a0d15", height: "100%", color: "white" }} role="presentation">
       <Box sx={{ p: 3, display: "flex", justifyContent: "center", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-        {/* Logo en el menú móvil - Ajustado a 24px */}
-        <img 
-          src="/logo.png" 
-          alt="Joined" 
-          style={{ height: "24px", width: "auto", objectFit: "contain" }} 
-        />
+        <img src="/logo.png" alt="Joined" style={{ height: "35px", width: "auto", objectFit: "contain" }} />
       </Box>
       <List sx={{ pt: 2 }}>
-        {navLinks.map((link) => (
+        {[
+          { label: "Inicio", href: "/" },
+          { label: "Colección", href: "/products" },
+          { label: "Nosotros", href: "/nosotros" },
+          { label: "Contacto", href: "/contacto" },
+        ].map((link) => (
           <ListItem key={link.label} disablePadding>
             <ListItemButton component={Link} href={link.href} onClick={handleDrawerToggle}>
               <ListItemText primary={link.label} primaryTypographyProps={{ fontWeight: 600, fontSize: "1.1rem" }} />
@@ -62,58 +60,52 @@ export default function Navbar() {
             <ListItemText primary="Comunidad" primaryTypographyProps={{ fontWeight: 800, color: "#D7E0DA", fontSize: "1.1rem" }} />
           </ListItemButton>
         </ListItem>
+        {user && (
+          <ListItem disablePadding>
+            <ListItemButton component={Link} href="/profile" onClick={handleDrawerToggle}>
+              <ListItemText primary="Mi cuenta" primaryTypographyProps={{ fontWeight: 600, fontSize: "1.1rem" }} />
+            </ListItemButton>
+          </ListItem>
+        )}
       </List>
     </Box>
   );
 
   return (
     <>
-      {/* Cinta de Anuncios */}
       <Box sx={{ bgcolor: "#D7E0DA", color: "#0a0d15", py: 0.8, overflow: "hidden", whiteSpace: "nowrap" }}>
         <Box sx={{
             display: "inline-block", animation: "marquee 25s linear infinite",
             "@keyframes marquee": { "0%": { transform: "translateX(100vw)" }, "100%": { transform: "translateX(-100%)" } },
           }}>
           <Typography component="span" sx={{ mx: 4, fontWeight: 700, fontSize: "0.8rem" }}>
-            🚚 ¡Envíos 100% gratis a nivel nacional exclusivo para miembros de la comunidad!
+            🚚 ¡Envíos 100% gratis a Lima Metropolitana exclusivo para miembros de la Comunidad!
           </Typography>
           <Typography component="span" sx={{ mx: 4, fontWeight: 700, fontSize: "0.8rem" }}>
-            ✨ Únete al club Joined VIP y accede a beneficios exclusivos
+            ✨ Únete al Club Joined VIP y accede a beneficios exclusivos
           </Typography>
         </Box>
       </Box>
 
       <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#0a0d15", color: "#F8FAF8" }}>
-        {/* Reducimos un poco la altura de la barra para que sea más compacta */}
-        <Toolbar sx={{ justifyContent: "space-between", minHeight: { xs: 60, md: 68 }, px: { xs: 1, md: 3 } }}>
+        <Toolbar sx={{ justifyContent: "space-between", minHeight: { xs: 60, md: 72 }, px: { xs: 1, md: 3 } }}>
           
-          {/* Lado Izquierdo */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <IconButton 
-              color="inherit" 
-              onClick={handleDrawerToggle} 
-              sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
-            >
+            <IconButton color="inherit" onClick={handleDrawerToggle} sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}>
               <MenuIcon />
             </IconButton>
 
-            {/* Logo Principal - Tamaño ajustado a 28px */}
-            <Link href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center" }}>
-              <img 
-                src="/logo.png" 
-                alt="Joined" 
-                style={{ 
-                  height: "28px", // Altura perfecta para que iguale a los textos
-                  width: "auto",
-                  objectFit: "contain",
-                  marginRight: "20px" 
-                }} 
-              />
+            <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
+              <Typography variant="h5" sx={{ fontWeight: 800, fontSize: { xs: "1.3rem", md: "1.5rem" } }}>Joined</Typography>
             </Link>
 
-            {/* Links Escritorio */}
-            <Stack direction="row" spacing={2.5} alignItems="center" sx={{ display: { xs: "none", md: "flex" }, ml: 2 }}>
-              {navLinks.map((link) => (
+            <Stack direction="row" spacing={2} alignItems="center" sx={{ display: { xs: "none", md: "flex" }, ml: 4 }}>
+              {[
+                { label: "Inicio", href: "/" },
+                { label: "Colección", href: "/products" },
+                { label: "Nosotros", href: "/nosotros" },
+                { label: "Contacto", href: "/contacto" },
+              ].map((link) => (
                 <Link key={link.label} href={link.href} style={{ textDecoration: "none" }}>
                   <Typography sx={{ color: "white", opacity: 0.8, fontWeight: 600, fontSize: "0.9rem", "&:hover": { opacity: 1 } }}>{link.label}</Typography>
                 </Link>
@@ -126,15 +118,18 @@ export default function Navbar() {
             </Stack>
           </Box>
 
-          {/* Lado Derecho */}
           <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.5, sm: 1.5 } }}>
             <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", bgcolor: "rgba(255,255,255,0.1)", borderRadius: 999, px: 2, py: 0.5, width: 200 }}>
               <SearchIcon sx={{ color: "white", mr: 1, fontSize: 20 }} />
               <InputBase placeholder="Buscar..." sx={{ color: "white", fontSize: "0.9rem", width: "100%" }} />
             </Box>
 
-            <IconButton component={Link} href="/login" sx={{ color: "white" }}><PersonIcon /></IconButton>
+            {/* ÍCONO DE USUARIO DINÁMICO */}
+            <IconButton component={Link} href={user ? "/profile" : "/login"} sx={{ color: "white" }}>
+              {user ? <AccountCircleIcon /> : <PersonIcon />}
+            </IconButton>
             
+            {/* BOTÓN DE ADMIN (Solo visible para Henry) */}
             {isAdmin && (
               <Link href="/admin" style={{ textDecoration: "none" }}>
                 <IconButton sx={{ color: "white" }}><SettingsIcon /></IconButton>
