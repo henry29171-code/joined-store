@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { 
   Container, Typography, Box, Grid, Button, Stack, CircularProgress, Breadcrumbs, 
-  Link as MuiLink, Divider, Accordion, AccordionSummary, AccordionDetails, Select, MenuItem, FormControl 
+  Link as MuiLink, Divider, Accordion, AccordionSummary, AccordionDetails, Select, MenuItem, FormControl, Chip 
 } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
@@ -31,7 +31,7 @@ export default function ProductDetailPage() {
       if (productData) {
         setProduct(productData);
         
-        // Inicializar selectores con el primer valor disponible
+        // Inicializar tallas y colores con el primer valor disponible
         if (productData.sizes && productData.sizes.length > 0) setSelectedSize(productData.sizes[0]);
         if (productData.colors && productData.colors.length > 0) setSelectedColor(productData.colors[0]);
 
@@ -46,7 +46,7 @@ export default function ProductDetailPage() {
   if (loading) return <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}><CircularProgress sx={{ color: "#0a0d15" }} /></Box>;
   if (!product) return <Container maxWidth="md" sx={{ py: 15, textAlign: "center" }}><Typography variant="h4">Producto no encontrado</Typography></Container>;
 
-  // Parsear características (vienen guardadas como string JSON)
+  // Parsear características (vienen guardadas como JSON string)
   let characteristicsList = [];
   try {
     if (product.characteristics) characteristicsList = JSON.parse(product.characteristics);
@@ -78,7 +78,24 @@ export default function ProductDetailPage() {
         <Grid size={{ xs: 12, md: 6 }}>
           <Stack spacing={2.5}>
             <Typography variant="h4" sx={{ fontWeight: 600, color: "#0a0d15", fontSize: { xs: "1.8rem", md: "2.2rem" } }}>{product.name}</Typography>
-            <Typography variant="h6" sx={{ fontWeight: 500, color: "#333" }}>S/. {Number(product.price).toFixed(2)}</Typography>
+            
+            {/* LÓGICA DE PRECIO PROMOCIONAL */}
+            {product.sale_price ? (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                <Typography variant="h4" sx={{ fontWeight: 700, color: "#d32f2f" }}>
+                  S/. {Number(product.sale_price).toFixed(2)}
+                </Typography>
+                <Typography variant="h6" sx={{ color: "#888", textDecoration: "line-through" }}>
+                  S/. {Number(product.price).toFixed(2)}
+                </Typography>
+                <Chip label="Oferta" size="small" sx={{ bgcolor: "#d32f2f", color: "white", fontWeight: 600 }} />
+              </Box>
+            ) : (
+              <Typography variant="h6" sx={{ fontWeight: 500, color: "#333" }}>
+                S/. {Number(product.price).toFixed(2)}
+              </Typography>
+            )}
+
             <Typography sx={{ fontSize: "0.9rem", color: product.stock > 0 ? "green" : "red" }}>
               {product.stock > 0 ? `En stock (${product.stock} disponibles)` : "Agotado"}
             </Typography>

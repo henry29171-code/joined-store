@@ -128,9 +128,23 @@ function ProductsContent() {
                 <Typography variant="h6" sx={{ fontWeight: 600, color: "#0a0d15", fontSize: "1.1rem", mb: 0.5 }}>
                   {product.name}
                 </Typography>
-                <Typography sx={{ fontSize: "1rem", fontWeight: 500, color: "#333", mb: 1 }}>
-                  S/. {Number(product.price).toFixed(2)}
-                </Typography>
+                
+                {/* LÓGICA DE PRECIO PROMOCIONAL */}
+                {product.sale_price ? (
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                    <Typography sx={{ fontSize: "1.1rem", fontWeight: 700, color: "#d32f2f" }}>
+                      S/. {Number(product.sale_price).toFixed(2)}
+                    </Typography>
+                    <Typography sx={{ fontSize: "0.9rem", color: "#888", textDecoration: "line-through" }}>
+                      S/. {Number(product.price).toFixed(2)}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Typography sx={{ fontSize: "1rem", fontWeight: 500, color: "#333", mb: 1 }}>
+                    S/. {Number(product.price).toFixed(2)}
+                  </Typography>
+                )}
+
                 <Typography sx={{ color: "#888", fontSize: "0.85rem", mb: 2 }}>
                   {product.category}
                 </Typography>
