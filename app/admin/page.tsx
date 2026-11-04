@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link"; // <-- Agregado para los enlaces
+import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
-import { Box, Container, Typography, Grid, Card, CardContent, Button, Stack } from "@mui/material";
+import { Box, Container, Typography, Grid, Card, CardContent, Button, Stack, Alert } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import ReceiptIcon from "@mui/icons-material/Receipt";
@@ -12,14 +12,21 @@ import ArticleIcon from "@mui/icons-material/Article";
 export default function AdminDashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // Verificamos que el usuario esté logueado
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
+      
       if (!user) {
         router.push("/admin/login");
+      } else if (user.email?.toLowerCase().trim() !== 'henry29171@gmail.com') {
+        // Si no es el admin, mostramos alerta
+        setIsAdmin(false);
+        setLoading(false);
       } else {
+        // Es el admin
+        setIsAdmin(true);
         setLoading(false);
       }
     };
@@ -33,10 +40,30 @@ export default function AdminDashboard() {
 
   if (loading) return <Typography sx={{ p: 5 }}>Cargando panel...</Typography>;
 
+  // Si no es admin, le mostramos una pantalla de acceso denegado
+  if (!isAdmin) {
+    return (
+      <Container maxWidth="sm" sx={{ py: 15, textAlign: "center" }}>
+        <Alert severity="error" sx={{ mb: 4, justifyContent: "center" }}>
+          Acceso Denegado
+        </Alert>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
+          No tienes permisos para ver esta página.
+        </Typography>
+        <Typography sx={{ color: "#666", mb: 4 }}>
+          Esta área es exclusiva del administrador de la tienda.
+        </Typography>
+        <Button variant="contained" onClick={handleLogout} sx={{ bgcolor: "#0a0d15" }}>
+          Cerrar sesión e ir al inicio
+        </Button>
+      </Container>
+    );
+  }
+
+  // Si es admin, ve el panel normal
   return (
     <Box sx={{ bgcolor: "#F8F9FA", minHeight: "100vh", py: 6 }}>
       <Container maxWidth="lg">
-        {/* Encabezado del Panel */}
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 5 }}>
           <Box>
             <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15" }}>
@@ -46,18 +73,11 @@ export default function AdminDashboard() {
               Bienvenido de vuelta, Henry.
             </Typography>
           </Box>
-          <Button 
-            variant="outlined" 
-            color="error" 
-            startIcon={<LogoutIcon />} 
-            onClick={handleLogout}
-            sx={{ textTransform: "none", fontWeight: 700 }}
-          >
+          <Button variant="outlined" color="error" startIcon={<LogoutIcon />} onClick={handleLogout} sx={{ textTransform: "none", fontWeight: 700 }}>
             Cerrar sesión
           </Button>
         </Stack>
 
-        {/* Tarjetas de Acceso Rápido */}
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, md: 4 }}>
             <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
@@ -67,14 +87,7 @@ export default function AdminDashboard() {
                 <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
                   Agrega, edita o elimina los productos de tu tienda.
                 </Typography>
-                {/* Botón conectado a la nueva página */}
-                <Button 
-                  component={Link} 
-                  href="/admin/productos" 
-                  fullWidth 
-                  variant="contained" 
-                  sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
-                >
+                <Button component={Link} href="/admin/productos" fullWidth variant="contained" sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}>
                   Gestionar productos
                 </Button>
               </CardContent>
@@ -89,12 +102,7 @@ export default function AdminDashboard() {
                 <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
                   Revisa las compras y estados de envío de tus clientes.
                 </Typography>
-                {/* Este botón se conectará cuando creemos la página de pedidos */}
-                <Button 
-                  fullWidth 
-                  variant="contained" 
-                  sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
-                >
+                <Button fullWidth variant="contained" sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}>
                   Ver pedidos
                 </Button>
               </CardContent>
@@ -109,12 +117,7 @@ export default function AdminDashboard() {
                 <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
                   Actualiza las políticas y términos de tu tienda sin tocar código.
                 </Typography>
-                {/* Este botón se conectará cuando creemos la página de gestión legal */}
-                <Button 
-                  fullWidth 
-                  variant="contained" 
-                  sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
-                >
+                <Button fullWidth variant="contained" sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}>
                   Editar páginas
                 </Button>
               </CardContent>

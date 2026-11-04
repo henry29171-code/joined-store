@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import { Box, Button, Container, TextField, Typography, Alert, InputAdornment, IconButton } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
@@ -11,29 +12,23 @@ export default function LoginAdmin() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     
-    // Normalizamos el correo antes de enviarlo
     const cleanEmail = email.toLowerCase().trim();
-    
     const { error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
 
     if (error) {
       setError(`Error: ${error.message}`);
       setLoading(false);
     } else {
-      // Verificamos que el correo sea el del admin antes de redirigir
-      if (cleanEmail === 'henry29171@gmail.com') {
-        window.location.href = "/admin";
-      } else {
-        setError("Has ingresado correctamente, pero esta cuenta no tiene permisos de administrador. Por favor, inicia sesión con la cuenta de Henry.");
-        await supabase.auth.signOut(); // Cerramos la sesión si no es admin
-        setLoading(false);
-      }
+      // Usamos router.push en lugar de window.location para evitar recargas bruscas
+      router.push("/admin");
+      router.refresh();
     }
   };
 
@@ -47,23 +42,11 @@ export default function LoginAdmin() {
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
         <TextField 
-          fullWidth 
-          label="Correo" 
-          type="email" 
-          value={email} 
-          onChange={(e) => setEmail(e.target.value)} 
-          sx={{ mb: 2 }} 
-          required 
+          fullWidth label="Correo" type="email" value={email} onChange={(e) => setEmail(e.target.value)} sx={{ mb: 2 }} required 
         />
 
         <TextField 
-          fullWidth 
-          label="Contraseña" 
-          type={showPassword ? "text" : "password"}
-          value={password} 
-          onChange={(e) => setPassword(e.target.value)} 
-          sx={{ mb: 3 }} 
-          required 
+          fullWidth label="Contraseña" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} sx={{ mb: 3 }} required 
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
