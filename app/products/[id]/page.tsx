@@ -2,7 +2,11 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Container, Typography, Box, Grid, Button, Chip, Stack, Card, CardContent, CardMedia, CircularProgress } from "@mui/material";
+import { 
+  Container, Typography, Box, Grid, Button, Chip, Stack, 
+  Card, CardContent, CardMedia, CircularProgress, Breadcrumbs, 
+  Link as MuiLink, Divider, Table, TableBody, TableRow, TableCell 
+} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
@@ -23,7 +27,6 @@ export default function ProductDetailPage() {
       if (!params.id) return;
       setLoading(true);
 
-      // 1. Traer el producto por ID
       const { data: productData, error } = await supabase
         .from("products")
         .select("*")
@@ -33,7 +36,6 @@ export default function ProductDetailPage() {
       if (productData) {
         setProduct(productData);
 
-        // 2. Traer productos relacionados (misma categoría, excluyendo el actual)
         const { data: relatedData } = await supabase
           .from("products")
           .select("*")
@@ -68,12 +70,34 @@ export default function ProductDetailPage() {
     );
   }
 
+  // Especificaciones por defecto si el producto no las tiene en la BD
+  const specs = product.specifications || {
+    material: "Cuero genuino / Acero inoxidable",
+    dimensions: "Consultar medidas específicas",
+    weight: "Variable según modelo",
+    warranty: "1 año de garantía",
+    origin: "Perú"
+  };
+
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
+      
+      {/* BREADCRUMBS (Migas de pan) */}
       <Box sx={{ mb: 4 }}>
-        <Button onClick={() => router.back()} startIcon={<ArrowBackIcon />} sx={{ color: "#5E6B7E", textTransform: "none", fontWeight: 600, "&:hover": { color: "#0a0d15" } }}>
-          Volver a la colección
-        </Button>
+        <Breadcrumbs separator="›" aria-label="breadcrumb">
+          <MuiLink component={Link} href="/" underline="hover" color="inherit" sx={{ fontSize: "0.9rem", color: "#5E6B7E" }}>
+            Inicio
+          </MuiLink>
+          <MuiLink component={Link} href="/products" underline="hover" color="inherit" sx={{ fontSize: "0.9rem", color: "#5E6B7E" }}>
+            Colección
+          </MuiLink>
+          <MuiLink component={Link} href={`/products?category=${product.category}`} underline="hover" color="inherit" sx={{ fontSize: "0.9rem", color: "#5E6B7E" }}>
+            {product.category}
+          </MuiLink>
+          <Typography sx={{ fontSize: "0.9rem", color: "#0a0d15", fontWeight: 600 }}>
+            {product.name}
+          </Typography>
+        </Breadcrumbs>
       </Box>
 
       <Grid container spacing={{ xs: 4, md: 8 }} alignItems="flex-start">
@@ -82,13 +106,8 @@ export default function ProductDetailPage() {
         <Grid size={{ xs: 12, md: 6 }}>
           <Box 
             sx={{ 
-              position: "relative",
-              width: "100%", 
-              maxWidth: 500, 
-              mx: "auto", 
-              borderRadius: 4,
-              overflow: "hidden",
-              boxShadow: "0 20px 40px rgba(0,0,0,0.1)"
+              position: "relative", width: "100%", maxWidth: 500, mx: "auto", 
+              borderRadius: 4, overflow: "hidden", boxShadow: "0 20px 40px rgba(0,0,0,0.1)"
             }}
           >
             <Box 
@@ -119,20 +138,12 @@ export default function ProductDetailPage() {
 
             <Box sx={{ py: 2 }}>
               <Button 
-                variant="outlined" 
-                size="large"
-                startIcon={<ShoppingBagIcon />} 
+                variant="outlined" size="large" startIcon={<ShoppingBagIcon />} 
                 onClick={() => addToCart({ ...product, image: product.image_url })} 
                 fullWidth
                 sx={{ 
-                  bgcolor: "white", 
-                  color: "#0a0d15", 
-                  borderColor: "#0a0d15", 
-                  py: 2, 
-                  fontSize: "1.1rem",
-                  borderRadius: 999,
-                  fontWeight: 700,
-                  transition: "all 0.3s",
+                  bgcolor: "white", color: "#0a0d15", borderColor: "#0a0d15", py: 2, 
+                  fontSize: "1.1rem", borderRadius: 999, fontWeight: 700, transition: "all 0.3s",
                   "&:hover": { bgcolor: "#0a0d15", color: "white", borderColor: "#0a0d15" } 
                 }}
               >
@@ -148,6 +159,37 @@ export default function ProductDetailPage() {
         </Grid>
       </Grid>
 
+      {/* ESPECIFICACIONES TÉCNICAS */}
+      <Box sx={{ mt: 8 }}>
+        <Typography variant="h5" sx={{ fontWeight: 800, color: "#0a0d15", mb: 3 }}>
+          Especificaciones del producto
+        </Typography>
+        <Table sx={{ maxWidth: 600, border: "1px solid rgba(10, 13, 21, 0.1)", borderRadius: 2 }}>
+          <TableBody>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 700, color: "#5E6B7E", width: "40%" }}>Material</TableCell>
+              <TableCell>{specs.material}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 700, color: "#5E6B7E" }}>Dimensiones</TableCell>
+              <TableCell>{specs.dimensions}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 700, color: "#5E6B7E" }}>Peso</TableCell>
+              <TableCell>{specs.weight}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 700, color: "#5E6B7E" }}>Garantía</TableCell>
+              <TableCell>{specs.warranty}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 700, color: "#5E6B7E" }}>Origen</TableCell>
+              <TableCell>{specs.origin}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </Box>
+
       {/* Sección de productos relacionados */}
       {relatedProducts.length > 0 && (
         <Box sx={{ mt: 12, pt: 6, borderTop: "1px solid rgba(10, 13, 21, 0.05)" }}>
@@ -162,9 +204,7 @@ export default function ProductDetailPage() {
                 <Card elevation={0} sx={{ height: "100%", display: "flex", flexDirection: "column", borderRadius: 4, overflow: "hidden", bgcolor: "#FFFFFF", border: "1px solid rgba(20, 32, 56, 0.06)", transition: "transform 0.3s", "&:hover": { transform: "translateY(-5px)" } }}>
                   <Link href={`/products/${relProduct.id}`} style={{ display: "block", overflow: "hidden" }}>
                     <CardMedia 
-                      component="img" 
-                      image={relProduct.image_url} 
-                      alt={relProduct.name} 
+                      component="img" image={relProduct.image_url} alt={relProduct.name} 
                       sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.4s ease", "&:hover": { transform: "scale(1.05)" } }} 
                     />
                   </Link>
@@ -173,9 +213,7 @@ export default function ProductDetailPage() {
                     <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem", lineHeight: 1.5, mb: 2, flexGrow: 1 }}>{relProduct.description}</Typography>
                     <Typography sx={{ fontSize: "1.1rem", fontWeight: 800, color: "#142038", mb: 2 }}>S/. {Number(relProduct.price).toFixed(2)}</Typography>
                     <Button 
-                      variant="outlined" 
-                      fullWidth 
-                      onClick={() => addToCart({ ...relProduct, image: relProduct.image_url })} 
+                      variant="outlined" fullWidth onClick={() => addToCart({ ...relProduct, image: relProduct.image_url })} 
                       sx={{ bgcolor: "white", color: "#0a0d15", borderColor: "#0a0d15", py: 1, fontSize: "0.9rem", transition: "all 0.3s", "&:hover": { bgcolor: "#0a0d15", color: "white", borderColor: "#0a0d15" } }}
                     >
                       Añadir al carrito
