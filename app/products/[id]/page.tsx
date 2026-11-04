@@ -1,296 +1,161 @@
-import { getProduct, getProducts } from "@/app/lib/api";
-import { Product } from "@/app/types/Product";
-import {
-  Container,
-  CardActionArea,
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
-} from "@mui/material";
-// import { Suspense } from "react";
-import AddToCartButton from "./AddToCartButton";
+"use client";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { Container, Typography, Box, Grid, Button, Chip, Stack, Card, CardContent, CardMedia } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+// Ruta de importación correcta para la carpeta [id]
+import { useCart } from "../../context/CartContext";
 
-type PageProps = {
-  params: Promise<{ id: string }>;
-};
+const mockProducts = [
+  { id: "1", name: "Morral Urban Explorer", price: 159.90, category: "Morrales", description: "Resistente al agua, compartimentos inteligentes para organizar tus cosas. Diseño minimalista y elegante.", image_url: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop" },
+  { id: "2", name: "Reloj Minimalist Classic", price: 289.00, category: "Relojes", description: "Malla de acero inoxidable, cristal de zafiro y un movimiento de precisión. Un accesorio que nunca pasa de moda.", image_url: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=800&auto=format&fit=crop" },
+  { id: "3", name: "Perfume Dark Wood", price: 199.90, category: "Perfumes", description: "Notas amaderadas y especiadas que dejan una huella sofisticada y duradera. Ideal para el día a día o la noche.", image_url: "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800&auto=format&fit=crop" },
+];
 
-export default async function ProductPage({ params }: PageProps) {
-  const { id } = await params;
-  const product = await getProduct(id);
+export default function ProductDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const { addToCart } = useCart();
+  
+  const product = mockProducts.find((p) => p.id === params.id);
+  const relatedProducts = mockProducts.filter(p => p.id !== params.id);
+
   if (!product) {
     return (
-      <Container sx={{ py: 6 }}>
-        <Typography variant="h5" textAlign="center">
-          Product not found or temporarily unavailable.
-        </Typography>
+      <Container maxWidth="md" sx={{ py: 15, textAlign: "center" }}>
+        <Typography variant="h4" sx={{ fontWeight: 800, mb: 2 }}>Producto no encontrado</Typography>
+        <Typography sx={{ color: "#5E6B7E", mb: 4 }}>El producto que buscas no existe o ha sido removido.</Typography>
+        <Button component={Link} href="/products" variant="contained" sx={{ bgcolor: "#0a0d15" }}>Volver a la colección</Button>
       </Container>
     );
   }
-  const allProduct: Product[] = await getProducts();
-
-  // Related logic
-
-  const related = allProduct.filter((p) => p.id !== product.id).slice(0, 4);
 
   return (
-    <Container
-      sx={{
-        py: 6,
-        maxWidth: "md",
-      }}
-    >
-      {/* Main Product area */}
-      {/* Main Product area */}
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "1.1fr 1fr" },
-          gap: { xs: 4, md: 8 },
-          alignItems: "center",
-        }}
-      >
-        {/* IMAGE SIDE */}
-        <Box
-          sx={{
-            borderRadius: 6,
-            overflow: "hidden",
-            background: "rgba(255,255,255,0.6)",
-            border: "1px solid rgba(20, 32, 56, 0.06)",
-            boxShadow: "0 30px 60px rgba(15, 23, 42, 0.08)",
-            p: 2,
-          }}
-        >
-          <Box
-            sx={{
-              height: { xs: 260, md: 420 },
-              borderRadius: 4,
-              backgroundImage: `url(${product.image_url})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-        </Box>
-
-        {/* TEXT SIDE */}
-        <Box>
-          <Typography
-            sx={{
-              fontSize: { xs: "1.8rem", md: "2.4rem" },
-              fontWeight: 800,
-              color: "#142038",
-              mb: 1.5,
-              letterSpacing: "-0.02em",
-            }}
-          >
-            {product.name}
-          </Typography>
-
-          <Typography
-            sx={{
-              fontSize: "1.6rem",
-              fontWeight: 800,
-              color: "#5F6F65",
-              mb: 2,
-            }}
-          >
-            ${product.price.toFixed(2)}
-          </Typography>
-
-          <Typography
-            sx={{
-              color: "#5E6B7E",
-              lineHeight: 1.8,
-              fontSize: 16,
-              mb: 4,
-              maxWidth: 420,
-            }}
-          >
-            {product.description}
-          </Typography>
-
-          <Box sx={{ maxWidth: 320 }}>
-            <AddToCartButton product={product} />
-          </Box>
-        </Box>
+    <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
+      <Box sx={{ mb: 4 }}>
+        <Button onClick={() => router.back()} startIcon={<ArrowBackIcon />} sx={{ color: "#5E6B7E", textTransform: "none", fontWeight: 600, "&:hover": { color: "#0a0d15" } }}>
+          Volver a la colección
+        </Button>
       </Box>
 
-      {/* RELATED PRODUCTS SECTION */}
-      {/* RELATED PRODUCTS SECTION */}
-      <Box sx={{ mt: { xs: 8, md: 10 }, pt: { xs: 2, md: 4 } }}>
-        <Box sx={{ textAlign: "center", mb: 4 }}>
-          <Typography
-            variant="overline"
-            sx={{
-              color: "#5E6B7E",
-              fontWeight: 700,
-              letterSpacing: "0.16em",
+      <Grid container spacing={{ xs: 4, md: 8 }} alignItems="flex-start">
+        
+        {/* Imagen del producto - Mismo tamaño y proporción que la colección */}
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Box 
+            sx={{ 
+              position: "relative",
+              width: "100%", 
+              maxWidth: 500, 
+              mx: "auto", 
+              borderRadius: 4,
+              overflow: "hidden",
+              boxShadow: "0 20px 40px rgba(0,0,0,0.1)"
             }}
           >
-            Related Picks
-          </Typography>
-
-          <Typography
-            sx={{
-              fontSize: { xs: "2rem", md: "2.4rem" },
-              fontWeight: 800,
-              color: "#142038",
-              letterSpacing: "-0.03em",
-              mt: 1,
-            }}
-          >
-            You might also like
-          </Typography>
-        </Box>
-
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr",
-              sm: "repeat(2, 1fr)",
-              md: "repeat(4, 1fr)",
-            },
-            gap: 3,
-          }}
-        >
-          {related.map((p) => (
-            <Card
-              key={p.id}
-              sx={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                overflow: "hidden",
-                borderRadius: 5,
-                border: "1px solid rgba(20, 32, 56, 0.06)",
-                boxShadow: "0 18px 40px rgba(25, 35, 52, 0.06)",
-                bgcolor: "#FFFFFF",
-                transition: "transform 180ms ease, box-shadow 180ms ease",
-                "&:hover": {
-                  transform: "translateY(-4px)",
-                  boxShadow: "0 24px 50px rgba(25, 35, 52, 0.1)",
-                },
+            <Box 
+              component="img"
+              src={product.image_url}
+              alt={product.name}
+              sx={{ 
+                width: "100%", 
+                aspectRatio: "4/5", 
+                objectFit: "cover", 
+                display: "block"
               }}
-            >
-              <Link
-                href={`/products/${p.id}`}
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <CardActionArea
-                  sx={{
-                    display: "block",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      position: "relative",
-                      height: 210,
-                      backgroundImage: `url(${p.image_url})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      backgroundColor: "#E8ECE8",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        inset: 0,
-                        background:
-                          "linear-gradient(to top, rgba(0,0,0,0.12), transparent)",
-                      }}
-                    />
+            />
+          </Box>
+        </Grid>
 
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        top: 14,
-                        left: 14,
-                        zIndex: 2,
-                        px: 1.25,
-                        py: 0.6,
-                        borderRadius: 999,
-                        bgcolor: "rgba(255,255,255,0.88)",
-                        color: "#1E2A3A",
-                        fontSize: 13,
-                        fontWeight: 700,
-                        lineHeight: 1,
-                        textTransform: "capitalize",
-                      }}
-                    >
-                      {p.category}
-                    </Box>
-                  </Box>
+        {/* Información del producto */}
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Stack spacing={3}>
+            <Chip label={product.category} sx={{ width: "fit-content", bgcolor: "#F8F9FA", fontWeight: 700, color: "#0a0d15" }} />
+            
+            <Typography variant="h3" sx={{ fontWeight: 800, color: "#0a0d15", fontSize: { xs: "2rem", md: "2.8rem" }, lineHeight: 1.1 }}>
+              {product.name}
+            </Typography>
 
-                  <CardContent
-                    sx={{
-                      flexGrow: 1,
-                      px: 2.25,
-                      py: 2.25,
-                    }}
-                  >
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: 700,
-                        color: "#142038",
-                        mb: 1,
-                        lineHeight: 1.3,
-                        fontSize: "1.05rem",
-                      }}
-                    >
-                      {p.name}
-                    </Typography>
+            {/* Precio en Soles */}
+            <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15" }}>
+              S/. {product.price.toFixed(2)}
+            </Typography>
 
-                    <Typography
-                      sx={{
-                        color: "#5E6B7E",
-                        fontSize: 14,
-                        lineHeight: 1.7,
-                        mb: 1.75,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        minHeight: 48,
-                      }}
-                    >
-                      {p.description}
-                    </Typography>
+            <Typography sx={{ color: "#5E6B7E", fontSize: "1.05rem", lineHeight: 1.7 }}>
+              {product.description}
+            </Typography>
 
-                    <Typography
-                      sx={{
-                        fontSize: "1.2rem",
-                        fontWeight: 800,
-                        color: "#142038",
-                      }}
-                    >
-                      ${p.price.toFixed(2)}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Link>
-
-              <CardActions
-                sx={{
-                  px: 2.25,
-                  pb: 2.25,
-                  pt: 0,
-                  mt: "auto",
+            <Box sx={{ py: 2 }}>
+              {/* Botón con el mismo estilo blanco/negro del resto de la tienda */}
+              <Button 
+                variant="outlined" 
+                size="large"
+                startIcon={<ShoppingBagIcon />} 
+                onClick={() => addToCart({ ...product, image: product.image_url })} 
+                fullWidth
+                sx={{ 
+                  bgcolor: "white", 
+                  color: "#0a0d15", 
+                  borderColor: "#0a0d15", 
+                  py: 2, 
+                  fontSize: "1.1rem",
+                  borderRadius: 999,
+                  fontWeight: 700,
+                  transition: "all 0.3s",
+                  "&:hover": { bgcolor: "#0a0d15", color: "white", borderColor: "#0a0d15" } 
                 }}
               >
-                <Box sx={{ width: "100%" }}>
-                  <AddToCartButton product={p} />
-                </Box>
-              </CardActions>
-            </Card>
-          ))}
+                Añadir al carrito
+              </Button>
+            </Box>
+
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, color: "#5E6B7E", mt: 2 }}>
+              <LocalShippingIcon />
+              <Typography sx={{ fontSize: "0.9rem" }}>Envío gratis a todo el Perú (Miembros VIP)</Typography>
+            </Box>
+          </Stack>
+        </Grid>
+      </Grid>
+
+      {/* Sección de productos relacionados */}
+      <Box sx={{ mt: 12, pt: 6, borderTop: "1px solid rgba(10, 13, 21, 0.05)" }}>
+        <Box sx={{ textAlign: "center", mb: 6 }}>
+          {/* Textos en español */}
+          <Typography variant="overline" sx={{ color: "#5E6B7E", fontWeight: 700, letterSpacing: "0.16em" }}>Productos relacionados</Typography>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: "#142038", mt: 0.5 }}>También te puede interesar</Typography>
         </Box>
+
+        <Grid container spacing={3}>
+          {relatedProducts.map((relProduct) => (
+            <Grid key={relProduct.id} size={{ xs: 12, sm: 6, md: 4 }}>
+              <Card elevation={0} sx={{ height: "100%", display: "flex", flexDirection: "column", borderRadius: 4, overflow: "hidden", bgcolor: "#FFFFFF", border: "1px solid rgba(20, 32, 56, 0.06)", transition: "transform 0.3s", "&:hover": { transform: "translateY(-5px)" } }}>
+                <Link href={`/products/${relProduct.id}`} style={{ display: "block", overflow: "hidden" }}>
+                  <CardMedia 
+                    component="img" 
+                    image={relProduct.image_url} 
+                    alt={relProduct.name} 
+                    sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.4s ease", "&:hover": { transform: "scale(1.05)" } }} 
+                  />
+                </Link>
+                <CardContent sx={{ p: 3, display: "flex", flexDirection: "column", flexGrow: 1 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 800, color: "#142038", fontSize: "1.1rem", mb: 1 }}>{relProduct.name}</Typography>
+                  <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem", lineHeight: 1.5, mb: 2, flexGrow: 1 }}>{relProduct.description}</Typography>
+                  <Typography sx={{ fontSize: "1.1rem", fontWeight: 800, color: "#142038", mb: 2 }}>S/. {relProduct.price.toFixed(2)}</Typography>
+                  <Button 
+                    variant="outlined" 
+                    fullWidth 
+                    onClick={() => addToCart({ ...relProduct, image: relProduct.image_url })} 
+                    sx={{ bgcolor: "white", color: "#0a0d15", borderColor: "#0a0d15", py: 1, fontSize: "0.9rem", transition: "all 0.3s", "&:hover": { bgcolor: "#0a0d15", color: "white", borderColor: "#0a0d15" } }}
+                  >
+                    Añadir al carrito
+                  </Button>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       </Box>
     </Container>
   );
