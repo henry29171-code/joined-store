@@ -50,8 +50,28 @@ function ProductsContent() {
         </Typography>
       </Box>
 
-      {/* Filtros */}
-      <Box sx={{ display: "flex", justifyContent: "center", gap: 3, mb: 6, flexWrap: "wrap" }}>
+      {/* Indicador de deslizamiento para móvil */}
+      <Box sx={{ display: { xs: "flex", md: "none" }, justifyContent: "flex-end", mb: 1, pr: 1 }}>
+        <Typography sx={{ fontSize: "0.75rem", color: "#9CA3AF", fontWeight: 600 }}>
+          Desliza para ver más →
+        </Typography>
+      </Box>
+
+      {/* Filtros Deslizantes */}
+      <Box 
+        sx={{ 
+          display: "flex", 
+          justifyContent: { xs: "flex-start", md: "center" }, 
+          gap: 3, 
+          mb: 6, 
+          overflowX: "auto", // Scroll horizontal
+          flexWrap: "nowrap", // Evita que salten de línea
+          whiteSpace: "nowrap",
+          "&::-webkit-scrollbar": { display: "none" }, // Oculta la barra fea
+          scrollbarWidth: "none",
+          px: { xs: 2, md: 0 }
+        }}
+      >
         {categories.map((cat) => (
           <Typography
             key={cat}
@@ -63,6 +83,7 @@ function ProductsContent() {
               color: activeCategory === cat ? "#0a0d15" : "#888",
               borderBottom: activeCategory === cat ? "2px solid #0a0d15" : "2px solid transparent",
               pb: 0.5,
+              flexShrink: 0, // Evita que se aplasten
               transition: "all 0.2s",
               "&:hover": { color: "#0a0d15" }
             }}
@@ -77,7 +98,6 @@ function ProductsContent() {
           <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
             <Box sx={{ display: "flex", flexDirection: "column", bgcolor: "transparent" }}>
               
-              {/* Contenedor de Imagen */}
               <Box 
                 sx={{ 
                   bgcolor: "#F3F4F6", 
@@ -102,9 +122,7 @@ function ProductsContent() {
                     }} 
                   />
                 </Link>
-                <Typography sx={{ position: "absolute", top: 16, left: 16, fontSize: "0.75rem", fontWeight: 600, color: "#0a0d15" }}>
-                  Bestseller
-                </Typography>
+                {/* ELIMINADO EL TEXTO "BESTSELLER" */}
               </Box>
               
               <Box sx={{ px: 1 }}>
@@ -118,14 +136,13 @@ function ProductsContent() {
                   {product.category}
                 </Typography>
 
-                {/* BOTÓN GRIS #B0B3B8 (15% más oscuro) */}
                 <Button 
                   variant="contained" 
                   fullWidth 
                   onClick={() => addToCart({ ...product, image: product.image_url })} 
                   disableElevation
                   sx={{ 
-                    bgcolor: "#B0B3B8", // Gris ligeramente más oscuro
+                    bgcolor: "#B0B3B8", 
                     color: "#111827", 
                     border: "none",
                     py: 1.2, 

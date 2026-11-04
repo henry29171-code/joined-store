@@ -41,11 +41,13 @@ export default function ProductDetailPage() {
   if (loading) return <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}><CircularProgress sx={{ color: "#0a0d15" }} /></Box>;
   if (!product) return <Container maxWidth="md" sx={{ py: 15, textAlign: "center" }}><Typography variant="h4">Producto no encontrado</Typography></Container>;
 
-  const hideVariants = ["Perfumes", "Relojes"].includes(product.category);
+  // En el futuro, esta info vendrá de la BD. Por ahora mostramos opciones genéricas para que se vea el diseño.
+  const isStandard = product.category === "Perfumes"; // Ejemplo: perfumes no tienen talla
   
   const getSizeOptions = () => {
     if (product.category === "Morrales" || product.category === "Billeteras" || product.category === "Correas") return ["Única"];
     if (product.category === "Pulseras") return ["S", "M", "L"];
+    if (product.category === "Relojes") return ["38mm", "40mm", "42mm", "44mm"]; // Tallas en números
     return ["Única"];
   };
 
@@ -100,7 +102,8 @@ export default function ProductDetailPage() {
 
             <Divider sx={{ my: 1, borderColor: "#E5E7EB" }} />
 
-            {!hideVariants && (
+            {/* SELECTORES DE VARIANTES (Visibles para que veas el diseño) */}
+            {!isStandard && (
               <>
                 <Box>
                   <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Seleccionar tamaño</Typography>
@@ -138,7 +141,7 @@ export default function ProductDetailPage() {
               </>
             )}
 
-            {/* BOTÓN "AÑADIR AL CARRITO" (Gris 3D) */}
+            {/* BOTONES */}
             <Button 
               variant="contained" onClick={() => addToCart({ ...product, image: product.image_url })} fullWidth
               disableElevation
@@ -164,7 +167,6 @@ export default function ProductDetailPage() {
               Añadir al carrito
             </Button>
             
-            {/* BOTÓN "COMPRAR AHORA" (Azul Oscuro) */}
             <Button 
               variant="contained" onClick={handleComprarAhora} fullWidth
               disableElevation

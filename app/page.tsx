@@ -17,9 +17,9 @@ function TikTokIcon(props: any) {
 }
 
 const featuredProducts = [
-  { id: "1", name: "Morral Urban Explorer", price: "S/. 159.90", description: "Resistente al agua y con un diseño minimalista ideal para la ciudad.", badge: "Best seller", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop" },
-  { id: "2", name: "Reloj Minimalist Classic", price: "S/. 289.00", description: "Malla de acero inoxidable y movimiento de precisión para un look elegante.", badge: "Premium", image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=800&auto=format&fit=crop" },
-  { id: "3", name: "Perfume Dark Wood", price: "S/. 199.90", description: "Notas amaderadas y especiadas que dejan una huella sofisticada.", badge: "New arrival", image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800&auto=format&fit=crop" },
+  { id: "1", name: "Morral Urban Explorer", price: "S/. 159.90", description: "Resistente al agua y con un diseño minimalista ideal para la ciudad.", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop" },
+  { id: "2", name: "Reloj Minimalist Classic", price: "S/. 289.00", description: "Malla de acero inoxidable y movimiento de precisión para un look elegante.", image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=800&auto=format&fit=crop" },
+  { id: "3", name: "Perfume Dark Wood", price: "S/. 199.90", description: "Notas amaderadas y especiadas que dejan una huella sofisticada.", image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800&auto=format&fit=crop" },
 ];
 
 export default function HomePage() {
@@ -32,51 +32,51 @@ export default function HomePage() {
           <Grid container spacing={{ xs: 4, md: 8 }} alignItems="center">
             <Grid size={{ xs: 12, md: 6 }}>
               <Stack spacing={3}>
-                <Chip label="Joined accesorios" sx={{ width: "fit-content", fontWeight: 700, bgcolor: "#F2F4F7", color: "#0a0d15" }} />
+                <Chip label="Joined accesorios" sx={{ width: "fit-content", fontWeight: 700, bgcolor: "#F3F4F6", color: "#0a0d15" }} />
                 
-                <Typography variant="h2" sx={{ color: "#0a0d15", fontSize: { xs: "2.2rem", sm: "2.6rem", md: "3.2rem" }, lineHeight: 1.2, fontWeight: 800, maxWidth: 550 }}>
+                <Typography variant="h2" sx={{ color: "#0a0d15", fontSize: { xs: "2.2rem", sm: "2.6rem", md: "3.2rem" }, lineHeight: 1.2, fontWeight: 500, letterSpacing: "-0.02em", maxWidth: 550 }}>
                   Eleva tu estilo con accesorios que hablan por ti
                 </Typography>
 
-                <Typography sx={{ color: "#5E6B7E", fontSize: { xs: "1rem", md: "1.1rem" }, lineHeight: 1.7, maxWidth: 500 }}>
+                <Typography sx={{ color: "#666", fontSize: { xs: "1rem", md: "1.1rem" }, lineHeight: 1.7, maxWidth: 500 }}>
                   Explora nuestra colección de morrales, relojes y perfumes. Piezas seleccionadas para quienes valoran el diseño y la calidad.
                 </Typography>
 
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ pt: 1 }}>
-                  <Button component={Link} href="/products" variant="contained" sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, px: 4, py: 1.5 }}>
+                  <Button component={Link} href="/products" variant="contained" disableElevation sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, px: 4, py: 1.5, borderRadius: "8px", fontWeight: 600 }}>
                     Explorar colección
                   </Button>
-                  <Button component={Link} href="/comunidad" variant="outlined" sx={{ borderColor: "#0a0d15", color: "#0a0d15", px: 4, py: 1.5, "&:hover": { bgcolor: "#F5F5F5" } }}>
+                  <Button component={Link} href="/comunidad" variant="outlined" sx={{ borderColor: "#0a0d15", color: "#0a0d15", px: 4, py: 1.5, borderRadius: "8px", fontWeight: 600, "&:hover": { bgcolor: "#F9FAFB" } }}>
                     Unirme al club VIP
                   </Button>
                 </Stack>
               </Stack>
             </Grid>
 
-            {/* Cuadrado del Hero - Gris Perla con Sombra */}
+            {/* Tarjeta Gris 3D */}
             <Grid size={{ xs: 12, md: 6 }}>
               <Box 
                 sx={{ 
                   minHeight: { xs: 300, md: 450 }, 
-                  borderRadius: 6, 
-                  bgcolor: "#F0F2F5", // Gris perla (más visible que el anterior)
-                  boxShadow: "0 20px 40px rgba(0,0,0,0.03)", // Sombra sutil
+                  borderRadius: "16px", 
+                  bgcolor: "#F3F4F6", 
                   p: { xs: 4, md: 6 }, 
                   display: "flex", 
                   alignItems: "center", 
                   justifyContent: "center",
                   position: "relative",
-                  overflow: "hidden"
+                  overflow: "hidden",
+                  boxShadow: "0 15px 35px rgba(0,0,0,0.06)"
                 }}
               >
                 <Box sx={{ position: "relative", zIndex: 2, maxWidth: 380, textAlign: "center" }}>
-                  <Typography sx={{ fontSize: 12, textTransform: "uppercase", letterSpacing: "0.2em", color: "#5E6B7E", mb: 2, fontWeight: 700 }}>
+                  <Typography sx={{ fontSize: 12, textTransform: "uppercase", letterSpacing: "0.2em", color: "#9CA3AF", mb: 2, fontWeight: 600 }}>
                     La esencia de la marca
                   </Typography>
-                  <Typography variant="h4" sx={{ fontWeight: 800, lineHeight: 1.3, mb: 2, fontSize: { xs: "1.5rem", md: "2rem" }, color: "#0a0d15" }}>
+                  <Typography variant="h4" sx={{ fontWeight: 600, lineHeight: 1.3, mb: 2, fontSize: { xs: "1.5rem", md: "2rem" }, color: "#0a0d15" }}>
                     Diseñado para destacar en cada detalle
                   </Typography>
-                  <Typography sx={{ color: "#5E6B7E", lineHeight: 1.6, fontSize: { xs: "0.9rem", md: "1rem" } }}>
+                  <Typography sx={{ color: "#666", lineHeight: 1.6, fontSize: { xs: "0.9rem", md: "1rem" } }}>
                     Calidad, textura y durabilidad en una sola pieza.
                   </Typography>
                 </Box>
@@ -91,34 +91,35 @@ export default function HomePage() {
         <Container maxWidth="lg">
           <Stack direction={{ xs: "column", md: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", md: "flex-end" }} spacing={1} sx={{ mb: 4 }}>
             <Box>
-              <Typography variant="overline" sx={{ color: "#5E6B7E", fontWeight: 700, letterSpacing: "0.16em", fontSize: "0.8rem" }}>Productos destacados</Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mt: 0.5, fontSize: { xs: "1.6rem", md: "2rem" } }}>Lo más buscado</Typography>
+              <Typography variant="overline" sx={{ color: "#666", fontWeight: 600, letterSpacing: "0.16em", fontSize: "0.8rem" }}>Productos destacados</Typography>
+              <Typography variant="h4" sx={{ fontWeight: 500, color: "#0a0d15", mt: 0.5, fontSize: { xs: "1.6rem", md: "2rem" } }}>Lo más buscado</Typography>
             </Box>
-            <Button component={Link} href="/products" variant="text" sx={{ textTransform: "none", fontWeight: 700, color: "#0a0d15", fontSize: "0.9rem" }}>Ver todos los productos</Button>
+            <Button component={Link} href="/products" variant="text" sx={{ textTransform: "none", fontWeight: 600, color: "#0a0d15", fontSize: "0.9rem" }}>Ver todos los productos</Button>
           </Stack>
 
-          <Grid container spacing={{ xs: 2, md: 3 }}>
+          <Grid container spacing={{ xs: 3, md: 4 }}>
             {featuredProducts.map((product) => (
               <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
-                <Card elevation={0} sx={{ height: "100%", display: "flex", flexDirection: "column", borderRadius: 4, overflow: "hidden", bgcolor: "#FFFFFF", border: "1px solid #EAEAEA", transition: "transform 0.3s", "&:hover": { transform: "translateY(-5px)", boxShadow: "0 10px 20px rgba(0,0,0,0.05)" } }}>
+                <Box sx={{ display: "flex", flexDirection: "column", bgcolor: "transparent" }}>
                   
-                  <Box sx={{ position: "relative" }}>
+                  {/* Imagen con fondo gris y sombra 3D */}
+                  <Box sx={{ bgcolor: "#F3F4F6", position: "relative", overflow: "hidden", mb: 2, borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.05)" }}>
                     <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
-                      <CardMedia component="img" image={product.image} alt={product.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover" }} />
+                      <Box component="img" src={product.image} alt={product.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.4s ease", "&:hover": { transform: "scale(1.04)" } }} />
                     </Link>
-                    <Chip label={product.badge} sx={{ position: "absolute", top: 16, left: 16, bgcolor: "rgba(255,255,255,0.9)", color: "#0a0d15", fontWeight: 700, fontSize: "0.75rem", zIndex: 2 }} />
                   </Box>
                   
-                  <CardContent sx={{ p: 3, display: "flex", flexDirection: "column", flexGrow: 1 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 800, color: "#0a0d15", fontSize: "1.1rem", mb: 1 }}>{product.name}</Typography>
-                    <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem", lineHeight: 1.5, mb: 2, flexGrow: 1, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{product.description}</Typography>
-                    <Typography sx={{ fontSize: "1.1rem", fontWeight: 800, color: "#0a0d15", mb: 2 }}>{product.price}</Typography>
+                  <Box sx={{ px: 1 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: "#0a0d15", fontSize: "1.1rem", mb: 0.5 }}>{product.name}</Typography>
+                    <Typography sx={{ color: "#666", fontSize: "0.9rem", lineHeight: 1.5, mb: 2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{product.description}</Typography>
+                    <Typography sx={{ fontSize: "1rem", fontWeight: 500, color: "#333", mb: 2 }}>{product.price}</Typography>
                     
-                    <Button component={Link} href={`/products/${product.id}`} variant="outlined" fullWidth sx={{ bgcolor: "white", color: "#0a0d15", borderColor: "#0a0d15", py: 1, fontSize: "0.9rem", transition: "all 0.3s", "&:hover": { bgcolor: "#0a0d15", color: "white", borderColor: "#0a0d15" } }}>
+                    {/* Botón Gris 3D */}
+                    <Button component={Link} href={`/products/${product.id}`} variant="contained" fullWidth disableElevation sx={{ bgcolor: "#B0B3B8", color: "#111827", py: 1.2, fontSize: "0.9rem", fontWeight: 700, borderRadius: "8px", boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", transition: "all 0.3s ease", "&:hover": { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
                       Comprar ahora
                     </Button>
-                  </CardContent>
-                </Card>
+                  </Box>
+                </Box>
               </Grid>
             ))}
           </Grid>
@@ -126,18 +127,18 @@ export default function HomePage() {
       </Box>
 
       {/* 3. Explora por categorías */}
-      <Box sx={{ py: { xs: 8, md: 10 }, bgcolor: "#FAFAFA", borderTop: "1px solid #EAEAEA", borderBottom: "1px solid #EAEAEA" }}>
+      <Box sx={{ py: { xs: 8, md: 10 }, bgcolor: "#FAFAFA", borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB" }}>
         <Container maxWidth="lg">
           <Box sx={{ textAlign: "center", mb: 5 }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", fontSize: { xs: "1.6rem", md: "2rem" } }}>Explora por categorías</Typography>
+            <Typography variant="h4" sx={{ fontWeight: 500, color: "#0a0d15", fontSize: { xs: "1.6rem", md: "2rem" } }}>Explora por categorías</Typography>
           </Box>
           <Grid container spacing={3}>
             {[{name: "Morrales", img: "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=600&auto=format&fit=crop"}, {name: "Relojes", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600&auto=format&fit=crop"}, {name: "Perfumes", img: "https://images.unsplash.com/photo-1592914610354-fd354ea45e48?q=80&w=600&auto=format&fit=crop"}].map((cat) => (
               <Grid key={cat.name} size={{ xs: 12, sm: 4 }}>
                 <Link href={`/products?category=${encodeURIComponent(cat.name)}`} style={{ textDecoration: "none" }}>
-                  <Box sx={{ height: 200, borderRadius: 4, overflow: "hidden", position: "relative", backgroundImage: `url(${cat.img})`, backgroundSize: "cover", backgroundPosition: "center", display: "flex", alignItems: "center", justifyContent: "center", transition: "transform 0.3s", "&:hover": { transform: "scale(1.02)" } }}>
-                    <Box sx={{ position: "absolute", inset: 0, bgcolor: "rgba(10, 13, 21, 0.3)" }} />
-                    <Typography variant="h5" sx={{ color: "white", fontWeight: 800, zIndex: 2, letterSpacing: "0.05em" }}>{cat.name}</Typography>
+                  <Box sx={{ height: 200, borderRadius: "12px", overflow: "hidden", position: "relative", backgroundImage: `url(${cat.img})`, backgroundSize: "cover", backgroundPosition: "center", display: "flex", alignItems: "center", justifyContent: "center", transition: "transform 0.3s", "&:hover": { transform: "scale(1.02)" }, boxShadow: "0 10px 25px rgba(0,0,0,0.08)" }}>
+                    <Box sx={{ position: "absolute", inset: 0, bgcolor: "rgba(10, 13, 21, 0.4)" }} />
+                    <Typography variant="h5" sx={{ color: "white", fontWeight: 600, zIndex: 2, letterSpacing: "0.05em" }}>{cat.name}</Typography>
                   </Box>
                 </Link>
               </Grid>
@@ -150,41 +151,22 @@ export default function HomePage() {
       <Box sx={{ py: { xs: 8, md: 10 } }}>
         <Container maxWidth="lg">
           <Grid container spacing={4} textAlign="center">
-            <Grid size={{ xs: 12, md: 4 }}><DiamondIcon sx={{ fontSize: 40, color: "#0a0d15", mb: 2 }} /><Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>Calidad premium</Typography><Typography sx={{ color: "#5E6B7E", fontSize: "0.95rem" }}>Materiales seleccionados para resistir el paso del tiempo.</Typography></Grid>
-            <Grid size={{ xs: 12, md: 4 }}><EnergySavingsLeafIcon sx={{ fontSize: 40, color: "#0a0d15", mb: 2 }} /><Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>Compromiso ambiental</Typography><Typography sx={{ color: "#5E6B7E", fontSize: "0.95rem" }}>Diseños atemporales que combaten el consumo desmedido.</Typography></Grid>
-            <Grid size={{ xs: 12, md: 4 }}><WorkspacePremiumIcon sx={{ fontSize: 40, color: "#0a0d15", mb: 2 }} /><Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>Estilo excepcional</Typography><Typography sx={{ color: "#5E6B7E", fontSize: "0.95rem" }}>Piezas versátiles que elevan cualquier outfit en tu día a día.</Typography></Grid>
+            <Grid size={{ xs: 12, md: 4 }}><DiamondIcon sx={{ fontSize: 40, color: "#0a0d15", mb: 2 }} /><Typography variant="h6" sx={{ fontWeight: 600, mb: 1, color: "#0a0d15" }}>Calidad premium</Typography><Typography sx={{ color: "#666", fontSize: "0.95rem" }}>Materiales seleccionados para resistir el paso del tiempo.</Typography></Grid>
+            <Grid size={{ xs: 12, md: 4 }}><EnergySavingsLeafIcon sx={{ fontSize: 40, color: "#0a0d15", mb: 2 }} /><Typography variant="h6" sx={{ fontWeight: 600, mb: 1, color: "#0a0d15" }}>Compromiso ambiental</Typography><Typography sx={{ color: "#666", fontSize: "0.95rem" }}>Diseños atemporales que combaten el consumo desmedido.</Typography></Grid>
+            <Grid size={{ xs: 12, md: 4 }}><WorkspacePremiumIcon sx={{ fontSize: 40, color: "#0a0d15", mb: 2 }} /><Typography variant="h6" sx={{ fontWeight: 600, mb: 1, color: "#0a0d15" }}>Estilo excepcional</Typography><Typography sx={{ color: "#666", fontSize: "0.95rem" }}>Piezas versátiles que elevan cualquier outfit en tu día a día.</Typography></Grid>
           </Grid>
         </Container>
       </Box>
 
-      {/* 5. Banner VIP - Gris Perla */}
+      {/* 5. Banner VIP */}
       <Box sx={{ py: { xs: 6, md: 8 } }}>
         <Container maxWidth="lg">
-          <Box 
-            sx={{ 
-              bgcolor: "#F0F2F5", // Gris perla
-              boxShadow: "0 10px 30px rgba(0,0,0,0.03)",
-              borderRadius: 6, 
-              p: { xs: 4, md: 8 }, 
-              display: "flex", 
-              flexDirection: { xs: "column", md: "row" }, 
-              alignItems: "center", 
-              justifyContent: "space-between", 
-              gap: 4 
-            }}
-          >
+          <Box sx={{ bgcolor: "#F3F4F6", borderRadius: "16px", p: { xs: 4, md: 8 }, display: "flex", flexDirection: { xs: "column", md: "row" }, alignItems: "center", justifyContent: "space-between", gap: 4, boxShadow: "0 15px 35px rgba(0,0,0,0.06)" }}>
             <Box sx={{ maxWidth: 600 }}>
-              <Typography variant="h4" sx={{ color: "#0a0d15", fontWeight: 800, mb: 2, fontSize: { xs: "1.6rem", md: "2rem" } }}>
-                Únete al club Joined VIP
-              </Typography>
-              <Typography sx={{ color: "#5E6B7E", fontSize: "1rem", lineHeight: 1.6 }}>
-                Obtén envíos gratuitos a todo el Perú, servicio de limpieza de cuero y acceso anticipado a nuestras nuevas colecciones.
-              </Typography>
+              <Typography variant="h4" sx={{ color: "#0a0d15", fontWeight: 600, mb: 2, fontSize: { xs: "1.6rem", md: "2rem" } }}>Únete al club Joined VIP</Typography>
+              <Typography sx={{ color: "#666", fontSize: "1rem", lineHeight: 1.6 }}>Obtén envíos gratuitos a todo el Perú, servicio de limpieza de cuero y acceso anticipado a nuestras nuevas colecciones.</Typography>
             </Box>
-            <Button 
-              component={Link} href="/comunidad" variant="contained" size="large" endIcon={<ArrowForwardIcon />}
-              sx={{ bgcolor: "#0a0d15", color: "white", fontWeight: 800, px: 5, py: 1.5, borderRadius: 999, flexShrink: 0, "&:hover": { bgcolor: "#1a1d24" } }}
-            >
+            <Button component={Link} href="/comunidad" variant="contained" size="large" endIcon={<ArrowForwardIcon />} disableElevation sx={{ bgcolor: "#0a0d15", color: "white", fontWeight: 600, px: 5, py: 1.5, borderRadius: "8px", flexShrink: 0, boxShadow: "0 4px 14px 0 rgba(10, 13, 21, 0.2)", "&:hover": { bgcolor: "#1a1d24", transform: "translateY(-2px)", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.4)" } }}>
               Conocer beneficios
             </Button>
           </Box>
@@ -192,11 +174,11 @@ export default function HomePage() {
       </Box>
 
       {/* 6. Redes sociales */}
-      <Box sx={{ py: { xs: 6, md: 8 }, borderTop: "1px solid #EAEAEA" }}>
+      <Box sx={{ py: { xs: 6, md: 8 }, borderTop: "1px solid #E5E7EB" }}>
         <Container maxWidth="lg">
           <Box sx={{ textAlign: "center" }}>
-            <Typography variant="h5" sx={{ fontWeight: 800, color: "#0a0d15", mb: 1 }}>Síguenos en nuestras redes sociales</Typography>
-            <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.95rem" }}>Descubre novedades, tips de estilo y contenido exclusivo de la marca.</Typography>
+            <Typography variant="h5" sx={{ fontWeight: 600, color: "#0a0d15", mb: 1 }}>Síguenos en nuestras redes sociales</Typography>
+            <Typography sx={{ color: "#666", mb: 3, fontSize: "0.95rem" }}>Descubre novedades, tips de estilo y contenido exclusivo de la marca.</Typography>
             <Stack direction="row" spacing={2} justifyContent="center">
               <IconButton component="a" href="https://www.facebook.com/Joined.pe/" target="_blank" sx={{ bgcolor: "#0a0d15", color: "white", "&:hover": { bgcolor: "#1a1d24" } }}><FacebookIcon /></IconButton>
               <IconButton component="a" href="https://www.instagram.com/joinedperu" target="_blank" sx={{ bgcolor: "#0a0d15", color: "white", "&:hover": { bgcolor: "#1a1d24" } }}><InstagramIcon /></IconButton>
