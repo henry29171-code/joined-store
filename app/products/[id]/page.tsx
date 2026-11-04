@@ -20,8 +20,8 @@ export default function ProductDetailPage() {
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [selectedSize, setSelectedSize] = useState("O/S");
-  const [selectedColor, setSelectedColor] = useState("Negro");
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -30,6 +30,11 @@ export default function ProductDetailPage() {
       const { data: productData } = await supabase.from("products").select("*").eq("id", params.id).single();
       if (productData) {
         setProduct(productData);
+        
+        // Inicializar selectores con el primer valor disponible
+        if (productData.sizes && productData.sizes.length > 0) setSelectedSize(productData.sizes[0]);
+        if (productData.colors && productData.colors.length > 0) setSelectedColor(productData.colors[0]);
+
         const { data: relatedData } = await supabase.from("products").select("*").eq("category", productData.category).neq("id", productData.id).limit(3);
         if (relatedData) setRelatedProducts(relatedData);
       }
@@ -41,16 +46,11 @@ export default function ProductDetailPage() {
   if (loading) return <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}><CircularProgress sx={{ color: "#0a0d15" }} /></Box>;
   if (!product) return <Container maxWidth="md" sx={{ py: 15, textAlign: "center" }}><Typography variant="h4">Producto no encontrado</Typography></Container>;
 
-  // LÓGICA DE TALLAS SEGÚN LO SOLICITADO
-  const getSizeOptions = () => {
-    if (product.category === "Correas") return ["28", "30", "32", "34", "36", "38"];
-    if (product.category === "Pulseras") return ["150mm", "160mm", "170mm", "180mm", "190mm"];
-    // Relojes, Billeteras, Morrales, Perfumes
-    return ["O/S"]; 
-  };
-
-  // LÓGICA DE COLOR: Todos excepto perfumes
-  const showColor = product.category !== "Perfumes";
+  // Parsear características (vienen guardadas como string JSON)
+  let characteristicsList = [];
+  try {
+    if (product.characteristics) characteristicsList = JSON.parse(product.characteristics);
+  } catch (e) { characteristicsList = []; }
 
   const handleComprarAhora = () => {
     addToCart({ ...product, image: product.image_url });
@@ -70,71 +70,43 @@ export default function ProductDetailPage() {
       <Grid container spacing={{ xs: 4, md: 8 }} alignItems="flex-start">
         
         <Grid size={{ xs: 12, md: 6 }}>
-          <Box 
-            sx={{ 
-              width: "100%", 
-              bgcolor: "#F3F4F6", 
-              borderRadius: "16px", 
-              p: 2, 
-              mb: 2,
-              boxShadow: "0 15px 35px rgba(0,0,0,0.06)"
-            }}
-          >
+          <Box sx={{ width: "100%", bgcolor: "#F3F4F6", borderRadius: "16px", p: 2, mb: 2, boxShadow: "0 15px 35px rgba(0,0,0,0.06)" }}>
             <Box component="img" src={product.image_url} alt={product.name} sx={{ width: "100%", aspectRatio: "1/1", objectFit: "contain", display: "block" }} />
           </Box>
-          <Stack direction="row" spacing={1}>
-            {[1, 2, 3, 4].map((i) => (
-              <Box key={i} sx={{ width: 60, height: 60, bgcolor: "#F3F4F6", borderRadius: "8px", border: i === 1 ? "2px solid #0a0d15" : "1px solid #E5E7EB", overflow: "hidden", cursor: "pointer", boxShadow: i === 1 ? "0 4px 10px rgba(0,0,0,0.1)" : "none" }}>
-                <Box component="img" src={product.image_url} sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              </Box>
-            ))}
-          </Stack>
         </Grid>
 
         <Grid size={{ xs: 12, md: 6 }}>
           <Stack spacing={2.5}>
-            <Typography variant="h4" sx={{ fontWeight: 600, color: "#0a0d15", fontSize: { xs: "1.8rem", md: "2.2rem" } }}>
-              {product.name}
-            </Typography>
-
-            <Typography variant="h6" sx={{ fontWeight: 500, color: "#333" }}>
-              S/. {Number(product.price).toFixed(2)}
+            <Typography variant="h4" sx={{ fontWeight: 600, color: "#0a0d15", fontSize: { xs: "1.8rem", md: "2.2rem" } }}>{product.name}</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 500, color: "#333" }}>S/. {Number(product.price).toFixed(2)}</Typography>
+            <Typography sx={{ fontSize: "0.9rem", color: product.stock > 0 ? "green" : "red" }}>
+              {product.stock > 0 ? `En stock (${product.stock} disponibles)` : "Agotado"}
             </Typography>
 
             <Divider sx={{ my: 1, borderColor: "#E5E7EB" }} />
 
-            {/* SELECTOR DE TALLA (Siempre visible, muestra O/S o las tallas específicas) */}
-            <Box>
-              <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Seleccionar tamaño</Typography>
-              <FormControl fullWidth size="small">
-                <Select 
-                  value={selectedSize} 
-                  onChange={(e) => setSelectedSize(e.target.value)}
-                  sx={{ borderRadius: "8px", bgcolor: "#FFF", "& .MuiOutlinedInput-notchedOutline": { borderColor: "#E5E7EB" } }}
-                >
-                  {getSizeOptions().map((size) => (
-                    <MenuItem key={size} value={size}>
-                      {size === "O/S" ? "Talla única (O/S)" : size}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
+            {/* SELECTOR DE TALLA DINÁMICO */}
+            {product.sizes && product.sizes.length > 0 && (
+              <Box>
+                <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Seleccionar tamaño</Typography>
+                <FormControl fullWidth size="small">
+                  <Select value={selectedSize} onChange={(e) => setSelectedSize(e.target.value)} sx={{ borderRadius: "8px", bgcolor: "#FFF" }}>
+                    {product.sizes.map((size: string) => (
+                      <MenuItem key={size} value={size}>{size === "O/S" ? "Única (O/S)" : size}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+            )}
 
-            {/* SELECTOR DE COLOR (Oculto para perfumes) */}
-            {showColor && (
+            {/* SELECTOR DE COLOR DINÁMICO */}
+            {product.colors && product.colors.length > 0 && (
               <Box>
                 <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Color</Typography>
                 <Stack direction="row" spacing={1}>
-                  {["Negro", "Marrón", "Azul"].map((color) => (
-                    <Box 
-                      key={color} onClick={() => setSelectedColor(color)}
-                      sx={{ 
-                        px: 2, py: 1, border: "1px solid", borderColor: selectedColor === color ? "#0a0d15" : "#E5E7EB",
-                        cursor: "pointer", fontSize: "0.85rem", fontWeight: selectedColor === color ? 600 : 400,
-                        color: selectedColor === color ? "#0a0d15" : "#718096", bgcolor: selectedColor === color ? "#F3F4F6" : "transparent",
-                        borderRadius: "8px"
-                      }}
+                  {product.colors.map((color: string) => (
+                    <Box key={color} onClick={() => setSelectedColor(color)}
+                      sx={{ px: 2, py: 1, border: "1px solid", borderColor: selectedColor === color ? "#0a0d15" : "#E5E7EB", cursor: "pointer", fontSize: "0.85rem", fontWeight: selectedColor === color ? 600 : 400, color: selectedColor === color ? "#0a0d15" : "#718096", bgcolor: selectedColor === color ? "#F3F4F6" : "transparent", borderRadius: "8px" }}
                     >
                       {color}
                     </Box>
@@ -143,51 +115,11 @@ export default function ProductDetailPage() {
               </Box>
             )}
 
-            {/* BOTONES */}
-            <Button 
-              variant="contained" onClick={() => addToCart({ ...product, image: product.image_url })} fullWidth
-              disableElevation
-              sx={{ 
-                bgcolor: "#B0B3B8", 
-                color: "#111827", 
-                border: "none",
-                py: 1.5, 
-                borderRadius: "8px", 
-                fontWeight: 700, 
-                fontSize: "1rem", 
-                boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", 
-                mt: 2, 
-                transition: "all 0.3s ease",
-                "&:hover": { 
-                  bgcolor: "#0a0d15", 
-                  color: "white", 
-                  boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)",
-                  transform: "translateY(-2px)"
-                } 
-              }}
-            >
+            <Button variant="contained" onClick={() => addToCart({ ...product, image: product.image_url })} fullWidth disableElevation sx={{ bgcolor: "#B0B3B8", color: "#111827", py: 1.5, borderRadius: "8px", fontWeight: 700, boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", mt: 2, transition: "all 0.3s ease", "&:hover": { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
               Añadir al carrito
             </Button>
             
-            <Button 
-              variant="contained" onClick={handleComprarAhora} fullWidth
-              disableElevation
-              sx={{ 
-                bgcolor: "#0a0d15", 
-                color: "white", 
-                py: 1.5, 
-                borderRadius: "8px", 
-                fontWeight: 700, 
-                fontSize: "1rem", 
-                boxShadow: "0 4px 14px 0 rgba(10, 13, 21, 0.2)", 
-                transition: "all 0.3s ease",
-                "&:hover": { 
-                  bgcolor: "#1a1d24", 
-                  boxShadow: "0 6px 20px rgba(10, 13, 21, 0.4)",
-                  transform: "translateY(-2px)"
-                } 
-              }}
-            >
+            <Button variant="contained" onClick={handleComprarAhora} fullWidth disableElevation sx={{ bgcolor: "#0a0d15", color: "white", py: 1.5, borderRadius: "8px", fontWeight: 700, boxShadow: "0 4px 14px 0 rgba(10, 13, 21, 0.2)", transition: "all 0.3s ease", "&:hover": { bgcolor: "#1a1d24", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.4)", transform: "translateY(-2px)" } }}>
               Comprar ahora
             </Button>
 
@@ -196,56 +128,57 @@ export default function ProductDetailPage() {
               <Typography sx={{ fontSize: "0.85rem" }}>Envío gratis a todo el Perú (Miembros VIP)</Typography>
             </Box>
 
-            <Typography sx={{ color: "#4A5568", fontSize: "0.95rem", lineHeight: 1.6, pt: 2 }}>
-              {product.description}
-            </Typography>
+            <Typography sx={{ color: "#4A5568", fontSize: "0.95rem", lineHeight: 1.6, pt: 2 }}>{product.description}</Typography>
           </Stack>
         </Grid>
       </Grid>
 
-      {/* Acordeones */}
+      {/* Acordeones Dinámicos */}
       <Box sx={{ mt: 8, borderTop: "1px solid #E5E7EB", pt: 4 }}>
-        <Accordion elevation={0} sx={{ bgcolor: "transparent", "&:before": { display: "none" } }}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ px: 0 }}>
-            <Typography sx={{ fontWeight: 500, fontSize: "1.1rem", color: "#0a0d15" }}>Características</Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ px: 0, color: "#4A5568", fontSize: "0.9rem" }}>
-            <ul style={{ paddingLeft: "20px", margin: 0 }}>
-              <li>Diseño minimalista y atemporal.</li>
-              <li>Materiales de alta durabilidad.</li>
-              <li>Garantía de 1 año incluida.</li>
-            </ul>
-          </AccordionDetails>
-        </Accordion>
-        <Divider sx={{ borderColor: "#E5E7EB" }} />
-        <Accordion elevation={0} sx={{ bgcolor: "transparent", "&:before": { display: "none" } }}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ px: 0 }}>
-            <Typography sx={{ fontWeight: 500, fontSize: "1.1rem", color: "#0a0d15" }}>Especificaciones</Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ px: 0, color: "#4A5568", fontSize: "0.9rem" }}>
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 6 }}><strong>Material:</strong> Cuero / Acero</Grid>
-              <Grid size={{ xs: 6 }}><strong>Peso:</strong> Variable</Grid>
-              <Grid size={{ xs: 6 }}><strong>Garantía:</strong> 1 año</Grid>
-              <Grid size={{ xs: 6 }}><strong>Origen:</strong> Perú</Grid>
-            </Grid>
-          </AccordionDetails>
-        </Accordion>
+        {characteristicsList.length > 0 && (
+          <Accordion elevation={0} sx={{ bgcolor: "transparent", "&:before": { display: "none" } }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ px: 0 }}>
+              <Typography sx={{ fontWeight: 500, fontSize: "1.1rem", color: "#0a0d15" }}>Características</Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ px: 0, color: "#4A5568", fontSize: "0.9rem" }}>
+              <ul style={{ paddingLeft: "20px", margin: 0 }}>
+                {characteristicsList.map((char: string, i: number) => <li key={i}>{char}</li>)}
+              </ul>
+            </AccordionDetails>
+          </Accordion>
+        )}
+        
+        {(product.specs_material || product.specs_dimensions || product.specs_weight || product.specs_warranty) && (
+          <>
+            <Divider sx={{ borderColor: "#E5E7EB" }} />
+            <Accordion elevation={0} sx={{ bgcolor: "transparent", "&:before": { display: "none" } }}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ px: 0 }}>
+                <Typography sx={{ fontWeight: 500, fontSize: "1.1rem", color: "#0a0d15" }}>Especificaciones</Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ px: 0, color: "#4A5568", fontSize: "0.9rem" }}>
+                <Grid container spacing={2}>
+                  {product.specs_material && <Grid size={{ xs: 6 }}><strong>Material:</strong> {product.specs_material}</Grid>}
+                  {product.specs_dimensions && <Grid size={{ xs: 6 }}><strong>Dimensiones:</strong> {product.specs_dimensions}</Grid>}
+                  {product.specs_weight && <Grid size={{ xs: 6 }}><strong>Peso:</strong> {product.specs_weight}</Grid>}
+                  {product.specs_warranty && <Grid size={{ xs: 6 }}><strong>Garantía:</strong> {product.specs_warranty}</Grid>}
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+          </>
+        )}
       </Box>
 
       {/* Relacionados */}
       {relatedProducts.length > 0 && (
         <Box sx={{ mt: 8, pt: 6, borderTop: "1px solid #E5E7EB" }}>
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h5" sx={{ fontWeight: 500, color: "#0a0d15" }}>También te puede interesar</Typography>
-          </Box>
+          <Box sx={{ mb: 4 }}><Typography variant="h5" sx={{ fontWeight: 500, color: "#0a0d15" }}>También te puede interesar</Typography></Box>
           <Grid container spacing={3}>
             {relatedProducts.map((relProduct) => (
               <Grid key={relProduct.id} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Box sx={{ bgcolor: "transparent" }}>
                   <Box sx={{ bgcolor: "#F3F4F6", mb: 2, overflow: "hidden", borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.05)" }}>
                     <Link href={`/products/${relProduct.id}`} style={{ display: "block" }}>
-                      <Box component="img" src={relProduct.image_url} alt={relProduct.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.3s", "&:hover": { transform: "scale(1.04)" } }} />
+                      <Box component="img" src={relProduct.image_url} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.3s", "&:hover": { transform: "scale(1.04)" } }} />
                     </Link>
                   </Box>
                   <Typography sx={{ fontSize: "1rem", fontWeight: 600, color: "#0a0d15", mb: 0.5 }}>{relProduct.name}</Typography>

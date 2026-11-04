@@ -16,13 +16,22 @@ export default function AdminProductos() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
     price: "",
     category: "Morrales",
     description: "",
-    image_url: ""
+    image_url: "",
+    stock: "0",
+    sizes: "", 
+    colors: "", 
+    characteristics: "", 
+    specs_material: "",
+    specs_dimensions: "",
+    specs_weight: "",
+    specs_warranty: ""
   });
 
   const categories = ["Morrales", "Billeteras", "Correas", "Pulseras", "Relojes", "Perfumes"];
@@ -38,11 +47,39 @@ export default function AdminProductos() {
     fetchProducts();
   }, []);
 
+  // Subir imagen a Supabase Storage
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setUploading(true);
+      if (!event.target.files || event.target.files.length === 0) return;
+      
+      const file = event.target.files[0];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage.from('products').upload(filePath, file);
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from('products').getPublicUrl(filePath);
+      setForm({ ...form, image_url: data.publicUrl });
+    } catch (error: any) {
+      alert('Error subiendo imagen: ' + error.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSave = async () => {
     if (!form.name || !form.price || !form.image_url) {
       alert("Por favor, completa los campos obligatorios (nombre, precio e imagen).");
       return;
     }
+
+    // Convertir comas a Arrays para JSONB
+    const sizesArray = form.sizes ? form.sizes.split(',').map(s => s.trim()) : [];
+    const colorsArray = form.colors ? form.colors.split(',').map(c => c.trim()) : [];
+    const charArray = form.characteristics ? form.characteristics.split('\n').filter(c => c.trim() !== '') : [];
 
     const { error } = await supabase.from("products").insert([
       {
@@ -51,13 +88,21 @@ export default function AdminProductos() {
         category: form.category,
         description: form.description,
         image_url: form.image_url,
+        stock: parseInt(form.stock),
+        sizes: sizesArray,
+        colors: colorsArray,
+        characteristics: JSON.stringify(charArray), 
+        specs_material: form.specs_material,
+        specs_dimensions: form.specs_dimensions,
+        specs_weight: form.specs_weight,
+        specs_warranty: form.specs_warranty,
       }
     ]);
 
     if (error) {
       alert("Error al guardar: " + error.message);
     } else {
-      setForm({ name: "", price: "", category: "Morrales", description: "", image_url: "" });
+      setForm({ name: "", price: "", category: "Morrales", description: "", image_url: "", stock: "0", sizes: "", colors: "", characteristics: "", specs_material: "", specs_dimensions: "", specs_weight: "", specs_warranty: "" });
       setOpen(false);
       fetchProducts();
     }
@@ -73,7 +118,6 @@ export default function AdminProductos() {
 
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
-      
       <Box sx={{ mb: 3 }}>
         <Button component={Link} href="/admin" startIcon={<ArrowBackIcon />} sx={{ color: "#5E6B7E", textTransform: "none" }}>
           Volver al panel principal
@@ -82,27 +126,16 @@ export default function AdminProductos() {
 
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 700, color: "#0a0d15" }}>
-            Gestión de productos
-          </Typography>
-          <Typography sx={{ color: "#666" }}>
-            Administra el catálogo de tu tienda
-          </Typography>
+          <Typography variant="h4" sx={{ fontWeight: 700, color: "#0a0d15" }}>Gestión de productos</Typography>
+          <Typography sx={{ color: "#666" }}>Administra el catálogo de tu tienda</Typography>
         </Box>
-        <Button 
-          variant="contained" 
-          startIcon={<AddIcon />} 
-          onClick={() => setOpen(true)}
-          sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none", fontWeight: 600, borderRadius: "8px", px: 3, py: 1 }}
-        >
+        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setOpen(true)} sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none", fontWeight: 600, borderRadius: "8px", px: 3, py: 1 }}>
           Agregar producto
         </Button>
       </Box>
 
       {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", py: 10 }}>
-          <CircularProgress sx={{ color: "#0a0d15" }} />
-        </Box>
+        <Box sx={{ display: "flex", justifyContent: "center", py: 10 }}><CircularProgress sx={{ color: "#0a0d15" }} /></Box>
       ) : (
         <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
           <Table>
@@ -112,74 +145,74 @@ export default function AdminProductos() {
                 <TableCell sx={{ fontWeight: 700 }}>Nombre</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Categoría</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Precio</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Stock</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Fecha</TableCell>
                 <TableCell align="right" sx={{ fontWeight: 700 }}>Acciones</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {products.map((product) => (
                 <TableRow key={product.id}>
-                  <TableCell>
-                    <Box component="img" src={product.image_url} alt={product.name} sx={{ width: 50, height: 60, objectFit: "cover", borderRadius: 1 }} />
-                  </TableCell>
+                  <TableCell><Box component="img" src={product.image_url} sx={{ width: 50, height: 60, objectFit: "cover", borderRadius: 1 }} /></TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>{product.name}</TableCell>
                   <TableCell><Chip label={product.category} size="small" sx={{ bgcolor: "#F0F2F5", fontWeight: 600 }} /></TableCell>
                   <TableCell>S/. {Number(product.price).toFixed(2)}</TableCell>
+                  <TableCell>{product.stock || 0}</TableCell>
+                  <TableCell sx={{ fontSize: "0.85rem", color: "#666" }}>{new Date(product.created_at).toLocaleDateString()}</TableCell>
                   <TableCell align="right">
-                    <IconButton color="error" onClick={() => handleDelete(product.id)}>
-                      <DeleteIcon />
-                    </IconButton>
+                    <IconButton color="error" onClick={() => handleDelete(product.id)}><DeleteIcon /></IconButton>
                   </TableCell>
                 </TableRow>
               ))}
-              {products.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ py: 4, color: "#666" }}>
-                    No hay productos registrados. ¡Agrega el primero!
-                  </TableCell>
-                </TableRow>
-              )}
             </TableBody>
           </Table>
         </TableContainer>
       )}
 
-      {/* MODAL PARA AGREGAR PRODUCTO */}
-      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
+      {/* MODAL EXTENDIDO */}
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="md">
         <DialogTitle sx={{ fontWeight: 700 }}>Nuevo producto</DialogTitle>
         <DialogContent sx={{ pt: 2 }}>
-          <TextField 
-            fullWidth label="Nombre del producto" margin="dense" required
-            value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} 
-          />
-          <TextField 
-            fullWidth label="Precio (S/.)" type="number" margin="dense" required
-            value={form.price} onChange={(e) => setForm({...form, price: e.target.value})} 
-          />
-          <FormControl fullWidth margin="dense">
-            <InputLabel>Categoría</InputLabel>
-            <Select
-              value={form.category}
-              label="Categoría"
-              onChange={(e) => setForm({...form, category: e.target.value})}
-            >
-              {categories.map((cat) => (
-                <MenuItem key={cat} value={cat}>{cat}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField 
-            fullWidth label="URL de la imagen" margin="dense" required
-            placeholder="https://..."
-            value={form.image_url} onChange={(e) => setForm({...form, image_url: e.target.value})} 
-          />
-          <TextField 
-            fullWidth label="Descripción corta" margin="dense" multiline rows={3}
-            value={form.description} onChange={(e) => setForm({...form, description: e.target.value})} 
-          />
+          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2, mt: 1 }}>
+            <TextField fullWidth label="Nombre del producto" required value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} />
+            <TextField fullWidth label="Precio (S/.)" type="number" required value={form.price} onChange={(e) => setForm({...form, price: e.target.value})} />
+            
+            <FormControl fullWidth>
+              <InputLabel>Categoría</InputLabel>
+              <Select value={form.category} label="Categoría" onChange={(e) => setForm({...form, category: e.target.value})}>
+                {categories.map((cat) => <MenuItem key={cat} value={cat}>{cat}</MenuItem>)}
+              </Select>
+            </FormControl>
+            <TextField fullWidth label="Stock (Cantidad)" type="number" value={form.stock} onChange={(e) => setForm({...form, stock: e.target.value})} />
+
+            {/* SUBIDA DE IMAGEN */}
+            <Box sx={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", gap: 2 }}>
+              <Button variant="outlined" component="label" sx={{ textTransform: "none" }}>
+                {uploading ? "Subiendo..." : "Subir imagen"}
+                <input type="file" hidden accept="image/*" onChange={handleImageUpload} />
+              </Button>
+              {form.image_url && <Typography sx={{ fontSize: "0.8rem", color: "green" }}>✓ Imagen cargada</Typography>}
+              <TextField fullWidth size="small" label="O pega una URL de imagen" value={form.image_url} onChange={(e) => setForm({...form, image_url: e.target.value})} />
+            </Box>
+
+            <TextField fullWidth label="Descripción corta" multiline rows={2} value={form.description} onChange={(e) => setForm({...form, description: e.target.value})} sx={{ gridColumn: "1 / -1" }} />
+            
+            {/* VARIABLES */}
+            <TextField fullWidth label="Tallas (separadas por coma)" placeholder="Ej: O/S o 28, 30, 32" value={form.sizes} onChange={(e) => setForm({...form, sizes: e.target.value})} />
+            <TextField fullWidth label="Colores (separados por coma)" placeholder="Ej: Negro, Marrón" value={form.colors} onChange={(e) => setForm({...form, colors: e.target.value})} />
+
+            {/* ESPECIFICACIONES Y CARACTERISTICAS */}
+            <TextField fullWidth label="Características (una por línea)" multiline rows={3} value={form.characteristics} onChange={(e) => setForm({...form, characteristics: e.target.value})} sx={{ gridColumn: "1 / -1" }} />
+            
+            <TextField fullWidth label="Material" value={form.specs_material} onChange={(e) => setForm({...form, specs_material: e.target.value})} />
+            <TextField fullWidth label="Dimensiones" value={form.specs_dimensions} onChange={(e) => setForm({...form, specs_dimensions: e.target.value})} />
+            <TextField fullWidth label="Peso" value={form.specs_weight} onChange={(e) => setForm({...form, specs_weight: e.target.value})} />
+            <TextField fullWidth label="Garantía" value={form.specs_warranty} onChange={(e) => setForm({...form, specs_warranty: e.target.value})} />
+          </Box>
         </DialogContent>
         <DialogActions sx={{ p: 3 }}>
           <Button onClick={() => setOpen(false)} sx={{ color: "#5E6B7E" }}>Cancelar</Button>
-          <Button onClick={handleSave} variant="contained" sx={{ bgcolor: "#0a0d15" }}>Guardar producto</Button>
+          <Button onClick={handleSave} variant="contained" disabled={uploading} sx={{ bgcolor: "#0a0d15" }}>Guardar producto</Button>
         </DialogActions>
       </Dialog>
     </Container>
