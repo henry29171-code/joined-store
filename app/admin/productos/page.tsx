@@ -28,7 +28,7 @@ export default function AdminProductos() {
     category: "Morrales",
     description: "",
     image_url: "",
-    gallery_images: [] as string[], // <-- GALERÍA DE IMÁGENES
+    gallery_images: [] as string[], 
     stock: "0",
     sizes: "", 
     colors: "", 
@@ -52,7 +52,7 @@ export default function AdminProductos() {
     fetchProducts();
   }, []);
 
-  // Subir imagen principal
+  // Subir imagen principal (Reemplaza la existente)
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       setUploading(true);
@@ -60,14 +60,15 @@ export default function AdminProductos() {
       
       const file = event.target.files[0];
       const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-main.${fileExt}`;
-      const filePath = `${fileName}`;
+      // Identificador único
+      const fileName = `main-${crypto.randomUUID()}.${fileExt}`;
 
-      const { error: uploadError } = await supabase.storage.from('products').upload(filePath, file);
+      const { error: uploadError } = await supabase.storage.from('products').upload(fileName, file);
       if (uploadError) throw uploadError;
 
-      const { data } = supabase.storage.from('products').getPublicUrl(filePath);
-      setForm({ ...form, image_url: data.publicUrl });
+      const { data } = supabase.storage.from('products').getPublicUrl(fileName);
+      // Actualización de estado segura
+      setForm(prev => ({ ...prev, image_url: data.publicUrl }));
     } catch (error: any) {
       alert('Error subiendo imagen: ' + error.message);
     } finally {
@@ -75,7 +76,7 @@ export default function AdminProductos() {
     }
   };
 
-  // Subir galería de imágenes múltiples
+  // Subir galería de imágenes (Acumula fotos)
   const handleGalleryUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       setUploading(true);
@@ -86,7 +87,8 @@ export default function AdminProductos() {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}-${i}.${fileExt}`;
+        // Identificador único para evitar que se sobreescriban
+        const fileName = `gallery-${crypto.randomUUID()}.${fileExt}`;
         
         const { error } = await supabase.storage.from('products').upload(fileName, file);
         if (!error) {
@@ -94,11 +96,14 @@ export default function AdminProductos() {
           newUrls.push(data.publicUrl);
         }
       }
+      // Acumulamos las nuevas URLs a las que ya existían
       setForm(prev => ({ ...prev, gallery_images: [...prev.gallery_images, ...newUrls] }));
     } catch (error: any) {
       alert('Error subiendo galería: ' + error.message);
     } finally {
       setUploading(false);
+      // Limpiamos el input para permitir subir la misma foto si se desea
+      event.target.value = '';
     }
   };
 
@@ -161,7 +166,7 @@ export default function AdminProductos() {
       category: form.category,
       description: form.description,
       image_url: form.image_url,
-      gallery_images: form.gallery_images, // <-- GUARDAR GALERÍA
+      gallery_images: form.gallery_images,
       stock: parseInt(form.stock),
       sizes: sizesArray,
       colors: colorsArray,
@@ -266,7 +271,7 @@ export default function AdminProductos() {
 
             {/* IMAGEN PRINCIPAL */}
             <Box sx={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", gap: 2 }}>
-              <Button variant="outlined" component="label" sx={{ textTransform: "none", minWidth: 120 }}>
+              <Button variant="outlined" component="label" sx={{ textTransform: "none", minWidth: 140 }}>
                 {uploading ? "Subiendo..." : "Subir principal"}
                 <input type="file" hidden accept="image/*" onChange={handleImageUpload} />
               </Button>

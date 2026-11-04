@@ -20,7 +20,7 @@ export default function ProductDetailPage() {
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [mainImage, setMainImage] = useState(""); // <-- Imagen activa
+  const [mainImage, setMainImage] = useState(""); 
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
 
@@ -31,7 +31,7 @@ export default function ProductDetailPage() {
       const { data: productData } = await supabase.from("products").select("*").eq("id", params.id).single();
       if (productData) {
         setProduct(productData);
-        setMainImage(productData.image_url); // Inicializar imagen principal
+        setMainImage(productData.image_url);
         
         if (productData.sizes && productData.sizes.length > 0) setSelectedSize(productData.sizes[0]);
         if (productData.colors && productData.colors.length > 0) setSelectedColor(productData.colors[0]);
@@ -52,7 +52,6 @@ export default function ProductDetailPage() {
     if (product.characteristics) characteristicsList = JSON.parse(product.characteristics);
   } catch (e) { characteristicsList = []; }
 
-  // Unir imagen principal con las de la galería
   const allImages = [product.image_url, ...(product.gallery_images || [])];
 
   const handleComprarAhora = () => {
@@ -73,12 +72,19 @@ export default function ProductDetailPage() {
       <Grid container spacing={{ xs: 4, md: 8 }} alignItems="flex-start">
         
         <Grid size={{ xs: 12, md: 6 }}>
-          {/* Imagen Principal */}
-          <Box sx={{ width: "100%", bgcolor: "#F3F4F6", borderRadius: "16px", p: 2, mb: 2, boxShadow: "0 15px 35px rgba(0,0,0,0.06)" }}>
+          {/* Contenedor suavizado */}
+          <Box sx={{ 
+            width: "100%", 
+            bgcolor: "#F8F9FA", // Un tono más claro
+            border: "1px solid #F1F3F5", // Borde sutil
+            borderRadius: "16px", 
+            p: 2, 
+            mb: 2, 
+            boxShadow: "0 10px 30px rgba(0,0,0,0.03)" // Sombra mucho más suave
+          }}>
             <Box component="img" src={mainImage} alt={product.name} sx={{ width: "100%", aspectRatio: "1/1", objectFit: "contain", display: "block" }} />
           </Box>
           
-          {/* Miniaturas de la Galería */}
           {allImages.length > 1 && (
             <Stack direction="row" spacing={1} sx={{ overflowX: "auto", pb: 1 }}>
               {allImages.map((img, idx) => (
@@ -86,8 +92,9 @@ export default function ProductDetailPage() {
                   key={idx} 
                   onClick={() => setMainImage(img)}
                   sx={{ 
-                    width: 70, height: 70, bgcolor: "#F3F4F6", borderRadius: "8px", 
-                    border: mainImage === img ? "2px solid #0a0d15" : "1px solid #E5E7EB", 
+                    width: 70, height: 70, bgcolor: "#F8F9FA", borderRadius: "8px", 
+                    // Borde activo más suave
+                    border: mainImage === img ? "2px solid #6B7280" : "1px solid #E5E7EB", 
                     overflow: "hidden", cursor: "pointer", flexShrink: 0,
                     opacity: mainImage === img ? 1 : 0.6,
                     transition: "all 0.2s",
@@ -120,7 +127,7 @@ export default function ProductDetailPage() {
 
             {product.sizes && product.sizes.length > 0 && (
               <Box>
-                <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Seleccionar tamaño</Typography>
+                <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Talla</Typography>
                 <FormControl fullWidth size="small">
                   <Select value={selectedSize} onChange={(e) => setSelectedSize(e.target.value)} sx={{ borderRadius: "8px", bgcolor: "#FFF" }}>
                     {product.sizes.map((size: string) => (
@@ -205,7 +212,7 @@ export default function ProductDetailPage() {
             {relatedProducts.map((relProduct) => (
               <Grid key={relProduct.id} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Box sx={{ bgcolor: "transparent" }}>
-                  <Box sx={{ bgcolor: "#F3F4F6", mb: 2, overflow: "hidden", borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.05)" }}>
+                  <Box sx={{ bgcolor: "#F8F9FA", mb: 2, overflow: "hidden", borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.03)" }}>
                     <Link href={`/products/${relProduct.id}`} style={{ display: "block" }}>
                       <Box component="img" src={relProduct.image_url} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.3s", "&:hover": { transform: "scale(1.04)" } }} />
                     </Link>
