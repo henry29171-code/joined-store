@@ -1,12 +1,14 @@
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Box, Container, Typography, Button, Stack, Grid, Card, CardContent, CardMedia, Chip, IconButton, SvgIcon } from "@mui/material";
+import { Box, Container, Typography, Button, Stack, Grid, Card, CardContent, CardMedia, Chip, IconButton, SvgIcon, CircularProgress } from "@mui/material";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import EnergySavingsLeafIcon from "@mui/icons-material/EnergySavingsLeaf";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { supabase } from "@/app/lib/supabase";
 
 function TikTokIcon(props: any) {
   return (
@@ -16,18 +18,27 @@ function TikTokIcon(props: any) {
   );
 }
 
-const featuredProducts = [
-  { id: "1", name: "Morral Urban Explorer", price: "S/. 159.90", description: "Resistente al agua y con un diseño minimalista ideal para la ciudad.", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop" },
-  { id: "2", name: "Reloj Minimalist Classic", price: "S/. 289.00", description: "Malla de acero inoxidable y movimiento de precisión para un look elegante.", image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=800&auto=format&fit=crop" },
-  { id: "3", name: "Perfume Dark Wood", price: "S/. 199.90", description: "Notas amaderadas y especiadas que dejan una huella sofisticada.", image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800&auto=format&fit=crop" },
-];
-
 export default function HomePage() {
-  // Efecto 3D reutilizable para las tarjetas grises
+  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Traer los 3 primeros productos de Supabase
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      const { data, error } = await supabase.from("products").select("*").limit(3);
+      if (!error && data) {
+        setFeaturedProducts(data);
+      }
+      setLoading(false);
+    };
+    fetchFeatured();
+  }, []);
+
+  // Efecto 3D para el club VIP
   const card3DStyle = {
-    bgcolor: "#B0B3B8",
+    bgcolor: "#F3F4F6",
     borderRadius: "16px",
-    boxShadow: "0 15px 35px rgba(0,0,0,0.15), inset 0 -5px 0 rgba(0,0,0,0.1)", // Sombra exterior + borde interno oscuro para dar volumen
+    boxShadow: "0 15px 35px rgba(0,0,0,0.06), inset 0 -2px 0 rgba(0,0,0,0.05)", 
     position: "relative",
     overflow: "hidden"
   };
@@ -52,7 +63,8 @@ export default function HomePage() {
                 </Typography>
 
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ pt: 1 }}>
-                  <Button component={Link} href="/products" variant="contained" disableElevation sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, px: 4, py: 1.5, borderRadius: "8px", fontWeight: 600 }}>
+                  {/* Botones con los colores definidos */}
+                  <Button component={Link} href="/products" variant="contained" disableElevation sx={{ bgcolor: "#0a0d15", color: "white", "&:hover": { bgcolor: "#1a1d24" }, px: 4, py: 1.5, borderRadius: "8px", fontWeight: 600 }}>
                     Explorar colección
                   </Button>
                   <Button component={Link} href="/comunidad" variant="outlined" sx={{ borderColor: "#0a0d15", color: "#0a0d15", px: 4, py: 1.5, borderRadius: "8px", fontWeight: 600, "&:hover": { bgcolor: "#F9FAFB" } }}>
@@ -62,26 +74,31 @@ export default function HomePage() {
               </Stack>
             </Grid>
 
-            {/* Tarjeta Gris 3D */}
+            {/* Tarjeta Oscura con Gradiente Radial (Textura) */}
             <Grid size={{ xs: 12, md: 6 }}>
               <Box 
                 sx={{ 
-                  ...card3DStyle,
                   minHeight: { xs: 300, md: 450 }, 
+                  borderRadius: "16px", 
+                  background: "radial-gradient(circle at 30% 30%, #1a1d24 0%, #0a0d15 100%)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  boxShadow: "0 20px 40px rgba(10, 13, 21, 0.2)",
                   p: { xs: 4, md: 6 }, 
                   display: "flex", 
                   alignItems: "center", 
                   justifyContent: "center",
+                  position: "relative",
+                  overflow: "hidden"
                 }}
               >
                 <Box sx={{ position: "relative", zIndex: 2, maxWidth: 380, textAlign: "center" }}>
-                  <Typography sx={{ fontSize: 12, textTransform: "uppercase", letterSpacing: "0.2em", color: "#4A5568", mb: 2, fontWeight: 700 }}>
+                  <Typography sx={{ fontSize: 12, textTransform: "uppercase", letterSpacing: "0.2em", color: "#9CA3AF", mb: 2, fontWeight: 600 }}>
                     La esencia de la marca
                   </Typography>
-                  <Typography variant="h4" sx={{ fontWeight: 600, lineHeight: 1.3, mb: 2, fontSize: { xs: "1.5rem", md: "2rem" }, color: "#0a0d15" }}>
+                  <Typography variant="h4" sx={{ fontWeight: 600, lineHeight: 1.3, mb: 2, fontSize: { xs: "1.5rem", md: "2rem" }, color: "white" }}>
                     Diseñado para destacar en cada detalle
                   </Typography>
-                  <Typography sx={{ color: "#374151", lineHeight: 1.6, fontSize: { xs: "0.9rem", md: "1rem" } }}>
+                  <Typography sx={{ color: "#D1D5DB", lineHeight: 1.6, fontSize: { xs: "0.9rem", md: "1rem" } }}>
                     Calidad, textura y durabilidad en una sola pieza.
                   </Typography>
                 </Box>
@@ -102,30 +119,37 @@ export default function HomePage() {
             <Button component={Link} href="/products" variant="text" sx={{ textTransform: "none", fontWeight: 600, color: "#0a0d15", fontSize: "0.9rem" }}>Ver todos los productos</Button>
           </Stack>
 
-          <Grid container spacing={{ xs: 3, md: 4 }}>
-            {featuredProducts.map((product) => (
-              <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
-                <Box sx={{ display: "flex", flexDirection: "column", bgcolor: "transparent" }}>
-                  
-                  <Box sx={{ bgcolor: "#F3F4F6", position: "relative", overflow: "hidden", mb: 2, borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.05)" }}>
-                    <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
-                      <Box component="img" src={product.image} alt={product.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.4s ease", "&:hover": { transform: "scale(1.04)" } }} />
-                    </Link>
-                  </Box>
-                  
-                  <Box sx={{ px: 1 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600, color: "#0a0d15", fontSize: "1.1rem", mb: 0.5 }}>{product.name}</Typography>
-                    <Typography sx={{ color: "#666", fontSize: "0.9rem", lineHeight: 1.5, mb: 2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{product.description}</Typography>
-                    <Typography sx={{ fontSize: "1rem", fontWeight: 500, color: "#333", mb: 2 }}>{product.price}</Typography>
+          {loading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", py: 10 }}>
+              <CircularProgress sx={{ color: "#0a0d15" }} />
+            </Box>
+          ) : (
+            <Grid container spacing={{ xs: 3, md: 4 }}>
+              {featuredProducts.map((product) => (
+                <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
+                  <Box sx={{ display: "flex", flexDirection: "column", bgcolor: "transparent" }}>
                     
-                    <Button component={Link} href={`/products/${product.id}`} variant="contained" fullWidth disableElevation sx={{ bgcolor: "#B0B3B8", color: "#111827", py: 1.2, fontSize: "0.9rem", fontWeight: 700, borderRadius: "8px", boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", transition: "all 0.3s ease", "&:hover": { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
-                      Comprar ahora
-                    </Button>
+                    <Box sx={{ bgcolor: "#F3F4F6", position: "relative", overflow: "hidden", mb: 2, borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.05)" }}>
+                      {/* AHORA EL LINK USA EL ID REAL DE SUPABASE */}
+                      <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
+                        <Box component="img" src={product.image_url} alt={product.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.4s ease", "&:hover": { transform: "scale(1.04)" } }} />
+                      </Link>
+                    </Box>
+                    
+                    <Box sx={{ px: 1 }}>
+                      <Typography variant="h6" sx={{ fontWeight: 600, color: "#0a0d15", fontSize: "1.1rem", mb: 0.5 }}>{product.name}</Typography>
+                      <Typography sx={{ color: "#666", fontSize: "0.9rem", lineHeight: 1.5, mb: 2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{product.description}</Typography>
+                      <Typography sx={{ fontSize: "1rem", fontWeight: 500, color: "#333", mb: 2 }}>S/. {Number(product.price).toFixed(2)}</Typography>
+                      
+                      <Button component={Link} href={`/products/${product.id}`} variant="contained" fullWidth disableElevation sx={{ bgcolor: "#B0B3B8", color: "#111827", py: 1.2, fontSize: "0.9rem", fontWeight: 700, borderRadius: "8px", boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", transition: "all 0.3s ease", "&:hover": { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
+                        Comprar ahora
+                      </Button>
+                    </Box>
                   </Box>
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
+                </Grid>
+              ))}
+            </Grid>
+          )}
         </Container>
       </Box>
 
@@ -161,7 +185,7 @@ export default function HomePage() {
         </Container>
       </Box>
 
-      {/* 5. Banner VIP - Ahora con Gris 3D */}
+      {/* 5. Banner VIP (Gris 3D) */}
       <Box sx={{ py: { xs: 6, md: 8 } }}>
         <Container maxWidth="lg">
           <Box sx={{ ...card3DStyle, p: { xs: 4, md: 8 }, display: "flex", flexDirection: { xs: "column", md: "row" }, alignItems: "center", justifyContent: "space-between", gap: 4 }}>
