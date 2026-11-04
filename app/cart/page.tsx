@@ -1,9 +1,6 @@
 "use client";
 import { useCart } from "../context/CartContext";
-import { 
-  Container, Typography, Box, Card, Button, 
-  IconButton, Stack, Grid, Divider 
-} from "@mui/material";
+import { Container, Typography, Box, Card, Button, IconButton, Stack, Grid, Divider } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -15,12 +12,8 @@ import Link from "next/link";
 export default function CartPage() {
   const { state, removeFromCart, clearCart, increment, decrement } = useCart();
 
-  const total = state.items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  const total = state.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  // Estado vacío
   if (state.items.length === 0) {
     return (
       <Container maxWidth="md" sx={{ py: 12, textAlign: "center" }}>
@@ -30,20 +23,13 @@ export default function CartPage() {
         <Typography sx={{ color: "#5E6B7E", mb: 4, fontSize: { xs: "0.95rem", md: "1rem" } }}>
           Parece que aún no has añadido ningún accesorio a tu colección.
         </Typography>
-        <Button 
-          component={Link} 
-          href="/products" 
-          variant="contained" 
-          size="large"
-          sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, borderRadius: 999, px: 4, py: 1.5 }}
-        >
+        <Button component={Link} href="/products" variant="contained" size="large" sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, borderRadius: 999, px: 4, py: 1.5 }}>
           Explorar colección
         </Button>
       </Container>
     );
   }
 
-  // Estado con productos
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
       <Box sx={{ mb: 4, display: "flex", alignItems: "center", gap: 2 }}>
@@ -57,33 +43,17 @@ export default function CartPage() {
       </Typography>
 
       <Grid container spacing={4}>
-        {/* Lista de Productos */}
         <Grid size={{ xs: 12, md: 8 }}>
           <Stack spacing={2}>
             {state.items.map((item) => (
               <Card key={item.id} sx={{ display: "flex", p: 2, borderRadius: 3, boxShadow: "0 4px 15px rgba(0,0,0,0.05)" }}>
-                
-                <Box 
-                  component="img"
-                  src={(item as any).image || "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=200&auto=format&fit=crop"}
-                  alt={item.name}
-                  sx={{ width: 80, height: 100, objectFit: "cover", borderRadius: 2, mr: 2 }}
-                />
+                <Box component="img" src={(item as any).image || "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=200&auto=format&fit=crop"} alt={item.name} sx={{ width: 80, height: 100, objectFit: "cover", borderRadius: 2, mr: 2 }} />
                 
                 <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <Box>
-                    <Typography variant="h6" sx={{ fontWeight: 700, color: "#0a0d15", fontSize: { xs: "1rem", md: "1.1rem" } }}>
-                      {item.name}
-                    </Typography>
-                    
-                    {/* Información adicional (Variantes) */}
-                    <Typography sx={{ color: "#9CA3AF", fontSize: "0.85rem", mb: 0.5 }}>
-                      Color: Negro | Talla: Única
-                    </Typography>
-
-                    <Typography sx={{ color: "#5E6B7E", fontWeight: 600, fontSize: "0.9rem" }}>
-                      S/. {item.price.toFixed(2)}
-                    </Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 700, color: "#0a0d15", fontSize: { xs: "1rem", md: "1.1rem" } }}>{item.name}</Typography>
+                    <Typography sx={{ color: "#9CA3AF", fontSize: "0.85rem", mb: 0.5 }}>Color: Negro | Talla: Única</Typography>
+                    <Typography sx={{ color: "#5E6B7E", fontWeight: 600, fontSize: "0.9rem" }}>S/. {item.price.toFixed(2)}</Typography>
                   </Box>
 
                   <Stack direction="row" alignItems="center" spacing={2} sx={{ mt: 1 }}>
@@ -92,13 +62,7 @@ export default function CartPage() {
                       <Typography sx={{ mx: 1.5, fontWeight: 700, fontSize: "0.9rem" }}>{item.quantity}</Typography>
                       <IconButton size="small" onClick={() => increment(item.id)}><AddIcon fontSize="small" /></IconButton>
                     </Box>
-                    
-                    <Button 
-                      size="small" 
-                      startIcon={<DeleteIcon fontSize="small" />} 
-                      onClick={() => removeFromCart(item.id)} 
-                      sx={{ color: "#d32f2f", textTransform: "none", fontSize: "0.8rem", fontWeight: 600 }}
-                    >
+                    <Button size="small" startIcon={<DeleteIcon fontSize="small" />} onClick={() => removeFromCart(item.id)} sx={{ color: "#d32f2f", textTransform: "none", fontSize: "0.8rem", fontWeight: 600 }}>
                       Eliminar
                     </Button>
                   </Stack>
@@ -113,7 +77,6 @@ export default function CartPage() {
             ))}
           </Stack>
 
-          {/* Beneficios del carrito */}
           <Box sx={{ mt: 4, p: 2, bgcolor: "#F8F9FA", borderRadius: 2, display: "flex", alignItems: "center", gap: 2 }}>
             <LocalShippingIcon sx={{ color: "#5E6B7E" }} />
             <Typography sx={{ fontSize: "0.85rem", color: "#5E6B7E" }}>
@@ -122,59 +85,39 @@ export default function CartPage() {
           </Box>
         </Grid>
 
-        {/* Resumen de Compra */}
+        {/* RESUMEN CLARO */}
         <Grid size={{ xs: 12, md: 4 }}>
-          <Card sx={{ p: 3, borderRadius: 3, bgcolor: "#0a0d15", color: "white", position: "sticky", top: 100 }}>
-            <Typography variant="h5" sx={{ fontWeight: 800, mb: 3, fontSize: "1.3rem" }}>
-              Resumen
-            </Typography>
+          <Card sx={{ p: 3, borderRadius: 3, bgcolor: "#F8F9FA", border: "1px solid #E0E0E0", position: "sticky", top: 100 }}>
+            <Typography variant="h5" sx={{ fontWeight: 800, mb: 3, fontSize: "1.3rem", color: "#0a0d15" }}>Resumen</Typography>
             
-            <Stack spacing={2} sx={{ mb: 3, opacity: 0.8 }}>
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Stack spacing={2} sx={{ mb: 3 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", color: "#5E6B7E" }}>
                 <Typography>Subtotal</Typography>
                 <Typography>S/. {total.toFixed(2)}</Typography>
               </Box>
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", color: "#5E6B7E" }}>
                 <Typography>Envío</Typography>
-                <Typography sx={{ fontWeight: 700, color: "#4ADE80" }}>Gratis (Miembro VIP)</Typography>
+                <Typography sx={{ fontWeight: 700, color: "#0a0d15" }}>Gratis (Miembro VIP)</Typography>
               </Box>
             </Stack>
             
-            <Divider sx={{ bgcolor: "rgba(255,255,255,0.2)", mb: 3 }} />
+            <Divider sx={{ mb: 3 }} />
             
-            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 4 }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 4, color: "#0a0d15" }}>
               <Typography variant="h6" sx={{ fontWeight: 800 }}>Total</Typography>
               <Typography variant="h6" sx={{ fontWeight: 800 }}>S/. {total.toFixed(2)}</Typography>
             </Box>
 
-            <Button 
-              component={Link}
-              href="/checkout"
-              variant="contained" 
-              fullWidth
-              size="large"
-              sx={{ 
-                bgcolor: "white", 
-                color: "#0a0d15", 
-                fontWeight: 800, 
-                py: 1.5,
-                borderRadius: 999,
-                "&:hover": { bgcolor: "#F0F0F0" }
-              }}
-            >
+            <Button component={Link} href="/checkout" variant="contained" fullWidth size="large" sx={{ bgcolor: "#0a0d15", color: "white", fontWeight: 800, py: 1.5, borderRadius: 999, "&:hover": { bgcolor: "#1a1d24" } }}>
               Proceder al pago
             </Button>
             
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 3, opacity: 0.6 }}>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 3, color: "#5E6B7E" }}>
               <LockIcon fontSize="small" />
               <Typography sx={{ fontSize: "0.8rem" }}>Compra 100% segura</Typography>
             </Box>
 
-            <Button 
-              onClick={clearCart}
-              fullWidth
-              sx={{ color: "rgba(255,255,255,0.6)", mt: 1, textTransform: "none", "&:hover": { color: "white" } }}
-            >
+            <Button onClick={clearCart} fullWidth sx={{ color: "#9CA3AF", mt: 1, textTransform: "none", "&:hover": { color: "#0a0d15" } }}>
               Vaciar carrito
             </Button>
           </Card>
