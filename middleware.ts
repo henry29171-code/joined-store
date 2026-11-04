@@ -21,16 +21,21 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  // REGLA DE SEGURIDAD: Solo el correo de Henry puede entrar a /admin
   const isAdminEmail = user?.email === 'henry29171@gmail.com';
 
-  // Si intenta entrar a /admin (excepto al login) sin ser el admin, lo pateamos al login
-  if (request.nextUrl.pathname.startsWith('/admin') && request.nextUrl.pathname !== '/admin/login') {
-    if (!isAdminEmail) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/admin/login'
-      return NextResponse.redirect(url)
-    }
+  // Si no es admin y quiere entrar a /admin (excepto al login), lo redirigimos
+  if (!isAdminEmail && request.nextUrl.pathname.startsWith('/admin') && request.nextUrl.pathname !== '/admin/login') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/admin/login'
+    
+    const redirectResponse = NextResponse.redirect(url)
+    
+    // 🔑 CLAVE: Copiar las cookies de sesión a la respuesta de redirección
+    supabaseResponse.cookies.getAll().forEach(cookie => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, cookie)
+    })
+    
+    return redirectResponse
   }
 
   return supabaseResponse

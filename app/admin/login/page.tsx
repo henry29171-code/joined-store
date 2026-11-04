@@ -15,15 +15,15 @@ export default function LoginAdmin() {
     const checkSession = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       
-      // Si ya está logueado como admin, lo pasamos directo
       if (user && user.email === 'henry29171@gmail.com') {
-        window.location.href = "/admin"; // Recarga completa
+        // Si ya está logueado, usamos replace para no dejar rastro en el historial
+        router.replace("/admin");
       } else {
         setLoading(false);
       }
     };
     checkSession();
-  }, []);
+  }, [router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,11 +33,12 @@ export default function LoginAdmin() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      setError(error.message === "Invalid login credentials" ? "Correo o contraseña incorrectos." : error.message);
+      setError("Correo o contraseña incorrectos.");
       setLoading(false);
     } else {
-      // FORZAMOS LA RECARGA COMPLETA PARA QUE EL MIDDLEWARE LEA LA COOKIE
-      window.location.href = "/admin";
+      // 🔑 CLAVE: Usamos replace en lugar de window.location.href
+      router.replace("/admin");
+      router.refresh(); // Refrescamos para que el middleware lea la nueva sesión
     }
   };
 
