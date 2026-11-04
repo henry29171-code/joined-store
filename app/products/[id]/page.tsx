@@ -38,7 +38,7 @@ export default function ProductDetailPage() {
     fetchProductData();
   }, [params.id]);
 
-  if (loading) return <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}><CircularProgress sx={{ color: "#DB6B2C" }} /></Box>;
+  if (loading) return <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}><CircularProgress sx={{ color: "#0a0d15" }} /></Box>;
   if (!product) return <Container maxWidth="md" sx={{ py: 15, textAlign: "center" }}><Typography variant="h4">Producto no encontrado</Typography></Container>;
 
   const hideVariants = ["Perfumes", "Relojes"].includes(product.category);
@@ -66,14 +66,23 @@ export default function ProductDetailPage() {
 
       <Grid container spacing={{ xs: 4, md: 8 }} alignItems="flex-start">
         
-        {/* Lado Izquierdo: Imagen */}
+        {/* Lado Izquierdo: Imagen con efecto 3D */}
         <Grid size={{ xs: 12, md: 6 }}>
-          <Box sx={{ width: "100%", bgcolor: "#F7FAFC", borderRadius: "12px", p: 2, mb: 2 }}>
+          <Box 
+            sx={{ 
+              width: "100%", 
+              bgcolor: "#F0F2F5", 
+              borderRadius: "16px", 
+              p: 2, 
+              mb: 2,
+              boxShadow: "0 15px 35px rgba(0,0,0,0.05)" // Efecto de profundidad
+            }}
+          >
             <Box component="img" src={product.image_url} alt={product.name} sx={{ width: "100%", aspectRatio: "1/1", objectFit: "contain", display: "block" }} />
           </Box>
           <Stack direction="row" spacing={1}>
             {[1, 2, 3, 4].map((i) => (
-              <Box key={i} sx={{ width: 60, height: 60, bgcolor: "#F7FAFC", borderRadius: "4px", border: i === 1 ? "2px solid #DB6B2C" : "1px solid #E2E8F0", overflow: "hidden", cursor: "pointer" }}>
+              <Box key={i} sx={{ width: 60, height: 60, bgcolor: "#F0F2F5", borderRadius: "8px", border: i === 1 ? "2px solid #0a0d15" : "1px solid #E2E8F0", overflow: "hidden", cursor: "pointer", boxShadow: i === 1 ? "0 4px 10px rgba(0,0,0,0.1)" : "none" }}>
                 <Box component="img" src={product.image_url} sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </Box>
             ))}
@@ -83,11 +92,11 @@ export default function ProductDetailPage() {
         {/* Lado Derecho: Información */}
         <Grid size={{ xs: 12, md: 6 }}>
           <Stack spacing={2.5}>
-            <Typography variant="h4" sx={{ fontWeight: 500, color: "#2D3748", fontSize: { xs: "1.8rem", md: "2.2rem" } }}>
+            <Typography variant="h4" sx={{ fontWeight: 600, color: "#0a0d15", fontSize: { xs: "1.8rem", md: "2.2rem" } }}>
               {product.name}
             </Typography>
 
-            <Typography variant="h6" sx={{ fontWeight: 400, color: "#4A5568" }}>
+            <Typography variant="h6" sx={{ fontWeight: 500, color: "#333" }}>
               S/. {Number(product.price).toFixed(2)}
             </Typography>
 
@@ -96,7 +105,7 @@ export default function ProductDetailPage() {
             {!hideVariants && (
               <>
                 <Box>
-                  <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#2D3748", mb: 1 }}>Seleccionar tamaño</Typography>
+                  <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Seleccionar tamaño</Typography>
                   <FormControl fullWidth size="small">
                     <Select 
                       value={selectedSize} 
@@ -111,15 +120,15 @@ export default function ProductDetailPage() {
                 </Box>
 
                 <Box>
-                  <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#2D3748", mb: 1 }}>Color</Typography>
+                  <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Color</Typography>
                   <Stack direction="row" spacing={1}>
                     {["Negro", "Marrón", "Azul"].map((color) => (
                       <Box 
                         key={color} onClick={() => setSelectedColor(color)}
                         sx={{ 
-                          px: 2, py: 1, border: "1px solid", borderColor: selectedColor === color ? "#DB6B2C" : "#CBD5E0",
+                          px: 2, py: 1, border: "1px solid", borderColor: selectedColor === color ? "#0a0d15" : "#CBD5E0",
                           cursor: "pointer", fontSize: "0.85rem", fontWeight: selectedColor === color ? 600 : 400,
-                          color: selectedColor === color ? "#2D3748" : "#718096", bgcolor: selectedColor === color ? "#FFF5F0" : "transparent",
+                          color: selectedColor === color ? "#0a0d15" : "#718096", bgcolor: selectedColor === color ? "#F0F2F5" : "transparent",
                           borderRadius: "8px"
                         }}
                       >
@@ -131,17 +140,17 @@ export default function ProductDetailPage() {
               </>
             )}
 
-            {/* BOTONES NARANJA */}
+            {/* BOTONES SOBRIOS (Blanco con borde oscuro) */}
             <Button 
               variant="contained" onClick={handleComprarAhora} fullWidth
-              sx={{ bgcolor: "#DB6B2C", color: "white", py: 1.5, borderRadius: "8px", fontWeight: 600, fontSize: "1rem", boxShadow: "0 4px 10px rgba(219, 107, 44, 0.2)", mt: 2, "&:hover": { bgcolor: "#B7551D", boxShadow: "0 6px 15px rgba(219, 107, 44, 0.3)" } }}
+              sx={{ bgcolor: "#0a0d15", color: "white", py: 1.5, borderRadius: "8px", fontWeight: 600, fontSize: "1rem", boxShadow: "none", mt: 2, "&:hover": { bgcolor: "#1a1d24" } }}
             >
               Añadir a la cesta
             </Button>
             
             <Button 
               variant="outlined" onClick={() => addToCart({ ...product, image: product.image_url })} fullWidth
-              sx={{ borderColor: "#DB6B2C", color: "#DB6B2C", py: 1.5, borderRadius: "8px", fontWeight: 600, fontSize: "1rem", "&:hover": { bgcolor: "#FFF5F0", borderColor: "#B7551D" } }}
+              sx={{ borderColor: "#0a0d15", color: "#0a0d15", py: 1.5, borderRadius: "8px", fontWeight: 600, fontSize: "1rem", "&:hover": { bgcolor: "#F5F5F5", borderColor: "#0a0d15" } }}
             >
               Comprar ahora
             </Button>
@@ -162,7 +171,7 @@ export default function ProductDetailPage() {
       <Box sx={{ mt: 8, borderTop: "1px solid #E2E8F0", pt: 4 }}>
         <Accordion elevation={0} sx={{ bgcolor: "transparent", "&:before": { display: "none" } }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ px: 0 }}>
-            <Typography sx={{ fontWeight: 500, fontSize: "1.1rem", color: "#2D3748" }}>Características</Typography>
+            <Typography sx={{ fontWeight: 500, fontSize: "1.1rem", color: "#0a0d15" }}>Características</Typography>
           </AccordionSummary>
           <AccordionDetails sx={{ px: 0, color: "#4A5568", fontSize: "0.9rem" }}>
             <ul style={{ paddingLeft: "20px", margin: 0 }}>
@@ -175,7 +184,7 @@ export default function ProductDetailPage() {
         <Divider sx={{ borderColor: "#E2E8F0" }} />
         <Accordion elevation={0} sx={{ bgcolor: "transparent", "&:before": { display: "none" } }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ px: 0 }}>
-            <Typography sx={{ fontWeight: 500, fontSize: "1.1rem", color: "#2D3748" }}>Especificaciones</Typography>
+            <Typography sx={{ fontWeight: 500, fontSize: "1.1rem", color: "#0a0d15" }}>Especificaciones</Typography>
           </AccordionSummary>
           <AccordionDetails sx={{ px: 0, color: "#4A5568", fontSize: "0.9rem" }}>
             <Grid container spacing={2}>
@@ -192,19 +201,19 @@ export default function ProductDetailPage() {
       {relatedProducts.length > 0 && (
         <Box sx={{ mt: 8, pt: 6, borderTop: "1px solid #E2E8F0" }}>
           <Box sx={{ mb: 4 }}>
-            <Typography variant="h5" sx={{ fontWeight: 400, color: "#2D3748" }}>También te puede interesar</Typography>
+            <Typography variant="h5" sx={{ fontWeight: 500, color: "#0a0d15" }}>También te puede interesar</Typography>
           </Box>
           <Grid container spacing={3}>
             {relatedProducts.map((relProduct) => (
               <Grid key={relProduct.id} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Box sx={{ bgcolor: "transparent" }}>
-                  <Box sx={{ bgcolor: "#F7FAFC", mb: 2, overflow: "hidden", borderRadius: "8px" }}>
+                  <Box sx={{ bgcolor: "#F0F2F5", mb: 2, overflow: "hidden", borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.04)" }}>
                     <Link href={`/products/${relProduct.id}`} style={{ display: "block" }}>
-                      <Box component="img" src={relProduct.image_url} alt={relProduct.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.3s", "&:hover": { transform: "scale(1.03)" } }} />
+                      <Box component="img" src={relProduct.image_url} alt={relProduct.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.3s", "&:hover": { transform: "scale(1.04)" } }} />
                     </Link>
                   </Box>
-                  <Typography sx={{ fontSize: "1rem", fontWeight: 500, color: "#2D3748", mb: 0.5 }}>{relProduct.name}</Typography>
-                  <Typography sx={{ fontSize: "0.9rem", color: "#4A5568" }}>S/. {Number(relProduct.price).toFixed(2)}</Typography>
+                  <Typography sx={{ fontSize: "1rem", fontWeight: 600, color: "#0a0d15", mb: 0.5 }}>{relProduct.name}</Typography>
+                  <Typography sx={{ fontSize: "0.9rem", color: "#333" }}>S/. {Number(relProduct.price).toFixed(2)}</Typography>
                 </Box>
               </Grid>
             ))}

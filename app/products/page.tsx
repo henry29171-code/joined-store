@@ -34,7 +34,7 @@ function ProductsContent() {
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
-        <CircularProgress sx={{ color: "#DB6B2C" }} />
+        <CircularProgress sx={{ color: "#0a0d15" }} />
       </Box>
     );
   }
@@ -42,10 +42,10 @@ function ProductsContent() {
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
       <Box sx={{ textAlign: "center", mb: 6 }}>
-        <Typography variant="h3" sx={{ fontWeight: 500, color: "#2D3748", mb: 2, fontSize: { xs: "1.8rem", md: "2.5rem" }, letterSpacing: "-0.02em" }}>
+        <Typography variant="h3" sx={{ fontWeight: 500, color: "#0a0d15", mb: 2, fontSize: { xs: "1.8rem", md: "2.5rem" }, letterSpacing: "-0.02em" }}>
           Nuestros productos
         </Typography>
-        <Typography sx={{ color: "#718096", fontSize: { xs: "0.95rem", md: "1.05rem" }, maxWidth: 600, mx: "auto", fontWeight: 400 }}>
+        <Typography sx={{ color: "#666", fontSize: { xs: "0.95rem", md: "1.05rem" }, maxWidth: 600, mx: "auto", fontWeight: 400 }}>
           Explora nuestra colección de accesorios diseñados para elevar tu estilo y durar toda la vida.
         </Typography>
       </Box>
@@ -60,11 +60,11 @@ function ProductsContent() {
               cursor: "pointer",
               fontSize: "0.95rem",
               fontWeight: activeCategory === cat ? 600 : 400,
-              color: activeCategory === cat ? "#2D3748" : "#A0AEC0",
-              borderBottom: activeCategory === cat ? "2px solid #2D3748" : "2px solid transparent",
+              color: activeCategory === cat ? "#0a0d15" : "#888",
+              borderBottom: activeCategory === cat ? "2px solid #0a0d15" : "2px solid transparent",
               pb: 0.5,
               transition: "all 0.2s",
-              "&:hover": { color: "#2D3748" }
+              "&:hover": { color: "#0a0d15" }
             }}
           >
             {cat}
@@ -77,7 +77,17 @@ function ProductsContent() {
           <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
             <Box sx={{ display: "flex", flexDirection: "column", bgcolor: "transparent" }}>
               
-              <Box sx={{ bgcolor: "#F7FAFC", position: "relative", overflow: "hidden", mb: 2, borderRadius: "8px" }}>
+              {/* Contenedor 3D de la Imagen */}
+              <Box 
+                sx={{ 
+                  bgcolor: "#F0F2F5", 
+                  position: "relative", 
+                  overflow: "hidden", 
+                  mb: 2, 
+                  borderRadius: "12px",
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.04)" // Efecto 3D sutil
+                }}
+              >
                 <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
                   <Box 
                     component="img" 
@@ -88,42 +98,43 @@ function ProductsContent() {
                       aspectRatio: "4/5", 
                       objectFit: "cover",
                       transition: "transform 0.4s ease",
-                      "&:hover": { transform: "scale(1.03)" }
+                      "&:hover": { transform: "scale(1.04)" }
                     }} 
                   />
                 </Link>
-                {/* Etiqueta Naranja como Bellroy */}
-                <Typography sx={{ position: "absolute", top: 16, left: 16, fontSize: "0.75rem", fontWeight: 700, color: "#DB6B2C" }}>
+                {/* Etiqueta sutil gris oscuro */}
+                <Typography sx={{ position: "absolute", top: 16, left: 16, fontSize: "0.75rem", fontWeight: 600, color: "#0a0d15" }}>
                   Bestseller
                 </Typography>
               </Box>
               
               <Box sx={{ px: 1 }}>
-                <Typography variant="h6" sx={{ fontWeight: 500, color: "#2D3748", fontSize: "1.1rem", mb: 0.5 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: "#0a0d15", fontSize: "1.1rem", mb: 0.5 }}>
                   {product.name}
                 </Typography>
-                <Typography sx={{ fontSize: "1rem", fontWeight: 500, color: "#2D3748", mb: 1 }}>
+                <Typography sx={{ fontSize: "1rem", fontWeight: 500, color: "#333", mb: 1 }}>
                   S/. {Number(product.price).toFixed(2)}
                 </Typography>
-                <Typography sx={{ color: "#A0AEC0", fontSize: "0.85rem", mb: 2 }}>
+                <Typography sx={{ color: "#888", fontSize: "0.85rem", mb: 2 }}>
                   {product.category}
                 </Typography>
 
-                {/* BOTÓN NARANJA */}
+                {/* BOTÓN BLANCO CON BORDE OSCURO (Como en Inicio) */}
                 <Button 
-                  variant="contained" 
+                  variant="outlined" 
                   fullWidth 
                   onClick={() => addToCart({ ...product, image: product.image_url })} 
                   sx={{ 
-                    bgcolor: "#DB6B2C", 
-                    color: "white", 
+                    bgcolor: "white", 
+                    color: "#0a0d15", 
+                    borderColor: "#0a0d15", 
                     py: 1.2, 
                     fontSize: "0.9rem", 
                     fontWeight: 600,
                     borderRadius: "8px",
                     boxShadow: "none",
-                    transition: "background 0.3s",
-                    "&:hover": { bgcolor: "#B7551D", boxShadow: "none" } 
+                    transition: "all 0.3s",
+                    "&:hover": { bgcolor: "#0a0d15", color: "white", borderColor: "#0a0d15" } 
                   }}
                 >
                   Añadir a la cesta
@@ -136,7 +147,7 @@ function ProductsContent() {
 
       {filteredProducts.length === 0 && (
         <Box sx={{ textAlign: "center", py: 10 }}>
-          <Typography sx={{ color: "#718096", fontSize: "1rem" }}>No hay productos disponibles en esta categoría.</Typography>
+          <Typography sx={{ color: "#666", fontSize: "1rem" }}>No hay productos disponibles en esta categoría.</Typography>
         </Box>
       )}
     </Container>
