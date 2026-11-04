@@ -76,7 +76,7 @@ export default function ProductDetailPage() {
         </Grid>
 
         <Grid size={{ xs: 12, md: 6 }}>
-          <Stack spacing={2.5}>
+          <Stack spacing={2}>
             <Typography variant="h4" sx={{ fontWeight: 600, color: "#0a0d15", fontSize: { xs: "1.8rem", md: "2.2rem" } }}>{product.name}</Typography>
             
             {/* LÓGICA DE PRECIO PROMOCIONAL */}
@@ -96,11 +96,12 @@ export default function ProductDetailPage() {
               </Typography>
             )}
 
-            <Typography sx={{ fontSize: "0.9rem", color: product.stock > 0 ? "green" : "red" }}>
-              {product.stock > 0 ? `En stock (${product.stock} disponibles)` : "Agotado"}
+            {/* DESCRIPCIÓN DEL PRODUCTO (En lugar del stock) */}
+            <Typography sx={{ color: "#4A5568", fontSize: "1rem", lineHeight: 1.6, mt: 1 }}>
+              {product.description}
             </Typography>
 
-            <Divider sx={{ my: 1, borderColor: "#E5E7EB" }} />
+            <Divider sx={{ my: 2, borderColor: "#E5E7EB" }} />
 
             {/* SELECTOR DE TALLA DINÁMICO */}
             {product.sizes && product.sizes.length > 0 && (
@@ -132,7 +133,7 @@ export default function ProductDetailPage() {
               </Box>
             )}
 
-            <Button variant="contained" onClick={() => addToCart({ ...product, image: product.image_url })} fullWidth disableElevation sx={{ bgcolor: "#B0B3B8", color: "#111827", py: 1.5, borderRadius: "8px", fontWeight: 700, boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", mt: 2, transition: "all 0.3s ease", "&:hover": { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
+            <Button variant="contained" onClick={() => addToCart({ ...product, image: product.image_url })} fullWidth disableElevation sx={{ bgcolor: "#B0B3B8", color: "#111827", py: 1.5, borderRadius: "8px", fontWeight: 700, boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", mt: 1, transition: "all 0.3s ease", "&:hover": { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
               Añadir al carrito
             </Button>
             
@@ -144,8 +145,6 @@ export default function ProductDetailPage() {
               <LocalShippingIcon fontSize="small" />
               <Typography sx={{ fontSize: "0.85rem" }}>Envío gratis a todo el Perú (Miembros VIP)</Typography>
             </Box>
-
-            <Typography sx={{ color: "#4A5568", fontSize: "0.95rem", lineHeight: 1.6, pt: 2 }}>{product.description}</Typography>
           </Stack>
         </Grid>
       </Grid>
