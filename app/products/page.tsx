@@ -64,10 +64,10 @@ function ProductsContent() {
           justifyContent: { xs: "flex-start", md: "center" }, 
           gap: 3, 
           mb: 6, 
-          overflowX: "auto", // Scroll horizontal
-          flexWrap: "nowrap", // Evita que salten de línea
+          overflowX: "auto", 
+          flexWrap: "nowrap", 
           whiteSpace: "nowrap",
-          "&::-webkit-scrollbar": { display: "none" }, // Oculta la barra fea
+          "&::-webkit-scrollbar": { display: "none" }, 
           scrollbarWidth: "none",
           px: { xs: 2, md: 0 }
         }}
@@ -83,7 +83,7 @@ function ProductsContent() {
               color: activeCategory === cat ? "#0a0d15" : "#888",
               borderBottom: activeCategory === cat ? "2px solid #0a0d15" : "2px solid transparent",
               pb: 0.5,
-              flexShrink: 0, // Evita que se aplasten
+              flexShrink: 0,
               transition: "all 0.2s",
               "&:hover": { color: "#0a0d15" }
             }}
@@ -122,7 +122,6 @@ function ProductsContent() {
                     }} 
                   />
                 </Link>
-                {/* ELIMINADO EL TEXTO "BESTSELLER" */}
               </Box>
               
               <Box sx={{ px: 1 }}>
