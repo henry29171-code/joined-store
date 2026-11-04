@@ -5,9 +5,8 @@ import Link from "next/link";
 import { 
   Container, Typography, Box, Grid, Button, Chip, Stack, 
   Card, CardContent, CardMedia, CircularProgress, Breadcrumbs, 
-  Link as MuiLink, Divider, Table, TableBody, TableRow, TableCell 
+  Link as MuiLink, Table, TableBody, TableRow, TableCell 
 } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useCart } from "../../context/CartContext";
@@ -21,6 +20,10 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<any>(null);
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Estados para las variantes (Preparado para el futuro)
+  const [selectedSize, setSelectedSize] = useState("Única");
+  const [selectedColor, setSelectedColor] = useState("Negro");
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -70,7 +73,6 @@ export default function ProductDetailPage() {
     );
   }
 
-  // Especificaciones por defecto si el producto no las tiene en la BD
   const specs = product.specifications || {
     material: "Cuero genuino / Acero inoxidable",
     dimensions: "Consultar medidas específicas",
@@ -79,10 +81,15 @@ export default function ProductDetailPage() {
     origin: "Perú"
   };
 
+  const handleComprarAhora = () => {
+    addToCart({ ...product, image: product.image_url });
+    router.push("/checkout");
+  };
+
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
       
-      {/* BREADCRUMBS (Migas de pan) */}
+      {/* BREADCRUMBS (Sin el nombre del producto al final) */}
       <Box sx={{ mb: 4 }}>
         <Breadcrumbs separator="›" aria-label="breadcrumb">
           <MuiLink component={Link} href="/" underline="hover" color="inherit" sx={{ fontSize: "0.9rem", color: "#5E6B7E" }}>
@@ -94,9 +101,6 @@ export default function ProductDetailPage() {
           <MuiLink component={Link} href={`/products?category=${product.category}`} underline="hover" color="inherit" sx={{ fontSize: "0.9rem", color: "#5E6B7E" }}>
             {product.category}
           </MuiLink>
-          <Typography sx={{ fontSize: "0.9rem", color: "#0a0d15", fontWeight: 600 }}>
-            {product.name}
-          </Typography>
         </Breadcrumbs>
       </Box>
 
@@ -136,20 +140,78 @@ export default function ProductDetailPage() {
               {product.description}
             </Typography>
 
-            <Box sx={{ py: 2 }}>
+            {/* SELECTOR DE VARIANTES (Maqueta visual para el futuro admin) */}
+            <Box>
+              <Typography sx={{ fontWeight: 700, fontSize: "0.9rem", mb: 1 }}>Talla</Typography>
+              <Stack direction="row" spacing={1}>
+                {["Única", "S", "M", "L"].map((size) => (
+                  <Chip 
+                    key={size} 
+                    label={size} 
+                    onClick={() => setSelectedSize(size)}
+                    sx={{ 
+                      borderRadius: 1, 
+                      borderColor: selectedSize === size ? "#0a0d15" : "#E0E0E0",
+                      bgcolor: selectedSize === size ? "#0a0d15" : "white",
+                      color: selectedSize === size ? "white" : "#5E6B7E",
+                      fontWeight: 600 
+                    }} 
+                    variant="outlined" 
+                  />
+                ))}
+              </Stack>
+
+              <Typography sx={{ fontWeight: 700, fontSize: "0.9rem", mt: 3, mb: 1 }}>Color</Typography>
+              <Stack direction="row" spacing={1}>
+                {["Negro", "Marrón", "Azul"].map((color) => (
+                  <Chip 
+                    key={color} 
+                    label={color} 
+                    onClick={() => setSelectedColor(color)}
+                    sx={{ 
+                      borderRadius: 1, 
+                      borderColor: selectedColor === color ? "#0a0d15" : "#E0E0E0",
+                      bgcolor: selectedColor === color ? "#0a0d15" : "white",
+                      color: selectedColor === color ? "white" : "#5E6B7E",
+                      fontWeight: 600 
+                    }} 
+                    variant="outlined" 
+                  />
+                ))}
+              </Stack>
+            </Box>
+
+            {/* BOTONES DE ACCIÓN */}
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ pt: 2 }}>
               <Button 
-                variant="outlined" size="large" startIcon={<ShoppingBagIcon />} 
+                variant="outlined" 
+                size="large" 
+                startIcon={<ShoppingBagIcon />} 
                 onClick={() => addToCart({ ...product, image: product.image_url })} 
                 fullWidth
                 sx={{ 
-                  bgcolor: "white", color: "#0a0d15", borderColor: "#0a0d15", py: 2, 
-                  fontSize: "1.1rem", borderRadius: 999, fontWeight: 700, transition: "all 0.3s",
+                  bgcolor: "white", color: "#0a0d15", borderColor: "#0a0d15", py: 1.5, 
+                  fontSize: "1rem", borderRadius: 999, fontWeight: 700, transition: "all 0.3s",
                   "&:hover": { bgcolor: "#0a0d15", color: "white", borderColor: "#0a0d15" } 
                 }}
               >
                 Añadir al carrito
               </Button>
-            </Box>
+              
+              <Button 
+                variant="contained" 
+                size="large" 
+                onClick={handleComprarAhora} 
+                fullWidth
+                sx={{ 
+                  bgcolor: "#0a0d15", color: "white", py: 1.5, 
+                  fontSize: "1rem", borderRadius: 999, fontWeight: 700, transition: "all 0.3s",
+                  "&:hover": { bgcolor: "#1a1d24" } 
+                }}
+              >
+                Comprar ahora
+              </Button>
+            </Stack>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, color: "#5E6B7E", mt: 2 }}>
               <LocalShippingIcon />
@@ -161,6 +223,7 @@ export default function ProductDetailPage() {
 
       {/* ESPECIFICACIONES TÉCNICAS */}
       <Box sx={{ mt: 8 }}>
+        {/* RAE: Minúscula en "producto" */}
         <Typography variant="h5" sx={{ fontWeight: 800, color: "#0a0d15", mb: 3 }}>
           Especificaciones del producto
         </Typography>

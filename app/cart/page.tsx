@@ -8,6 +8,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import LockIcon from "@mui/icons-material/Lock";
 import Link from "next/link";
 
 export default function CartPage() {
@@ -35,7 +37,7 @@ export default function CartPage() {
           size="large"
           sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, borderRadius: 999, px: 4, py: 1.5 }}
         >
-          Explorar Colección
+          Explorar colección
         </Button>
       </Container>
     );
@@ -51,7 +53,7 @@ export default function CartPage() {
       </Box>
 
       <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 4, fontSize: { xs: "1.5rem", md: "2rem" } }}>
-        Tu Carrito ({state.items.length} {state.items.length === 1 ? 'artículo' : 'artículos'})
+        Tu carrito ({state.items.length} {state.items.length === 1 ? 'artículo' : 'artículos'})
       </Typography>
 
       <Grid container spacing={4}>
@@ -61,34 +63,44 @@ export default function CartPage() {
             {state.items.map((item) => (
               <Card key={item.id} sx={{ display: "flex", p: 2, borderRadius: 3, boxShadow: "0 4px 15px rgba(0,0,0,0.05)" }}>
                 
-                {/* Imagen del producto con el fix para TypeScript */}
                 <Box 
                   component="img"
                   src={(item as any).image || "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=200&auto=format&fit=crop"}
                   alt={item.name}
-                  sx={{ width: 80, height: 80, md: { width: 100, height: 100 }, objectFit: "cover", borderRadius: 2, mr: 2 }}
+                  sx={{ width: 80, height: 100, objectFit: "cover", borderRadius: 2, mr: 2 }}
                 />
                 
                 <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <Box>
-                    <Typography variant="h6" sx={{ fontWeight: 700, color: "#0a0d15", fontSize: { xs: "1rem", md: "1.2rem" } }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, color: "#0a0d15", fontSize: { xs: "1rem", md: "1.1rem" } }}>
                       {item.name}
                     </Typography>
+                    
+                    {/* Información adicional (Variantes) */}
+                    <Typography sx={{ color: "#9CA3AF", fontSize: "0.85rem", mb: 0.5 }}>
+                      Color: Negro | Talla: Única
+                    </Typography>
+
                     <Typography sx={{ color: "#5E6B7E", fontWeight: 600, fontSize: "0.9rem" }}>
                       S/. {item.price.toFixed(2)}
                     </Typography>
                   </Box>
 
-                  <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 1 }}>
+                  <Stack direction="row" alignItems="center" spacing={2} sx={{ mt: 1 }}>
                     <Box sx={{ display: "flex", alignItems: "center", border: "1px solid #E0E0E0", borderRadius: 2 }}>
                       <IconButton size="small" onClick={() => decrement(item.id)}><RemoveIcon fontSize="small" /></IconButton>
-                      <Typography sx={{ mx: 1, fontWeight: 700, fontSize: "0.9rem" }}>{item.quantity}</Typography>
+                      <Typography sx={{ mx: 1.5, fontWeight: 700, fontSize: "0.9rem" }}>{item.quantity}</Typography>
                       <IconButton size="small" onClick={() => increment(item.id)}><AddIcon fontSize="small" /></IconButton>
                     </Box>
                     
-                    <IconButton onClick={() => removeFromCart(item.id)} sx={{ color: "#d32f2f" }}>
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
+                    <Button 
+                      size="small" 
+                      startIcon={<DeleteIcon fontSize="small" />} 
+                      onClick={() => removeFromCart(item.id)} 
+                      sx={{ color: "#d32f2f", textTransform: "none", fontSize: "0.8rem", fontWeight: 600 }}
+                    >
+                      Eliminar
+                    </Button>
                   </Stack>
                 </Box>
                 
@@ -100,6 +112,14 @@ export default function CartPage() {
               </Card>
             ))}
           </Stack>
+
+          {/* Beneficios del carrito */}
+          <Box sx={{ mt: 4, p: 2, bgcolor: "#F8F9FA", borderRadius: 2, display: "flex", alignItems: "center", gap: 2 }}>
+            <LocalShippingIcon sx={{ color: "#5E6B7E" }} />
+            <Typography sx={{ fontSize: "0.85rem", color: "#5E6B7E" }}>
+              Tu pedido califica para <strong>envío gratis</strong> por ser miembro VIP.
+            </Typography>
+          </Box>
         </Grid>
 
         {/* Resumen de Compra */}
@@ -116,7 +136,6 @@ export default function CartPage() {
               </Box>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography>Envío</Typography>
-                {/* Texto actualizado para la nueva estrategia VIP */}
                 <Typography sx={{ fontWeight: 700, color: "#4ADE80" }}>Gratis (Miembro VIP)</Typography>
               </Box>
             </Stack>
@@ -143,15 +162,20 @@ export default function CartPage() {
                 "&:hover": { bgcolor: "#F0F0F0" }
               }}
             >
-              Proceder al Pago
+              Proceder al pago
             </Button>
             
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 3, opacity: 0.6 }}>
+              <LockIcon fontSize="small" />
+              <Typography sx={{ fontSize: "0.8rem" }}>Compra 100% segura</Typography>
+            </Box>
+
             <Button 
               onClick={clearCart}
               fullWidth
-              sx={{ color: "rgba(255,255,255,0.6)", mt: 2, textTransform: "none", "&:hover": { color: "white" } }}
+              sx={{ color: "rgba(255,255,255,0.6)", mt: 1, textTransform: "none", "&:hover": { color: "white" } }}
             >
-              Vaciar Carrito
+              Vaciar carrito
             </Button>
           </Card>
         </Grid>
