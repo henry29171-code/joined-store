@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link"; // <-- Agregado para los enlaces
 import { supabase } from "@/app/lib/supabase";
 import { Box, Container, Typography, Grid, Card, CardContent, Button, Stack } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -39,7 +40,7 @@ export default function AdminDashboard() {
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 5 }}>
           <Box>
             <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15" }}>
-              Panel de Control
+              Panel de control
             </Typography>
             <Typography sx={{ color: "#5E6B7E" }}>
               Bienvenido de vuelta, Henry.
@@ -52,7 +53,7 @@ export default function AdminDashboard() {
             onClick={handleLogout}
             sx={{ textTransform: "none", fontWeight: 700 }}
           >
-            Cerrar Sesión
+            Cerrar sesión
           </Button>
         </Stack>
 
@@ -66,8 +67,15 @@ export default function AdminDashboard() {
                 <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
                   Agrega, edita o elimina los productos de tu tienda.
                 </Typography>
-                <Button fullWidth variant="contained" sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}>
-                  Gestionar Productos
+                {/* Botón conectado a la nueva página */}
+                <Button 
+                  component={Link} 
+                  href="/admin/productos" 
+                  fullWidth 
+                  variant="contained" 
+                  sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
+                >
+                  Gestionar productos
                 </Button>
               </CardContent>
             </Card>
@@ -81,8 +89,13 @@ export default function AdminDashboard() {
                 <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
                   Revisa las compras y estados de envío de tus clientes.
                 </Typography>
-                <Button fullWidth variant="contained" sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}>
-                  Ver Pedidos
+                {/* Este botón se conectará cuando creemos la página de pedidos */}
+                <Button 
+                  fullWidth 
+                  variant="contained" 
+                  sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
+                >
+                  Ver pedidos
                 </Button>
               </CardContent>
             </Card>
@@ -92,12 +105,17 @@ export default function AdminDashboard() {
             <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
               <CardContent sx={{ p: 4, textAlign: "center" }}>
                 <ArticleIcon sx={{ fontSize: 50, color: "#0a0d15", mb: 2 }} />
-                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Páginas Legales</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Páginas legales</Typography>
                 <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
                   Actualiza las políticas y términos de tu tienda sin tocar código.
                 </Typography>
-                <Button fullWidth variant="contained" sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}>
-                  Editar Páginas
+                {/* Este botón se conectará cuando creemos la página de gestión legal */}
+                <Button 
+                  fullWidth 
+                  variant="contained" 
+                  sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
+                >
+                  Editar páginas
                 </Button>
               </CardContent>
             </Card>
