@@ -138,12 +138,12 @@ export default function ProductDetailPage() {
               </>
             )}
 
-            {/* BOTÓN PRINCIPAL CON EL NUEVO GRIS #cdced1 */}
+            {/* BOTÓN "AÑADIR AL CARRITO" (Gris 3D) */}
             <Button 
-              variant="contained" onClick={handleComprarAhora} fullWidth
+              variant="contained" onClick={() => addToCart({ ...product, image: product.image_url })} fullWidth
               disableElevation
               sx={{ 
-                bgcolor: "#cdced1", 
+                bgcolor: "#B0B3B8", 
                 color: "#111827", 
                 border: "none",
                 py: 1.5, 
@@ -161,19 +161,27 @@ export default function ProductDetailPage() {
                 } 
               }}
             >
-              Añadir a la cesta
+              Añadir al carrito
             </Button>
             
-            {/* BOTÓN SECUNDARIO */}
+            {/* BOTÓN "COMPRAR AHORA" (Azul Oscuro) */}
             <Button 
-              variant="text" onClick={() => addToCart({ ...product, image: product.image_url })} fullWidth
+              variant="contained" onClick={handleComprarAhora} fullWidth
+              disableElevation
               sx={{ 
-                color: "#4A5568", 
+                bgcolor: "#0a0d15", 
+                color: "white", 
                 py: 1.5, 
                 borderRadius: "8px", 
-                fontWeight: 600, 
+                fontWeight: 700, 
                 fontSize: "1rem", 
-                "&:hover": { bgcolor: "#F9FAFB" } 
+                boxShadow: "0 4px 14px 0 rgba(10, 13, 21, 0.2)", 
+                transition: "all 0.3s ease",
+                "&:hover": { 
+                  bgcolor: "#1a1d24", 
+                  boxShadow: "0 6px 20px rgba(10, 13, 21, 0.4)",
+                  transform: "translateY(-2px)"
+                } 
               }}
             >
               Comprar ahora

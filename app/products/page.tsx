@@ -118,21 +118,21 @@ function ProductsContent() {
                   {product.category}
                 </Typography>
 
-                {/* BOTÓN GRIS #cdced1 CON SOMBRA 3D */}
+                {/* BOTÓN GRIS #B0B3B8 (15% más oscuro) */}
                 <Button 
                   variant="contained" 
                   fullWidth 
                   onClick={() => addToCart({ ...product, image: product.image_url })} 
                   disableElevation
                   sx={{ 
-                    bgcolor: "#cdced1", // El gris que solicitaste
-                    color: "#111827", // Texto muy oscuro para contraste
-                    border: "none", // Sin borde
+                    bgcolor: "#B0B3B8", // Gris ligeramente más oscuro
+                    color: "#111827", 
+                    border: "none",
                     py: 1.2, 
                     fontSize: "0.9rem", 
-                    fontWeight: 700, // Un poco más grueso para resaltar
+                    fontWeight: 700, 
                     borderRadius: "8px",
-                    boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", // Sombra más definida para efecto 3D
+                    boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", 
                     transition: "all 0.3s ease",
                     "&:hover": { 
                       bgcolor: "#0a0d15", 
@@ -142,7 +142,7 @@ function ProductsContent() {
                     } 
                   }}
                 >
-                  Añadir a la cesta
+                  Añadir al carrito
                 </Button>
               </Box>
             </Box>
