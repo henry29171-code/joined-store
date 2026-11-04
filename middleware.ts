@@ -21,8 +21,9 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Verifica que el correo sea exactamente el tuyo
-  const isAdminEmail = user?.email === 'henry29171@gmail.com';
+  // Normalizamos el correo (minúsculas y sin espacios) para evitar errores tontos
+  const userEmail = user?.email?.toLowerCase().trim();
+  const isAdminEmail = userEmail === 'henry29171@gmail.com';
 
   if (!isAdminEmail && request.nextUrl.pathname.startsWith('/admin') && request.nextUrl.pathname !== '/admin/login') {
     const url = request.nextUrl.clone()
@@ -30,7 +31,6 @@ export async function middleware(request: NextRequest) {
     
     const redirectResponse = NextResponse.redirect(url)
     
-    // Pasar cookies a la redirección
     supabaseResponse.cookies.getAll().forEach(cookie => {
       redirectResponse.cookies.set(cookie.name, cookie.value, cookie)
     })

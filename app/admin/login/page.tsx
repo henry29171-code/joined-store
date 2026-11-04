@@ -1,29 +1,39 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
-import { Box, Button, Container, TextField, Typography, Alert } from "@mui/material";
+import { Box, Button, Container, TextField, Typography, Alert, InputAdornment, IconButton } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 export default function LoginAdmin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    // Normalizamos el correo antes de enviarlo
+    const cleanEmail = email.toLowerCase().trim();
+    
+    const { error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
 
     if (error) {
-      setError("Correo o contraseña incorrectos.");
+      setError(`Error: ${error.message}`);
       setLoading(false);
     } else {
-      // Forzamos la recarga completa para que el middleware lea las cookies nuevas
-      window.location.href = "/admin";
+      // Verificamos que el correo sea el del admin antes de redirigir
+      if (cleanEmail === 'henry29171@gmail.com') {
+        window.location.href = "/admin";
+      } else {
+        setError("Has ingresado correctamente, pero esta cuenta no tiene permisos de administrador. Por favor, inicia sesión con la cuenta de Henry.");
+        await supabase.auth.signOut(); // Cerramos la sesión si no es admin
+        setLoading(false);
+      }
     }
   };
 
@@ -36,8 +46,34 @@ export default function LoginAdmin() {
         
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-        <TextField fullWidth label="Correo" type="email" value={email} onChange={(e) => setEmail(e.target.value)} sx={{ mb: 2 }} required />
-        <TextField fullWidth label="Contraseña" type="password" value={password} onChange={(e) => setPassword(e.target.value)} sx={{ mb: 3 }} required />
+        <TextField 
+          fullWidth 
+          label="Correo" 
+          type="email" 
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)} 
+          sx={{ mb: 2 }} 
+          required 
+        />
+
+        <TextField 
+          fullWidth 
+          label="Contraseña" 
+          type={showPassword ? "text" : "password"}
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)} 
+          sx={{ mb: 3 }} 
+          required 
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
         
         <Button type="submit" fullWidth variant="contained" disabled={loading} sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, py: 1.5, fontWeight: 700 }}>
           {loading ? "Verificando..." : "Ingresar al Panel"}
