@@ -45,7 +45,7 @@ export default function HomePage() {
                 <Chip label="Joined accesorios" sx={{ width: "fit-content", fontWeight: 700, bgcolor: "#F3F4F6", color: "#0a0d15" }} />
                 
                 <Typography variant="h2" sx={{ color: "#0a0d15", fontSize: { xs: "2.2rem", sm: "2.6rem", md: "3.2rem" }, lineHeight: 1.2, fontWeight: 500, letterSpacing: "-0.02em", maxWidth: 550 }}>
-                  Eleva tu estilo con accesorios que hablan por ti
+                  Eleva tu estilo con accesorios que hablan por ti.
                 </Typography>
 
                 <Typography sx={{ color: "#666", fontSize: { xs: "1rem", md: "1.1rem" }, lineHeight: 1.7, maxWidth: 500 }}>
@@ -54,7 +54,7 @@ export default function HomePage() {
 
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ pt: 1 }}>
                   <Button component={Link} href="/products" variant="contained" disableElevation sx={{ bgcolor: "#0a0d15", color: "white", "&:hover": { bgcolor: "#1a1d24" }, px: 4, py: 1.5, borderRadius: "8px", fontWeight: 600 }}>
-                    Explorar colección
+                    Ver colección
                   </Button>
                   <Button component={Link} href="/comunidad" variant="outlined" sx={{ borderColor: "#0a0d15", color: "#0a0d15", px: 4, py: 1.5, borderRadius: "8px", fontWeight: 600, "&:hover": { bgcolor: "#F9FAFB" } }}>
                     Unirme al club VIP
