@@ -1,29 +1,15 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
-import { Box, Button, Container, TextField, Typography, Alert, CircularProgress } from "@mui/material";
+import { Box, Button, Container, TextField, Typography, Alert } from "@mui/material";
 
 export default function LoginAdmin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (user && user.email === 'henry29171@gmail.com') {
-        // Si ya está logueado, usamos replace para no dejar rastro en el historial
-        router.replace("/admin");
-      } else {
-        setLoading(false);
-      }
-    };
-    checkSession();
-  }, [router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,19 +22,10 @@ export default function LoginAdmin() {
       setError("Correo o contraseña incorrectos.");
       setLoading(false);
     } else {
-      // 🔑 CLAVE: Usamos replace en lugar de window.location.href
-      router.replace("/admin");
-      router.refresh(); // Refrescamos para que el middleware lea la nueva sesión
+      // Forzamos la recarga completa para que el middleware lea las cookies nuevas
+      window.location.href = "/admin";
     }
   };
-
-  if (loading) {
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
-        <CircularProgress sx={{ color: "#0a0d15" }} />
-      </Box>
-    );
-  }
 
   return (
     <Container maxWidth="xs" sx={{ py: 15 }}>
