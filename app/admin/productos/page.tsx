@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { supabase } from "../../lib/supabase";
 
@@ -17,6 +18,7 @@ export default function AdminProductos() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null); // <-- NUEVO ESTADO
 
   const [form, setForm] = useState({
     name: "",
@@ -70,41 +72,93 @@ export default function AdminProductos() {
     }
   };
 
+  // Función para cargar los datos del producto en el formulario para Editarlo
+  const handleEdit = (product: any) => {
+    setEditingId(product.id);
+    
+    // Convertir arrays de vuelta a texto separado por comas
+    const sizesString = product.sizes ? product.sizes.join(', ') : "";
+    const colorsString = product.colors ? product.colors.join(', ') : "";
+    
+    // Convertir JSON de características a texto separado por saltos de línea
+    let charString = "";
+    if (product.characteristics) {
+      try {
+        charString = JSON.parse(product.characteristics).join('\n');
+      } catch (e) {
+        charString = product.characteristics;
+      }
+    }
+
+    setForm({
+      name: product.name,
+      price: product.price.toString(),
+      category: product.category,
+      description: product.description || "",
+      image_url: product.image_url || "",
+      stock: (product.stock || 0).toString(),
+      sizes: sizesString,
+      colors: colorsString,
+      characteristics: charString,
+      specs_material: product.specs_material || "",
+      specs_dimensions: product.specs_dimensions || "",
+      specs_weight: product.specs_weight || "",
+      specs_warranty: product.specs_warranty || ""
+    });
+    setOpen(true);
+  };
+
+  // Limpiar el formulario al cerrar
+  const handleClose = () => {
+    setOpen(false);
+    setEditingId(null);
+    setForm({ name: "", price: "", category: "Morrales", description: "", image_url: "", stock: "0", sizes: "", colors: "", characteristics: "", specs_material: "", specs_dimensions: "", specs_weight: "", specs_warranty: "" });
+  };
+
   const handleSave = async () => {
     if (!form.name || !form.price || !form.image_url) {
       alert("Por favor, completa los campos obligatorios (nombre, precio e imagen).");
       return;
     }
 
-    // Convertir comas a Arrays para JSONB
     const sizesArray = form.sizes ? form.sizes.split(',').map(s => s.trim()) : [];
     const colorsArray = form.colors ? form.colors.split(',').map(c => c.trim()) : [];
     const charArray = form.characteristics ? form.characteristics.split('\n').filter(c => c.trim() !== '') : [];
 
-    const { error } = await supabase.from("products").insert([
-      {
-        name: form.name,
-        price: parseFloat(form.price),
-        category: form.category,
-        description: form.description,
-        image_url: form.image_url,
-        stock: parseInt(form.stock),
-        sizes: sizesArray,
-        colors: colorsArray,
-        characteristics: JSON.stringify(charArray), 
-        specs_material: form.specs_material,
-        specs_dimensions: form.specs_dimensions,
-        specs_weight: form.specs_weight,
-        specs_warranty: form.specs_warranty,
-      }
-    ]);
+    const productData = {
+      name: form.name,
+      price: parseFloat(form.price),
+      category: form.category,
+      description: form.description,
+      image_url: form.image_url,
+      stock: parseInt(form.stock),
+      sizes: sizesArray,
+      colors: colorsArray,
+      characteristics: JSON.stringify(charArray), 
+      specs_material: form.specs_material,
+      specs_dimensions: form.specs_dimensions,
+      specs_weight: form.specs_weight,
+      specs_warranty: form.specs_warranty,
+    };
 
-    if (error) {
-      alert("Error al guardar: " + error.message);
+    if (editingId) {
+      // ACTUALIZAR PRODUCTO
+      const { error } = await supabase.from("products").update(productData).eq("id", editingId);
+      if (error) {
+        alert("Error al actualizar: " + error.message);
+      } else {
+        handleClose();
+        fetchProducts();
+      }
     } else {
-      setForm({ name: "", price: "", category: "Morrales", description: "", image_url: "", stock: "0", sizes: "", colors: "", characteristics: "", specs_material: "", specs_dimensions: "", specs_weight: "", specs_warranty: "" });
-      setOpen(false);
-      fetchProducts();
+      // CREAR NUEVO PRODUCTO
+      const { error } = await supabase.from("products").insert([productData]);
+      if (error) {
+        alert("Error al guardar: " + error.message);
+      } else {
+        handleClose();
+        fetchProducts();
+      }
     }
   };
 
@@ -160,7 +214,13 @@ export default function AdminProductos() {
                   <TableCell>{product.stock || 0}</TableCell>
                   <TableCell sx={{ fontSize: "0.85rem", color: "#666" }}>{new Date(product.created_at).toLocaleDateString()}</TableCell>
                   <TableCell align="right">
-                    <IconButton color="error" onClick={() => handleDelete(product.id)}><DeleteIcon /></IconButton>
+                    {/* BOTÓN DE EDITAR AGREGADO AQUÍ */}
+                    <IconButton color="primary" onClick={() => handleEdit(product)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton color="error" onClick={() => handleDelete(product.id)}>
+                      <DeleteIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
@@ -169,9 +229,11 @@ export default function AdminProductos() {
         </TableContainer>
       )}
 
-      {/* MODAL EXTENDIDO */}
-      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="md">
-        <DialogTitle sx={{ fontWeight: 700 }}>Nuevo producto</DialogTitle>
+      {/* MODAL EXTENDIDO (Crear / Editar) */}
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+        <DialogTitle sx={{ fontWeight: 700 }}>
+          {editingId ? "Editar producto" : "Nuevo producto"}
+        </DialogTitle>
         <DialogContent sx={{ pt: 2 }}>
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2, mt: 1 }}>
             <TextField fullWidth label="Nombre del producto" required value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} />
@@ -197,11 +259,9 @@ export default function AdminProductos() {
 
             <TextField fullWidth label="Descripción corta" multiline rows={2} value={form.description} onChange={(e) => setForm({...form, description: e.target.value})} sx={{ gridColumn: "1 / -1" }} />
             
-            {/* VARIABLES */}
             <TextField fullWidth label="Tallas (separadas por coma)" placeholder="Ej: O/S o 28, 30, 32" value={form.sizes} onChange={(e) => setForm({...form, sizes: e.target.value})} />
             <TextField fullWidth label="Colores (separados por coma)" placeholder="Ej: Negro, Marrón" value={form.colors} onChange={(e) => setForm({...form, colors: e.target.value})} />
 
-            {/* ESPECIFICACIONES Y CARACTERISTICAS */}
             <TextField fullWidth label="Características (una por línea)" multiline rows={3} value={form.characteristics} onChange={(e) => setForm({...form, characteristics: e.target.value})} sx={{ gridColumn: "1 / -1" }} />
             
             <TextField fullWidth label="Material" value={form.specs_material} onChange={(e) => setForm({...form, specs_material: e.target.value})} />
@@ -211,8 +271,10 @@ export default function AdminProductos() {
           </Box>
         </DialogContent>
         <DialogActions sx={{ p: 3 }}>
-          <Button onClick={() => setOpen(false)} sx={{ color: "#5E6B7E" }}>Cancelar</Button>
-          <Button onClick={handleSave} variant="contained" disabled={uploading} sx={{ bgcolor: "#0a0d15" }}>Guardar producto</Button>
+          <Button onClick={handleClose} sx={{ color: "#5E6B7E" }}>Cancelar</Button>
+          <Button onClick={handleSave} variant="contained" disabled={uploading} sx={{ bgcolor: "#0a0d15" }}>
+            {editingId ? "Actualizar producto" : "Guardar producto"}
+          </Button>
         </DialogActions>
       </Dialog>
     </Container>
