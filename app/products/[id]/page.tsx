@@ -66,7 +66,7 @@ export default function ProductDetailPage() {
 
       <Grid container spacing={{ xs: 4, md: 8 }} alignItems="flex-start">
         
-        {/* Lado Izquierdo: Imagen con efecto 3D */}
+        {/* Lado Izquierdo: Imagen con Efecto 3D */}
         <Grid size={{ xs: 12, md: 6 }}>
           <Box 
             sx={{ 
@@ -75,7 +75,7 @@ export default function ProductDetailPage() {
               borderRadius: "16px", 
               p: 2, 
               mb: 2,
-              boxShadow: "0 15px 35px rgba(0,0,0,0.05)" // Efecto de profundidad
+              boxShadow: "0 15px 35px rgba(0,0,0,0.05)"
             }}
           >
             <Box component="img" src={product.image_url} alt={product.name} sx={{ width: "100%", aspectRatio: "1/1", objectFit: "contain", display: "block" }} />
@@ -89,7 +89,7 @@ export default function ProductDetailPage() {
           </Stack>
         </Grid>
 
-        {/* Lado Derecho: Información */}
+        {/* Lado Derecho: Información y Botones */}
         <Grid size={{ xs: 12, md: 6 }}>
           <Stack spacing={2.5}>
             <Typography variant="h4" sx={{ fontWeight: 600, color: "#0a0d15", fontSize: { xs: "1.8rem", md: "2.2rem" } }}>
@@ -140,17 +140,43 @@ export default function ProductDetailPage() {
               </>
             )}
 
-            {/* BOTONES SOBRIOS (Blanco con borde oscuro) */}
+            {/* BOTÓN PRINCIPAL (Gris 3D que se vuelve azul oscuro) */}
             <Button 
-              variant="contained" onClick={handleComprarAhora} fullWidth
-              sx={{ bgcolor: "#0a0d15", color: "white", py: 1.5, borderRadius: "8px", fontWeight: 600, fontSize: "1rem", boxShadow: "none", mt: 2, "&:hover": { bgcolor: "#1a1d24" } }}
+              variant="outlined" onClick={handleComprarAhora} fullWidth
+              sx={{ 
+                bgcolor: "#F1F5F9", 
+                color: "#0a0d15", 
+                borderColor: "#CBD5E0", 
+                py: 1.5, 
+                borderRadius: "8px", 
+                fontWeight: 600, 
+                fontSize: "1rem", 
+                boxShadow: "0 4px 6px rgba(0,0,0,0.05)", 
+                mt: 2, 
+                transition: "all 0.3s ease",
+                "&:hover": { 
+                  bgcolor: "#0a0d15", 
+                  color: "white", 
+                  borderColor: "#0a0d15",
+                  boxShadow: "0 8px 15px rgba(10, 13, 21, 0.2)",
+                  transform: "translateY(-2px)"
+                } 
+              }}
             >
               Añadir a la cesta
             </Button>
             
+            {/* BOTÓN SECUNDARIO (Borde gris, sin fondo) */}
             <Button 
-              variant="outlined" onClick={() => addToCart({ ...product, image: product.image_url })} fullWidth
-              sx={{ borderColor: "#0a0d15", color: "#0a0d15", py: 1.5, borderRadius: "8px", fontWeight: 600, fontSize: "1rem", "&:hover": { bgcolor: "#F5F5F5", borderColor: "#0a0d15" } }}
+              variant="text" onClick={() => addToCart({ ...product, image: product.image_url })} fullWidth
+              sx={{ 
+                color: "#4A5568", 
+                py: 1.5, 
+                borderRadius: "8px", 
+                fontWeight: 600, 
+                fontSize: "1rem", 
+                "&:hover": { bgcolor: "#F7FAFC" } 
+              }}
             >
               Comprar ahora
             </Button>

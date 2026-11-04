@@ -77,7 +77,7 @@ function ProductsContent() {
           <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
             <Box sx={{ display: "flex", flexDirection: "column", bgcolor: "transparent" }}>
               
-              {/* Contenedor 3D de la Imagen */}
+              {/* Contenedor de Imagen con Efecto 3D */}
               <Box 
                 sx={{ 
                   bgcolor: "#F0F2F5", 
@@ -85,7 +85,7 @@ function ProductsContent() {
                   overflow: "hidden", 
                   mb: 2, 
                   borderRadius: "12px",
-                  boxShadow: "0 10px 25px rgba(0,0,0,0.04)" // Efecto 3D sutil
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.04)"
                 }}
               >
                 <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
@@ -102,7 +102,6 @@ function ProductsContent() {
                     }} 
                   />
                 </Link>
-                {/* Etiqueta sutil gris oscuro */}
                 <Typography sx={{ position: "absolute", top: 16, left: 16, fontSize: "0.75rem", fontWeight: 600, color: "#0a0d15" }}>
                   Bestseller
                 </Typography>
@@ -119,22 +118,28 @@ function ProductsContent() {
                   {product.category}
                 </Typography>
 
-                {/* BOTÓN BLANCO CON BORDE OSCURO (Como en Inicio) */}
+                {/* BOTÓN CON EFECTO 3D Y HOVER AZUL OSCURO */}
                 <Button 
                   variant="outlined" 
                   fullWidth 
                   onClick={() => addToCart({ ...product, image: product.image_url })} 
                   sx={{ 
-                    bgcolor: "white", 
-                    color: "#0a0d15", 
-                    borderColor: "#0a0d15", 
+                    bgcolor: "#F1F5F9", // Gris claro
+                    color: "#0a0d15", // Texto oscuro
+                    borderColor: "#CBD5E0", // Borde suave
                     py: 1.2, 
                     fontSize: "0.9rem", 
                     fontWeight: 600,
                     borderRadius: "8px",
-                    boxShadow: "none",
-                    transition: "all 0.3s",
-                    "&:hover": { bgcolor: "#0a0d15", color: "white", borderColor: "#0a0d15" } 
+                    boxShadow: "0 4px 6px rgba(0,0,0,0.05)", // Sombra sutil
+                    transition: "all 0.3s ease",
+                    "&:hover": { 
+                      bgcolor: "#0a0d15", // Cambia a azul oscuro
+                      color: "white", 
+                      borderColor: "#0a0d15",
+                      boxShadow: "0 8px 15px rgba(10, 13, 21, 0.2)", // Sombra más pronunciada
+                      transform: "translateY(-2px)" // Efecto de elevación
+                    } 
                   }}
                 >
                   Añadir a la cesta
