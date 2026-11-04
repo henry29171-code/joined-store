@@ -32,7 +32,7 @@ export default function HomePage() {
           <Grid container spacing={{ xs: 4, md: 8 }} alignItems="center">
             <Grid size={{ xs: 12, md: 6 }}>
               <Stack spacing={3}>
-                <Chip label="Joined accesorios" sx={{ width: "fit-content", fontWeight: 700, bgcolor: "#F0F2F5", color: "#0a0d15" }} />
+                <Chip label="Joined accesorios" sx={{ width: "fit-content", fontWeight: 700, bgcolor: "#F2F4F7", color: "#0a0d15" }} />
                 
                 <Typography variant="h2" sx={{ color: "#0a0d15", fontSize: { xs: "2.2rem", sm: "2.6rem", md: "3.2rem" }, lineHeight: 1.2, fontWeight: 800, maxWidth: 550 }}>
                   Eleva tu estilo con accesorios que hablan por ti
@@ -53,14 +53,14 @@ export default function HomePage() {
               </Stack>
             </Grid>
 
-            {/* Cuadrado del Hero - Ahora Claro */}
+            {/* Cuadrado del Hero - Gris Perla con Sombra */}
             <Grid size={{ xs: 12, md: 6 }}>
               <Box 
                 sx={{ 
                   minHeight: { xs: 300, md: 450 }, 
                   borderRadius: 6, 
-                  bgcolor: "#F8F9FA", 
-                  border: "1px solid #E0E0E0",
+                  bgcolor: "#F0F2F5", // Gris perla (más visible que el anterior)
+                  boxShadow: "0 20px 40px rgba(0,0,0,0.03)", // Sombra sutil
                   p: { xs: 4, md: 6 }, 
                   display: "flex", 
                   alignItems: "center", 
@@ -157,13 +157,13 @@ export default function HomePage() {
         </Container>
       </Box>
 
-      {/* 5. Banner VIP - Claro y Elegante */}
+      {/* 5. Banner VIP - Gris Perla */}
       <Box sx={{ py: { xs: 6, md: 8 } }}>
         <Container maxWidth="lg">
           <Box 
             sx={{ 
-              bgcolor: "#F8F9FA", 
-              border: "1px solid #E0E0E0",
+              bgcolor: "#F0F2F5", // Gris perla
+              boxShadow: "0 10px 30px rgba(0,0,0,0.03)",
               borderRadius: 6, 
               p: { xs: 4, md: 8 }, 
               display: "flex", 
