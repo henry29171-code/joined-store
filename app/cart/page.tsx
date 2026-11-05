@@ -13,6 +13,8 @@ export default function CartPage() {
   const { state, removeFromCart, clearCart, increment, decrement } = useCart();
 
   const total = state.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = total / 1.18;
+  const igv = total - subtotal;
 
   if (state.items.length === 0) {
     return (
@@ -85,15 +87,19 @@ export default function CartPage() {
           </Box>
         </Grid>
 
-        {/* RESUMEN CLARO */}
+        {/* RESUMEN CON DESGLOSE DE IGV */}
         <Grid size={{ xs: 12, md: 4 }}>
           <Card sx={{ p: 3, borderRadius: 3, bgcolor: "#F8F9FA", border: "1px solid #E0E0E0", position: "sticky", top: 100 }}>
             <Typography variant="h5" sx={{ fontWeight: 800, mb: 3, fontSize: "1.3rem", color: "#0a0d15" }}>Resumen</Typography>
             
             <Stack spacing={2} sx={{ mb: 3 }}>
               <Box sx={{ display: "flex", justifyContent: "space-between", color: "#5E6B7E" }}>
-                <Typography>Subtotal</Typography>
-                <Typography>S/. {total.toFixed(2)}</Typography>
+                <Typography>Subtotal (sin IGV)</Typography>
+                <Typography>S/. {subtotal.toFixed(2)}</Typography>
+              </Box>
+              <Box sx={{ display: "flex", justifyContent: "space-between", color: "#5E6B7E" }}>
+                <Typography>IGV (18%)</Typography>
+                <Typography>S/. {igv.toFixed(2)}</Typography>
               </Box>
               <Box sx={{ display: "flex", justifyContent: "space-between", color: "#5E6B7E" }}>
                 <Typography>Envío</Typography>

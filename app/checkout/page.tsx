@@ -16,7 +16,6 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Estado del formulario
   const [formData, setFormData] = useState({
     nombre: "",
     apellidos: "",
@@ -43,7 +42,6 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
-      // 1. Guardar el pedido en Supabase
       const fullAddress = `${formData.direccion}, ${formData.distrito}, ${formData.departamento}. Ref: ${formData.referencia}`;
       
       const { error: dbError } = await supabase.from("orders").insert([
@@ -53,14 +51,13 @@ export default function CheckoutPage() {
           customer_phone: formData.telefono,
           shipping_address: fullAddress,
           total: total,
-          items: state.items, // Guardamos el carrito completo como JSON
+          items: state.items,
           status: "Pendiente"
         }
       ]);
 
       if (dbError) throw dbError;
 
-      // 2. Si todo sale bien, mostramos el éxito y vaciamos el carrito
       setSuccess(true);
       clearCart();
     } catch (err: any) {
@@ -71,17 +68,27 @@ export default function CheckoutPage() {
     }
   };
 
+  // VISTA 1: ÉXITO (Paso 3 - Registro post-compra)
   if (success) {
     return (
       <Container maxWidth="md" sx={{ py: 12, textAlign: "center" }}>
         <Alert severity="success" sx={{ mb: 4, justifyContent: "center" }}>¡Pedido realizado con éxito!</Alert>
         <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2 }}>Gracias por tu compra</Typography>
         <Typography sx={{ color: "#5E6B7E", mb: 4 }}>Hemos recibido tu pedido. Pronto nos pondremos en contacto contigo para coordinar el envío.</Typography>
-        <Button component={Link} href="/" variant="contained" size="large" sx={{ bgcolor: "#0a0d15", borderRadius: 999, px: 4, py: 1.5 }}>Volver a la tienda</Button>
+        
+        {/* ESTRATEGIA DE REGISTRO POST-COMPRA */}
+        <Card sx={{ p: 4, mb: 4, borderRadius: 3, bgcolor: "#F8F9FA", border: "1px solid #E5E7EB", maxWidth: 500, mx: "auto" }}>
+          <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: "#0a0d15" }}>¡Haz tu compra más rápida la próxima vez!</Typography>
+          <Typography sx={{ color: "#666", mb: 3, fontSize: "0.9rem" }}>Crea tu cuenta en 1 clic para guardar tus datos, hacer seguimiento a tu pedido y obtener envío gratis.</Typography>
+          <Button variant="contained" sx={{ bgcolor: "#0a0d15", textTransform: "none", fontWeight: 600, borderRadius: "8px" }}>Crear mi cuenta</Button>
+        </Card>
+
+        <Button component={Link} href="/" variant="outlined" size="large" sx={{ borderColor: "#0a0d15", color: "#0a0d15", borderRadius: 999, px: 4, py: 1.5 }}>Volver a la tienda</Button>
       </Container>
     );
   }
 
+  // VISTA 2: CARRITO VACÍO
   if (state.items.length === 0) {
     return (
       <Container maxWidth="md" sx={{ py: 12, textAlign: "center" }}>
@@ -91,6 +98,7 @@ export default function CheckoutPage() {
     );
   }
 
+  // VISTA 3: FORMULARIO DE CHECKOUT (Paso 2 - Autocompletado)
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
       <Box sx={{ mb: 4, display: "flex", alignItems: "center", gap: 2 }}>
@@ -107,11 +115,21 @@ export default function CheckoutPage() {
             {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
 
             <Grid container spacing={2.5}>
-              <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Nombre" name="nombre" onChange={handleChange} required size="small" /></Grid>
-              <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Apellidos" name="apellidos" onChange={handleChange} required size="small" /></Grid>
-              <Grid size={{ xs: 12 }}><TextField fullWidth label="Correo electrónico" name="email" type="email" onChange={handleChange} required size="small" /></Grid>
-              <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="DNI / RUC" name="dni" onChange={handleChange} required size="small" /></Grid>
-              <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Teléfono" name="telefono" onChange={handleChange} required size="small" /></Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField fullWidth label="Nombre" name="nombre" onChange={handleChange} required size="small" autoComplete="given-name" />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField fullWidth label="Apellidos" name="apellidos" onChange={handleChange} required size="small" autoComplete="family-name" />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <TextField fullWidth label="Correo electrónico" name="email" type="email" onChange={handleChange} required size="small" autoComplete="email" />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField fullWidth label="DNI / RUC" name="dni" onChange={handleChange} required size="small" />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField fullWidth label="Teléfono" name="telefono" onChange={handleChange} required size="small" autoComplete="tel" />
+              </Grid>
               
               <Grid size={{ xs: 12 }}><Divider sx={{ my: 1 }} /></Grid>
 
@@ -120,9 +138,15 @@ export default function CheckoutPage() {
                   <MenuItem value="Lima">Lima</MenuItem><MenuItem value="Arequipa">Arequipa</MenuItem><MenuItem value="La Libertad">La Libertad</MenuItem><MenuItem value="Cusco">Cusco</MenuItem><MenuItem value="Otro">Otro</MenuItem>
                 </TextField>
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Provincia / Distrito" name="distrito" onChange={handleChange} required size="small" /></Grid>
-              <Grid size={{ xs: 12 }}><TextField fullWidth label="Dirección completa" name="direccion" onChange={handleChange} required size="small" /></Grid>
-              <Grid size={{ xs: 12 }}><TextField fullWidth label="Referencia (opcional)" name="referencia" onChange={handleChange} size="small" /></Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField fullWidth label="Provincia / Distrito" name="distrito" onChange={handleChange} required size="small" autoComplete="address-level2" />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <TextField fullWidth label="Dirección completa" name="direccion" onChange={handleChange} required size="small" autoComplete="street-address" />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <TextField fullWidth label="Referencia (opcional)" name="referencia" onChange={handleChange} size="small" />
+              </Grid>
             </Grid>
 
             <Typography variant="h6" sx={{ fontWeight: 700, mt: 4, mb: 3, color: "#0a0d15", fontSize: "1.1rem" }}>2. Método de pago</Typography>
