@@ -18,19 +18,17 @@ export default function LoginAdmin() {
     setLoading(true);
     
     try {
-      const cleanEmail = email.toLowerCase().trim();
-      const { error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
 
       if (error) {
         setError(`Error: ${error.message}`);
         setLoading(false);
       } else {
-        // Usamos window.location.href para recargar la página por completo.
-        // Esto asegura que el Middleware lea la cookie de sesión correctamente.
+        // Recarga completa para asegurar que el Middleware reciba la cookie
         window.location.href = "/admin";
       }
-    } catch (err: any) {
-      setError("Ocurrió un error inesperado de red. Por favor, intenta de nuevo.");
+    } catch (err) {
+      setError("Error de conexión. Intenta de nuevo.");
       setLoading(false);
     }
   };
@@ -44,9 +42,7 @@ export default function LoginAdmin() {
         
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-        <TextField 
-          fullWidth label="Correo" type="email" value={email} onChange={(e) => setEmail(e.target.value)} sx={{ mb: 2 }} required 
-        />
+        <TextField fullWidth label="Correo" type="email" value={email} onChange={(e) => setEmail(e.target.value)} sx={{ mb: 2 }} required />
 
         <TextField 
           fullWidth label="Contraseña" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} sx={{ mb: 3 }} required 
@@ -61,7 +57,7 @@ export default function LoginAdmin() {
           }}
         />
         
-        <Button type="submit" fullWidth variant="contained" disabled={loading} sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, py: 1.5, fontWeight: 700 }}>
+        <Button type="submit" fullWidth variant="contained" disabled={loading} sx={{ bgcolor: "#0a0d15", py: 1.5, fontWeight: 700 }}>
           {loading ? "Verificando..." : "Ingresar al Panel"}
         </Button>
       </Box>
