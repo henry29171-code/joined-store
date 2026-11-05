@@ -10,7 +10,6 @@ export const metadata: Metadata = {
   description: "Accesorios premium diseñados para elevar tu estilo diario.",
 };
 
-// Esta es la magia para que se adapte al celular
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
