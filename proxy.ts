@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -21,15 +21,18 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Solo verificamos que haya un usuario logueado
+  // Si no hay usuario y se intenta entrar a /admin, lo mandamos al login
   if (!user && request.nextUrl.pathname.startsWith('/admin') && request.nextUrl.pathname !== '/admin/login') {
     const url = request.nextUrl.clone()
     url.pathname = '/admin/login'
     
     const redirectResponse = NextResponse.redirect(url)
+    
+    // CRUCIAL: Copiar cookies a la redirección para que no se pierda la sesión
     supabaseResponse.cookies.getAll().forEach(cookie => {
       redirectResponse.cookies.set(cookie.name, cookie.value, cookie)
     })
+    
     return redirectResponse
   }
 
