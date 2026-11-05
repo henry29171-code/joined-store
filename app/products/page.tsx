@@ -96,31 +96,10 @@ function ProductsContent() {
           <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
             <Box sx={{ display: "flex", flexDirection: "column", bgcolor: "transparent" }}>
               
-              {/* FONDO DE IMAGEN A BLANCO CON BORDE SUTIL */}
-              <Box 
-                sx={{ 
-                  bgcolor: "#FFFFFF", 
-                  border: "1px solid #E5E7EB",
-                  position: "relative", 
-                  overflow: "hidden", 
-                  mb: 2, 
-                  borderRadius: "12px",
-                  boxShadow: "0 4px 15px rgba(0,0,0,0.03)" 
-                }}
-              >
+              {/* IMAGEN SIN CAJA, SIN BORDES NI SOMBRAS */}
+              <Box sx={{ position: "relative", overflow: "hidden", mb: 2 }}>
                 <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
-                  <Box 
-                    component="img" 
-                    src={product.image_url} 
-                    alt={product.name} 
-                    sx={{ 
-                      width: "100%", 
-                      aspectRatio: "4/5", 
-                      objectFit: "cover",
-                      transition: "transform 0.4s ease",
-                      "&:hover": { transform: "scale(1.04)" }
-                    }} 
-                  />
+                  <Box component="img" src={product.image_url} alt={product.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.4s ease", "&:hover": { transform: "scale(1.04)" } }} />
                 </Link>
               </Box>
               

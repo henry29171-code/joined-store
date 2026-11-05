@@ -72,16 +72,8 @@ export default function ProductDetailPage() {
       <Grid container spacing={{ xs: 4, md: 8 }} alignItems="flex-start">
         
         <Grid size={{ xs: 12, md: 6 }}>
-          {/* CONTENEDOR DE IMAGEN PRINCIPAL A BLANCO CON BORDE SUTIL */}
-          <Box sx={{ 
-            width: "100%", 
-            bgcolor: "#FFFFFF", 
-            border: "1px solid #E5E7EB",
-            borderRadius: "16px", 
-            p: 2, 
-            mb: 2, 
-            boxShadow: "0 4px 20px rgba(0,0,0,0.03)" 
-          }}>
+          {/* IMAGEN PRINCIPAL SIN PADDING, SIN FONDO Y SIN BORDES */}
+          <Box sx={{ width: "100%", mb: 2 }}>
             <Box component="img" src={mainImage} alt={product.name} sx={{ width: "100%", aspectRatio: "1/1", objectFit: "contain", display: "block" }} />
           </Box>
           
@@ -93,7 +85,6 @@ export default function ProductDetailPage() {
                   onClick={() => setMainImage(img)}
                   sx={{ 
                     width: 70, height: 70, 
-                    bgcolor: "#FFFFFF", // Miniaturas a blanco
                     border: mainImage === img ? "2px solid #6B7280" : "1px solid #E5E7EB", 
                     borderRadius: "8px", 
                     overflow: "hidden", cursor: "pointer", flexShrink: 0,
@@ -211,15 +202,8 @@ export default function ProductDetailPage() {
             {relatedProducts.map((relProduct) => (
               <Grid key={relProduct.id} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Box sx={{ bgcolor: "transparent" }}>
-                  {/* CONTENEDOR DE IMAGEN RELACIONADA A BLANCO CON BORDE SUTIL */}
-                  <Box sx={{ 
-                    bgcolor: "#FFFFFF", 
-                    border: "1px solid #E5E7EB",
-                    mb: 2, 
-                    overflow: "hidden", 
-                    borderRadius: "12px", 
-                    boxShadow: "0 4px 15px rgba(0,0,0,0.03)" 
-                  }}>
+                  {/* SIN CAJA, SIN BORDES */}
+                  <Box sx={{ mb: 2, overflow: "hidden" }}>
                     <Link href={`/products/${relProduct.id}`} style={{ display: "block" }}>
                       <Box component="img" src={relProduct.image_url} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.3s", "&:hover": { transform: "scale(1.04)" } }} />
                     </Link>
