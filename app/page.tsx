@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Box, Container, Typography, Button, Stack, Grid, Card, CardContent, CardMedia, Chip, IconButton, SvgIcon, CircularProgress } from "@mui/material";
+import { Box, Container, Typography, Button, Stack, Grid, Chip, IconButton, SvgIcon, CircularProgress } from "@mui/material";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import EnergySavingsLeafIcon from "@mui/icons-material/EnergySavingsLeaf";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
@@ -117,18 +117,10 @@ export default function HomePage() {
                 <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
                   <Box sx={{ display: "flex", flexDirection: "column", bgcolor: "transparent" }}>
                     
-                    {/* FONDO DE IMAGEN A BLANCO CON BORDE SUTIL */}
-                    <Box sx={{ 
-                      bgcolor: "#FFFFFF", 
-                      border: "1px solid #E5E7EB",
-                      position: "relative", 
-                      overflow: "hidden", 
-                      mb: 2, 
-                      borderRadius: "12px", 
-                      boxShadow: "0 4px 15px rgba(0,0,0,0.03)" 
-                    }}>
+                    {/* CONTENEDOR DE IMAGEN TOTALMENTE DESNUDO (Sin fondo, sin bordes, sin padding) */}
+                    <Box sx={{ position: "relative", overflow: "hidden", mb: 2 }}>
                       <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
-                        <Box component="img" src={product.image_url} alt={product.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.4s ease", "&:hover": { transform: "scale(1.04)" } }} />
+                        <Box component="img" src={product.image_url} alt={product.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", display: "block" }} />
                       </Link>
                     </Box>
                     
@@ -181,15 +173,25 @@ export default function HomePage() {
         </Container>
       </Box>
 
-      {/* 5. Banner VIP */}
+      {/* 5. Banner VIP (Mismo gris de los botones #B0B3B8) */}
       <Box sx={{ py: { xs: 6, md: 8 } }}>
         <Container maxWidth="lg">
-          <Box sx={{ bgcolor: "#F3F4F6", borderRadius: "16px", boxShadow: "0 15px 35px rgba(0,0,0,0.06), inset 0 -2px 0 rgba(0,0,0,0.05)", p: { xs: 4, md: 8 }, display: "flex", flexDirection: { xs: "column", md: "row" }, alignItems: "center", justifyContent: "space-between", gap: 4 }}>
+          <Box sx={{ 
+            bgcolor: "#B0B3B8", 
+            borderRadius: "16px", 
+            boxShadow: "0 15px 35px rgba(0,0,0,0.15), inset 0 -5px 0 rgba(0,0,0,0.1)", 
+            p: { xs: 4, md: 8 }, 
+            display: "flex", 
+            flexDirection: { xs: "column", md: "row" }, 
+            alignItems: "center", 
+            justifyContent: "space-between", 
+            gap: 4 
+          }}>
             <Box sx={{ maxWidth: 600 }}>
-              <Typography variant="h4" sx={{ color: "#0a0d15", fontWeight: 600, mb: 2, fontSize: { xs: "1.6rem", md: "2rem" } }}>Únete al club Joined VIP</Typography>
-              <Typography sx={{ color: "#374151", fontSize: "1rem", lineHeight: 1.6 }}>Obtén envíos gratuitos a todo el Perú, servicio de limpieza de cuero y acceso anticipado a nuestras nuevas colecciones.</Typography>
+              <Typography variant="h4" sx={{ color: "#0a0d15", fontWeight: 700, mb: 2, fontSize: { xs: "1.6rem", md: "2rem" } }}>Únete al club Joined VIP</Typography>
+              <Typography sx={{ color: "#374151", fontSize: "1rem", lineHeight: 1.6, fontWeight: 500 }}>Obtén envíos gratuitos a todo el Perú, servicio de limpieza de cuero y acceso anticipado a nuestras nuevas colecciones.</Typography>
             </Box>
-            <Button component={Link} href="/comunidad" variant="contained" size="large" endIcon={<ArrowForwardIcon />} disableElevation sx={{ bgcolor: "#0a0d15", color: "white", fontWeight: 600, px: 5, py: 1.5, borderRadius: "8px", flexShrink: 0, boxShadow: "0 4px 14px 0 rgba(10, 13, 21, 0.2)", "&:hover": { bgcolor: "#1a1d24", transform: "translateY(-2px)", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.4)" } }}>
+            <Button component={Link} href="/comunidad" variant="contained" size="large" endIcon={<ArrowForwardIcon />} disableElevation sx={{ bgcolor: "#0a0d15", color: "white", fontWeight: 600, px: 5, py: 1.5, borderRadius: "8px", flexShrink: 0, boxShadow: "0 4px 14px 0 rgba(10, 13, 21, 0.3)", "&:hover": { bgcolor: "#1a1d24", transform: "translateY(-2px)", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.5)" } }}>
               Conocer beneficios
             </Button>
           </Box>
