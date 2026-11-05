@@ -72,15 +72,15 @@ export default function ProductDetailPage() {
       <Grid container spacing={{ xs: 4, md: 8 }} alignItems="flex-start">
         
         <Grid size={{ xs: 12, md: 6 }}>
-          {/* Contenedor suavizado */}
+          {/* CONTENEDOR DE IMAGEN PRINCIPAL A BLANCO CON BORDE SUTIL */}
           <Box sx={{ 
             width: "100%", 
-            bgcolor: "#F8F9FA", // Un tono más claro
-            border: "1px solid #F1F3F5", // Borde sutil
+            bgcolor: "#FFFFFF", 
+            border: "1px solid #E5E7EB",
             borderRadius: "16px", 
             p: 2, 
             mb: 2, 
-            boxShadow: "0 10px 30px rgba(0,0,0,0.03)" // Sombra mucho más suave
+            boxShadow: "0 4px 20px rgba(0,0,0,0.03)" 
           }}>
             <Box component="img" src={mainImage} alt={product.name} sx={{ width: "100%", aspectRatio: "1/1", objectFit: "contain", display: "block" }} />
           </Box>
@@ -92,9 +92,10 @@ export default function ProductDetailPage() {
                   key={idx} 
                   onClick={() => setMainImage(img)}
                   sx={{ 
-                    width: 70, height: 70, bgcolor: "#F8F9FA", borderRadius: "8px", 
-                    // Borde activo más suave
+                    width: 70, height: 70, 
+                    bgcolor: "#FFFFFF", // Miniaturas a blanco
                     border: mainImage === img ? "2px solid #6B7280" : "1px solid #E5E7EB", 
+                    borderRadius: "8px", 
                     overflow: "hidden", cursor: "pointer", flexShrink: 0,
                     opacity: mainImage === img ? 1 : 0.6,
                     transition: "all 0.2s",
@@ -127,7 +128,7 @@ export default function ProductDetailPage() {
 
             {product.sizes && product.sizes.length > 0 && (
               <Box>
-                <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Talla</Typography>
+                <Typography sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0a0d15", mb: 1 }}>Seleccionar tamaño</Typography>
                 <FormControl fullWidth size="small">
                   <Select value={selectedSize} onChange={(e) => setSelectedSize(e.target.value)} sx={{ borderRadius: "8px", bgcolor: "#FFF" }}>
                     {product.sizes.map((size: string) => (
@@ -169,7 +170,6 @@ export default function ProductDetailPage() {
         </Grid>
       </Grid>
 
-      {/* Acordeones Dinámicos */}
       <Box sx={{ mt: 8, borderTop: "1px solid #E5E7EB", pt: 4 }}>
         {characteristicsList.length > 0 && (
           <Accordion elevation={0} sx={{ bgcolor: "transparent", "&:before": { display: "none" } }}>
@@ -204,7 +204,6 @@ export default function ProductDetailPage() {
         )}
       </Box>
 
-      {/* Relacionados */}
       {relatedProducts.length > 0 && (
         <Box sx={{ mt: 8, pt: 6, borderTop: "1px solid #E5E7EB" }}>
           <Box sx={{ mb: 4 }}><Typography variant="h5" sx={{ fontWeight: 500, color: "#0a0d15" }}>También te puede interesar</Typography></Box>
@@ -212,7 +211,15 @@ export default function ProductDetailPage() {
             {relatedProducts.map((relProduct) => (
               <Grid key={relProduct.id} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Box sx={{ bgcolor: "transparent" }}>
-                  <Box sx={{ bgcolor: "#F8F9FA", mb: 2, overflow: "hidden", borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.03)" }}>
+                  {/* CONTENEDOR DE IMAGEN RELACIONADA A BLANCO CON BORDE SUTIL */}
+                  <Box sx={{ 
+                    bgcolor: "#FFFFFF", 
+                    border: "1px solid #E5E7EB",
+                    mb: 2, 
+                    overflow: "hidden", 
+                    borderRadius: "12px", 
+                    boxShadow: "0 4px 15px rgba(0,0,0,0.03)" 
+                  }}>
                     <Link href={`/products/${relProduct.id}`} style={{ display: "block" }}>
                       <Box component="img" src={relProduct.image_url} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.3s", "&:hover": { transform: "scale(1.04)" } }} />
                     </Link>

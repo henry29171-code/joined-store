@@ -50,14 +50,12 @@ function ProductsContent() {
         </Typography>
       </Box>
 
-      {/* Indicador de deslizamiento para móvil */}
       <Box sx={{ display: { xs: "flex", md: "none" }, justifyContent: "flex-end", mb: 1, pr: 1 }}>
         <Typography sx={{ fontSize: "0.75rem", color: "#9CA3AF", fontWeight: 600 }}>
           Desliza para ver más →
         </Typography>
       </Box>
 
-      {/* Filtros Deslizantes */}
       <Box 
         sx={{ 
           display: "flex", 
@@ -98,14 +96,16 @@ function ProductsContent() {
           <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
             <Box sx={{ display: "flex", flexDirection: "column", bgcolor: "transparent" }}>
               
+              {/* FONDO DE IMAGEN A BLANCO CON BORDE SUTIL */}
               <Box 
                 sx={{ 
-                  bgcolor: "#F3F4F6", 
+                  bgcolor: "#FFFFFF", 
+                  border: "1px solid #E5E7EB",
                   position: "relative", 
                   overflow: "hidden", 
                   mb: 2, 
                   borderRadius: "12px",
-                  boxShadow: "0 10px 25px rgba(0,0,0,0.05)" 
+                  boxShadow: "0 4px 15px rgba(0,0,0,0.03)" 
                 }}
               >
                 <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
@@ -129,7 +129,6 @@ function ProductsContent() {
                   {product.name}
                 </Typography>
                 
-                {/* LÓGICA DE PRECIO PROMOCIONAL */}
                 {product.sale_price ? (
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                     <Typography sx={{ fontSize: "1.1rem", fontWeight: 700, color: "#d32f2f" }}>
