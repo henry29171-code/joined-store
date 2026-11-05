@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "../context/CartContext";
 import { supabase } from "../lib/supabase";
@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LockIcon from "@mui/icons-material/Lock";
+import GoogleIcon from "@mui/icons-material/Google";
 
 export default function CheckoutPage() {
   const { state, clearCart } = useCart();
@@ -27,6 +28,38 @@ export default function CheckoutPage() {
     direccion: "",
     referencia: ""
   });
+
+  // Lógica de Autocompletado con Google
+  useEffect(() => {
+    const getUserData = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        // Si el usuario ya inició sesión con Google, prellenamos los campos
+        const fullName = user.user_metadata?.full_name || user.user_metadata?.name || "";
+        const nameParts = fullName.split(" ");
+        const firstName = nameParts[0] || "";
+        const lastName = nameParts.slice(1).join(" ") || "";
+
+        setFormData(prev => ({
+          ...prev,
+          nombre: firstName,
+          apellidos: lastName,
+          email: user.email || ""
+        }));
+      }
+    };
+    getUserData();
+  }, []);
+
+  const handleGoogleLogin = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        // Redirige de vuelta al checkout después de loguearse
+        redirectTo: `${window.location.origin}/checkout` 
+      }
+    });
+  };
 
   const total = state.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const subtotal = total / 1.18;
@@ -68,7 +101,6 @@ export default function CheckoutPage() {
     }
   };
 
-  // VISTA 1: ÉXITO (Paso 3 - Registro post-compra)
   if (success) {
     return (
       <Container maxWidth="md" sx={{ py: 12, textAlign: "center" }}>
@@ -76,7 +108,6 @@ export default function CheckoutPage() {
         <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2 }}>Gracias por tu compra</Typography>
         <Typography sx={{ color: "#5E6B7E", mb: 4 }}>Hemos recibido tu pedido. Pronto nos pondremos en contacto contigo para coordinar el envío.</Typography>
         
-        {/* ESTRATEGIA DE REGISTRO POST-COMPRA */}
         <Card sx={{ p: 4, mb: 4, borderRadius: 3, bgcolor: "#F8F9FA", border: "1px solid #E5E7EB", maxWidth: 500, mx: "auto" }}>
           <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: "#0a0d15" }}>¡Haz tu compra más rápida la próxima vez!</Typography>
           <Typography sx={{ color: "#666", mb: 3, fontSize: "0.9rem" }}>Crea tu cuenta en 1 clic para guardar tus datos, hacer seguimiento a tu pedido y obtener envío gratis.</Typography>
@@ -88,7 +119,6 @@ export default function CheckoutPage() {
     );
   }
 
-  // VISTA 2: CARRITO VACÍO
   if (state.items.length === 0) {
     return (
       <Container maxWidth="md" sx={{ py: 12, textAlign: "center" }}>
@@ -98,7 +128,6 @@ export default function CheckoutPage() {
     );
   }
 
-  // VISTA 3: FORMULARIO DE CHECKOUT (Paso 2 - Autocompletado)
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
       <Box sx={{ mb: 4, display: "flex", alignItems: "center", gap: 2 }}>
@@ -109,6 +138,26 @@ export default function CheckoutPage() {
 
       <Grid container spacing={5}>
         <Grid size={{ xs: 12, md: 7 }}>
+          
+          {/* BOTÓN DE GOOGLE - INNOVACIÓN DE LLENADO RÁPIDO */}
+          <Box sx={{ mb: 4, p: 3, bgcolor: "#F8F9FA", borderRadius: 3, border: "1px solid #E5E7EB" }}>
+            <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: "#0a0d15", fontSize: "1rem" }}>Compra más rápido</Typography>
+            <Typography sx={{ color: "#666", mb: 2, fontSize: "0.85rem" }}>Autocompleta tus datos con tu cuenta de Google.</Typography>
+            <Button 
+              variant="outlined" 
+              fullWidth 
+              startIcon={<GoogleIcon />} 
+              onClick={handleGoogleLogin}
+              sx={{ borderColor: "#D1D5DB", color: "#374151", textTransform: "none", fontWeight: 600, py: 1.2, "&:hover": { bgcolor: "#F3F4F6" } }}
+            >
+              Continuar con Google
+            </Button>
+          </Box>
+
+          <Divider sx={{ mb: 4 }}>
+            <Typography sx={{ color: "#9CA3AF", fontSize: "0.85rem", px: 2 }}>o llena tus datos manualmente</Typography>
+          </Divider>
+
           <Box component="form" onSubmit={handleSubmit}>
             <Typography variant="h6" sx={{ fontWeight: 700, mb: 3, color: "#0a0d15", fontSize: "1.1rem" }}>1. Datos de envío</Typography>
             
@@ -116,13 +165,13 @@ export default function CheckoutPage() {
 
             <Grid container spacing={2.5}>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField fullWidth label="Nombre" name="nombre" onChange={handleChange} required size="small" autoComplete="given-name" />
+                <TextField fullWidth label="Nombre" name="nombre" value={formData.nombre} onChange={handleChange} required size="small" autoComplete="given-name" />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField fullWidth label="Apellidos" name="apellidos" onChange={handleChange} required size="small" autoComplete="family-name" />
+                <TextField fullWidth label="Apellidos" name="apellidos" value={formData.apellidos} onChange={handleChange} required size="small" autoComplete="family-name" />
               </Grid>
               <Grid size={{ xs: 12 }}>
-                <TextField fullWidth label="Correo electrónico" name="email" type="email" onChange={handleChange} required size="small" autoComplete="email" />
+                <TextField fullWidth label="Correo electrónico" name="email" type="email" value={formData.email} onChange={handleChange} required size="small" autoComplete="email" />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField fullWidth label="DNI / RUC" name="dni" onChange={handleChange} required size="small" />
