@@ -184,7 +184,11 @@ export default function CheckoutPage() {
 
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField fullWidth select label="Departamento" name="departamento" defaultValue="Lima" onChange={handleChange} required size="small">
-                  <MenuItem value="Lima">Lima</MenuItem><MenuItem value="Arequipa">Arequipa</MenuItem><MenuItem value="La Libertad">La Libertad</MenuItem><MenuItem value="Cusco">Cusco</MenuItem><MenuItem value="Otro">Otro</MenuItem>
+                  <MenuItem value="Lima">Lima</MenuItem>
+                  <MenuItem value="Arequipa">Arequipa</MenuItem>
+                  <MenuItem value="La Libertad">La Libertad</MenuItem>
+                  <MenuItem value="Cusco">Cusco</MenuItem>
+                  <MenuItem value="Otro">Otro</MenuItem>
                 </TextField>
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
