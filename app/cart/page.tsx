@@ -1,6 +1,9 @@
 "use client";
 import { useCart } from "../context/CartContext";
-import { Container, Typography, Box, Card, Button, IconButton, Stack, Grid, Divider } from "@mui/material";
+import { 
+  Container, Typography, Box, Card, Button, 
+  IconButton, Stack, Grid, Divider 
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -45,49 +48,75 @@ export default function CartPage() {
       </Typography>
 
       <Grid container spacing={4}>
+        {/* Lista de Productos */}
         <Grid size={{ xs: 12, md: 8 }}>
           <Stack spacing={2}>
             {state.items.map((item) => (
-              <Card key={item.id} sx={{ display: "flex", p: 2, borderRadius: 3, boxShadow: "0 4px 15px rgba(0,0,0,0.05)" }}>
-                <Box component="img" src={(item as any).image || "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=200&auto=format&fit=crop"} alt={item.name} sx={{ width: 80, height: 100, objectFit: "cover", borderRadius: 2, mr: 2 }} />
-                
-                <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                  <Box>
-                    <Typography variant="h6" sx={{ fontWeight: 700, color: "#0a0d15", fontSize: { xs: "1rem", md: "1.1rem" } }}>{item.name}</Typography>
-                    <Typography sx={{ color: "#9CA3AF", fontSize: "0.85rem", mb: 0.5 }}>Color: Negro | Talla: Única</Typography>
-                    <Typography sx={{ color: "#5E6B7E", fontWeight: 600, fontSize: "0.9rem" }}>S/. {item.price.toFixed(2)}</Typography>
-                  </Box>
+              <Card key={item.id} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 3, boxShadow: "0 4px 15px rgba(0,0,0,0.05)" }}>
+                {/* Usamos Grid para que en móvil se apile y no se corte nada */}
+                <Grid container spacing={2} alignItems="center">
+                  
+                  {/* Imagen del producto */}
+                  <Grid size={{ xs: 3, sm: 2 }}>
+                    <Box 
+                      component="img" 
+                      src={(item as any).image || "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=200&auto=format&fit=crop"} 
+                      alt={item.name} 
+                      sx={{ width: "100%", aspectRatio: "1/1", objectFit: "cover", borderRadius: 2 }} 
+                    />
+                  </Grid>
+                  
+                  {/* Detalles del producto */}
+                  <Grid size={{ xs: 9, sm: 5 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, color: "#0a0d15", fontSize: { xs: "0.95rem", sm: "1.1rem" }, mb: 0.5 }}>
+                      {item.name}
+                    </Typography>
+                    <Typography sx={{ color: "#9CA3AF", fontSize: "0.8rem", mb: 0.5 }}>
+                      Color: Negro | Talla: Única
+                    </Typography>
+                    <Typography sx={{ color: "#5E6B7E", fontWeight: 600, fontSize: "0.9rem" }}>
+                      S/. {item.price.toFixed(2)}
+                    </Typography>
+                  </Grid>
+                  
+                  {/* Controles y Total (En móvil ocupan toda la fila de abajo) */}
+                  <Grid size={{ xs: 12, sm: 5 }}>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                      
+                      {/* Selector de cantidad y botón eliminar */}
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        <Box sx={{ display: "flex", alignItems: "center", border: "1px solid #E0E0E0", borderRadius: 2 }}>
+                          <IconButton size="small" onClick={() => decrement(item.id)}><RemoveIcon fontSize="small" /></IconButton>
+                          <Typography sx={{ mx: 1, fontWeight: 700, fontSize: "0.85rem" }}>{item.quantity}</Typography>
+                          <IconButton size="small" onClick={() => increment(item.id)}><AddIcon fontSize="small" /></IconButton>
+                        </Box>
+                        <IconButton size="small" onClick={() => removeFromCart(item.id)} sx={{ color: "#d32f2f" }}>
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Stack>
 
-                  <Stack direction="row" alignItems="center" spacing={2} sx={{ mt: 1 }}>
-                    <Box sx={{ display: "flex", alignItems: "center", border: "1px solid #E0E0E0", borderRadius: 2 }}>
-                      <IconButton size="small" onClick={() => decrement(item.id)}><RemoveIcon fontSize="small" /></IconButton>
-                      <Typography sx={{ mx: 1.5, fontWeight: 700, fontSize: "0.9rem" }}>{item.quantity}</Typography>
-                      <IconButton size="small" onClick={() => increment(item.id)}><AddIcon fontSize="small" /></IconButton>
+                      {/* Precio Total por producto */}
+                      <Typography sx={{ fontWeight: 800, fontSize: { xs: "1.05rem", sm: "1.2rem" }, color: "#0a0d15" }}>
+                        S/. {(item.price * item.quantity).toFixed(2)}
+                      </Typography>
                     </Box>
-                    <Button size="small" startIcon={<DeleteIcon fontSize="small" />} onClick={() => removeFromCart(item.id)} sx={{ color: "#d32f2f", textTransform: "none", fontSize: "0.8rem", fontWeight: 600 }}>
-                      Eliminar
-                    </Button>
-                  </Stack>
-                </Box>
-                
-                <Box sx={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-end", minWidth: 80 }}>
-                  <Typography sx={{ fontWeight: 800, fontSize: { xs: "1rem", md: "1.2rem" }, color: "#0a0d15" }}>
-                    S/. {(item.price * item.quantity).toFixed(2)}
-                  </Typography>
-                </Box>
+                  </Grid>
+
+                </Grid>
               </Card>
             ))}
           </Stack>
 
-          <Box sx={{ mt: 4, p: 2, bgcolor: "#F8F9FA", borderRadius: 2, display: "flex", alignItems: "center", gap: 2 }}>
-            <LocalShippingIcon sx={{ color: "#5E6B7E" }} />
+          {/* Banner de envío VIP fuera de las tarjetas para limpiar el desorden */}
+          <Box sx={{ mt: 3, p: 2, bgcolor: "#F8F9FA", borderRadius: 2, display: "flex", alignItems: "center", gap: 1.5 }}>
+            <LocalShippingIcon sx={{ color: "#5E6B7E", fontSize: 20 }} />
             <Typography sx={{ fontSize: "0.85rem", color: "#5E6B7E" }}>
               Tu pedido califica para <strong>envío gratis</strong> por ser miembro VIP.
             </Typography>
           </Box>
         </Grid>
 
-        {/* RESUMEN CON DESGLOSE DE IGV */}
+        {/* Resumen de Compra */}
         <Grid size={{ xs: 12, md: 4 }}>
           <Card sx={{ p: 3, borderRadius: 3, bgcolor: "#F8F9FA", border: "1px solid #E0E0E0", position: "sticky", top: 100 }}>
             <Typography variant="h5" sx={{ fontWeight: 800, mb: 3, fontSize: "1.3rem", color: "#0a0d15" }}>Resumen</Typography>
