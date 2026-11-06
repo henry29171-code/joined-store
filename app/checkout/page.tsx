@@ -52,12 +52,9 @@ export default function CheckoutPage() {
   }, []);
 
   const handleGoogleLogin = async () => {
+    // Se elimina options.redirectTo para que Supabase use su URL de callback oficial
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        // Redirige de vuelta al checkout después de loguearse
-        redirectTo: `${window.location.origin}/checkout` 
-      }
     });
   };
 
