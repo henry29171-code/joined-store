@@ -93,8 +93,9 @@ function ProductsContent() {
 
       <Grid container spacing={{ xs: 3, md: 4 }}>
         {filteredProducts.map((product) => (
-          <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
-            <Box sx={{ display: "flex", flexDirection: "column", bgcolor: "transparent" }}>
+          /* FLEXBOX PARA IGUALAR ALTURAS EN TODA LA FILA */
+          <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", flexDirection: "column", width: "100%", bgcolor: "transparent" }}>
               
               {/* IMAGEN SIN CAJA, SIN BORDES NI SOMBRAS */}
               <Box sx={{ position: "relative", overflow: "hidden", mb: 2 }}>
@@ -103,29 +104,46 @@ function ProductsContent() {
                 </Link>
               </Box>
               
-              <Box sx={{ px: 1 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, color: "#0a0d15", fontSize: "1.1rem", mb: 0.5 }}>
-                  {product.name}
-                </Typography>
+              {/* CONTENEDOR DE TEXTOS Y BOTÓN: flexGrow 1 empuja el botón al fondo */}
+              <Box sx={{ px: 1, flexGrow: 1, display: "flex", flexDirection: "column" }}>
                 
-                {product.sale_price ? (
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                    <Typography sx={{ fontSize: "1.1rem", fontWeight: 700, color: "#d32f2f" }}>
-                      S/. {Number(product.sale_price).toFixed(2)}
-                    </Typography>
-                    <Typography sx={{ fontSize: "0.9rem", color: "#888", textDecoration: "line-through" }}>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Typography 
+                    variant="h6" 
+                    sx={{ 
+                      fontWeight: 600, 
+                      color: "#0a0d15", 
+                      fontSize: "1.1rem", 
+                      mb: 0.5,
+                      display: "-webkit-box", 
+                      WebkitLineClamp: 2, 
+                      WebkitBoxOrient: "vertical", 
+                      overflow: "hidden",
+                      minHeight: "2.4em" // Reserva espacio para 2 líneas siempre
+                    }}
+                  >
+                    {product.name}
+                  </Typography>
+                  
+                  {product.sale_price ? (
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                      <Typography sx={{ fontSize: "1.1rem", fontWeight: 700, color: "#d32f2f" }}>
+                        S/. {Number(product.sale_price).toFixed(2)}
+                      </Typography>
+                      <Typography sx={{ fontSize: "0.9rem", color: "#888", textDecoration: "line-through" }}>
+                        S/. {Number(product.price).toFixed(2)}
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Typography sx={{ fontSize: "1rem", fontWeight: 500, color: "#333", mb: 1 }}>
                       S/. {Number(product.price).toFixed(2)}
                     </Typography>
-                  </Box>
-                ) : (
-                  <Typography sx={{ fontSize: "1rem", fontWeight: 500, color: "#333", mb: 1 }}>
-                    S/. {Number(product.price).toFixed(2)}
-                  </Typography>
-                )}
+                  )}
 
-                <Typography sx={{ color: "#888", fontSize: "0.85rem", mb: 2 }}>
-                  {product.category}
-                </Typography>
+                  <Typography sx={{ color: "#888", fontSize: "0.85rem", mb: 2 }}>
+                    {product.category}
+                  </Typography>
+                </Box>
 
                 <Button 
                   variant="contained" 
