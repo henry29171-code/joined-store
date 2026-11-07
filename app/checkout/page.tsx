@@ -229,7 +229,8 @@ export default function CheckoutPage() {
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     fullWidth
-                    label="Razón Social (Nombre de la empresa)"
+                    label="Razón Social"
+                    placeholder="Nombre de la empresa"
                     value={razonSocial}
                     onChange={(e) => setRazonSocial(e.target.value)}
                     required
