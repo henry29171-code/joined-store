@@ -194,6 +194,22 @@ export default function AdminPedidos() {
               <Typography sx={{ fontSize: "0.9rem", mb: 0.5 }}><strong>Email:</strong> {selectedOrder.customer_email}</Typography>
               <Typography sx={{ fontSize: "0.9rem", mb: 0.5 }}><strong>Teléfono:</strong> {selectedOrder.customer_phone}</Typography>
               <Typography sx={{ fontSize: "0.9rem", mb: 2 }}><strong>Dirección:</strong> {selectedOrder.shipping_address}</Typography>
+
+              {/* NUEVA INFO TRIBUTARIA */}
+              <Divider sx={{ my: 2 }} />
+              <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>Comprobante</Typography>
+              <Typography sx={{ fontSize: "0.9rem", mb: 0.5 }}>
+                <strong>Tipo:</strong> {selectedOrder.tipo_comprobante || "Boleta"}
+              </Typography>
+              <Typography sx={{ fontSize: "0.9rem", mb: 0.5 }}>
+                <strong>Documento:</strong> {selectedOrder.documento_cliente || "No registrado"}
+              </Typography>
+              {selectedOrder.razon_social && (
+                <Typography sx={{ fontSize: "0.9rem", mb: 1 }}>
+                  <strong>Razón Social:</strong> {selectedOrder.razon_social}
+                </Typography>
+              )}
+
               <Divider sx={{ my: 2 }} />
               <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>Productos Comprados</Typography>
               <Stack spacing={2}>

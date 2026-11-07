@@ -3,26 +3,33 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "../context/CartContext";
 import { supabase } from "../lib/supabase";
-import { 
-  Container, Typography, Box, Grid, TextField, Button, Card, 
-  Divider, Stack, MenuItem, Alert, CircularProgress, Checkbox, FormControlLabel 
+import {
+  Container, Typography, Box, Grid, TextField, Button, Card,
+  Divider, Stack, MenuItem, Alert, CircularProgress, Checkbox, FormControlLabel,
+  ToggleButton, ToggleButtonGroup
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LockIcon from "@mui/icons-material/Lock";
 import GoogleIcon from "@mui/icons-material/Google";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import BusinessIcon from "@mui/icons-material/Business";
 
 export default function CheckoutPage() {
   const { state, clearCart } = useCart();
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [whatsappOptIn, setWhatsappOptIn] = useState(false); // <-- NUEVO ESTADO
+  const [whatsappOptIn, setWhatsappOptIn] = useState(false);
+
+  // Estados para Facturación
+  const [tipoComprobante, setTipoComprobante] = useState("Boleta");
+  const [documento, setDocumento] = useState("");
+  const [razonSocial, setRazonSocial] = useState("");
 
   const [formData, setFormData] = useState({
     nombre: "",
     apellidos: "",
     email: "",
-    dni: "",
     telefono: "",
     departamento: "Lima",
     distrito: "",
@@ -36,13 +43,10 @@ export default function CheckoutPage() {
       if (user) {
         const fullName = user.user_metadata?.full_name || user.user_metadata?.name || "";
         const nameParts = fullName.split(" ");
-        const firstName = nameParts[0] || "";
-        const lastName = nameParts.slice(1).join(" ") || "";
-
         setFormData(prev => ({
           ...prev,
-          nombre: firstName,
-          apellidos: lastName,
+          nombre: nameParts[0] || "",
+          apellidos: nameParts.slice(1).join(" ") || "",
           email: user.email || ""
         }));
       }
@@ -64,12 +68,26 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!documento) {
+      setError(`Por favor, ingresa tu ${tipoComprobante === "Boleta" ? "DNI" : "RUC"}.`);
+      return;
+    }
+    if (tipoComprobante === "Boleta" && documento.length !== 8) {
+      setError("El DNI debe tener 8 dígitos.");
+      return;
+    }
+    if (tipoComprobante === "Factura" && documento.length !== 11) {
+      setError("El RUC debe tener 11 dígitos.");
+      return;
+    }
+
     setError("");
     setLoading(true);
 
     try {
       const fullAddress = `${formData.direccion}, ${formData.distrito}, ${formData.departamento}. Ref: ${formData.referencia}`;
-      
+
       const { error: dbError } = await supabase.from("orders").insert([
         {
           customer_name: `${formData.nombre} ${formData.apellidos}`,
@@ -79,7 +97,10 @@ export default function CheckoutPage() {
           total: total,
           items: state.items,
           status: "Pendiente",
-          whatsapp_opt_in: whatsappOptIn // <-- GUARDAMOS LA AUTORIZACIÓN
+          whatsapp_opt_in: whatsappOptIn,
+          tipo_comprobante: tipoComprobante,
+          documento_cliente: documento,
+          razon_social: razonSocial
         }
       ]);
 
@@ -99,12 +120,7 @@ export default function CheckoutPage() {
       <Container maxWidth="md" sx={{ py: 12, textAlign: "center" }}>
         <Alert severity="success" sx={{ mb: 4, justifyContent: "center" }}>¡Pedido realizado con éxito!</Alert>
         <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2 }}>Gracias por tu compra</Typography>
-        <Typography sx={{ color: "#5E6B7E", mb: 4 }}>Hemos recibido tu pedido. Pronto nos pondremos en contacto contigo para coordinar el envío.</Typography>
-        <Card sx={{ p: 4, mb: 4, borderRadius: 3, bgcolor: "#F8F9FA", border: "1px solid #E5E7EB", maxWidth: 500, mx: "auto" }}>
-          <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: "#0a0d15" }}>¡Haz tu compra más rápida la próxima vez!</Typography>
-          <Typography sx={{ color: "#666", mb: 3, fontSize: "0.9rem" }}>Crea tu cuenta en 1 clic para guardar tus datos, hacer seguimiento a tu pedido y obtener envío gratis.</Typography>
-          <Button variant="contained" sx={{ bgcolor: "#0a0d15", textTransform: "none", fontWeight: 600, borderRadius: "8px" }}>Crear mi cuenta</Button>
-        </Card>
+        <Typography sx={{ color: "#5E6B7E", mb: 4 }}>Hemos recibido tu pedido. Pronto nos pondremos en contacto contigo.</Typography>
         <Button component={Link} href="/" variant="outlined" size="large" sx={{ borderColor: "#0a0d15", color: "#0a0d15", borderRadius: 999, px: 4, py: 1.5 }}>Volver a la tienda</Button>
       </Container>
     );
@@ -129,17 +145,6 @@ export default function CheckoutPage() {
 
       <Grid container spacing={5}>
         <Grid size={{ xs: 12, md: 7 }}>
-          <Box sx={{ mb: 4, p: 3, bgcolor: "#F8F9FA", borderRadius: 3, border: "1px solid #E5E7EB" }}>
-            <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: "#0a0d15", fontSize: "1rem" }}>Compra más rápido</Typography>
-            <Typography sx={{ color: "#666", mb: 2, fontSize: "0.85rem" }}>Autocompleta tus datos con tu cuenta de Google.</Typography>
-            <Button variant="outlined" fullWidth startIcon={<GoogleIcon />} onClick={handleGoogleLogin} sx={{ borderColor: "#D1D5DB", color: "#374151", textTransform: "none", fontWeight: 600, py: 1.2, "&:hover": { bgcolor: "#F3F4F6" } }}>
-              Continuar con Google
-            </Button>
-          </Box>
-
-          <Divider sx={{ mb: 4 }}>
-            <Typography sx={{ color: "#9CA3AF", fontSize: "0.85rem", px: 2 }}>o llena tus datos manualmente</Typography>
-          </Divider>
 
           <Box component="form" onSubmit={handleSubmit}>
             <Typography variant="h6" sx={{ fontWeight: 700, mb: 3, color: "#0a0d15", fontSize: "1.1rem" }}>1. Datos de envío</Typography>
@@ -147,21 +152,18 @@ export default function CheckoutPage() {
 
             <Grid container spacing={2.5}>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField fullWidth label="Nombre" name="nombre" value={formData.nombre} onChange={handleChange} required size="small" autoComplete="given-name" />
+                <TextField fullWidth label="Nombre" name="nombre" value={formData.nombre} onChange={handleChange} required size="small" />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField fullWidth label="Apellidos" name="apellidos" value={formData.apellidos} onChange={handleChange} required size="small" autoComplete="family-name" />
+                <TextField fullWidth label="Apellidos" name="apellidos" value={formData.apellidos} onChange={handleChange} required size="small" />
               </Grid>
               <Grid size={{ xs: 12 }}>
-                <TextField fullWidth label="Correo electrónico" name="email" type="email" value={formData.email} onChange={handleChange} required size="small" autoComplete="email" />
+                <TextField fullWidth label="Correo electrónico" name="email" type="email" value={formData.email} onChange={handleChange} required size="small" />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField fullWidth label="DNI / RUC" name="dni" onChange={handleChange} required size="small" />
+                <TextField fullWidth label="Teléfono / WhatsApp" name="telefono" onChange={handleChange} required size="small" />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField fullWidth label="Teléfono" name="telefono" onChange={handleChange} required size="small" autoComplete="tel" />
-              </Grid>
-              
+
               <Grid size={{ xs: 12 }}><Divider sx={{ my: 1 }} /></Grid>
 
               <Grid size={{ xs: 12, sm: 6 }}>
@@ -174,38 +176,91 @@ export default function CheckoutPage() {
                 </TextField>
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField fullWidth label="Provincia / Distrito" name="distrito" onChange={handleChange} required size="small" autoComplete="address-level2" />
+                <TextField fullWidth label="Provincia / Distrito" name="distrito" onChange={handleChange} required size="small" />
               </Grid>
               <Grid size={{ xs: 12 }}>
-                <TextField fullWidth label="Dirección completa" name="direccion" onChange={handleChange} required size="small" autoComplete="street-address" />
+                <TextField fullWidth label="Dirección completa" name="direccion" onChange={handleChange} required size="small" />
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField fullWidth label="Referencia (opcional)" name="referencia" onChange={handleChange} size="small" />
               </Grid>
             </Grid>
 
+            {/* SECCIÓN DE COMPROBANTE (Boleta / Factura) */}
+            <Typography variant="h6" sx={{ fontWeight: 700, mt: 4, mb: 2, color: "#0a0d15", fontSize: "1.1rem" }}>2. Comprobante de Pago</Typography>
+
+            <ToggleButtonGroup
+              color="primary"
+              value={tipoComprobante}
+              exclusive
+              onChange={(e, newVal) => {
+                if (newVal !== null) {
+                  setTipoComprobante(newVal);
+                  setDocumento("");
+                  if (newVal === "Boleta") setRazonSocial("");
+                }
+              }}
+              sx={{ mb: 2, width: "100%" }}
+            >
+              <ToggleButton value="Boleta" sx={{ flex: 1, gap: 1, textTransform: "none", fontWeight: 600 }}>
+                <ReceiptLongIcon /> Boleta (DNI)
+              </ToggleButton>
+              <ToggleButton value="Factura" sx={{ flex: 1, gap: 1, textTransform: "none", fontWeight: 600 }}>
+                <BusinessIcon /> Factura (RUC)
+              </ToggleButton>
+            </ToggleButtonGroup>
+
+            <Grid container spacing={2.5}>
+              <Grid size={{ xs: 12, sm: tipoComprobante === "Factura" ? 6 : 12 }}>
+                <TextField
+                  fullWidth
+                  label={tipoComprobante === "Boleta" ? "DNI (8 dígitos)" : "RUC (11 dígitos)"}
+                  value={documento}
+                  onChange={(e) => setDocumento(e.target.value.replace(/\D/g, ""))}
+                  type="text"
+                  inputMode="numeric"
+                  inputProps={{ maxLength: tipoComprobante === "Boleta" ? 8 : 11 }}
+                  required
+                  size="small"
+                />
+              </Grid>
+
+              {tipoComprobante === "Factura" && (
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <TextField
+                    fullWidth
+                    label="Razón Social (Nombre de la empresa)"
+                    value={razonSocial}
+                    onChange={(e) => setRazonSocial(e.target.value)}
+                    required
+                    size="small"
+                  />
+                </Grid>
+              )}
+            </Grid>
+
             {/* CHECKBOX DE AUTORIZACIÓN WHATSAPP */}
-            <Box sx={{ mt: 3, p: 2, bgcolor: "#F0FDF4", borderRadius: 2, border: "1px solid #BBF7D0" }}>
+            <Box sx={{ mt: 3, p: 2, bgcolor: "#F3F4F6", borderRadius: 2, border: "1px solid #E5E7EB" }}>
               <FormControlLabel
                 control={
-                  <Checkbox 
-                    checked={whatsappOptIn} 
-                    onChange={(e) => setWhatsappOptIn(e.target.checked)} 
-                    sx={{ color: "#16A34A", "&.Mui-checked": { color: "#16A34A" } }}
+                  <Checkbox
+                    checked={whatsappOptIn}
+                    onChange={(e) => setWhatsappOptIn(e.target.checked)}
+                    sx={{ color: "#0a0d15", "&.Mui-checked": { color: "#0a0d15" } }}
                   />
                 }
                 label={
-                  <Typography sx={{ fontSize: "0.85rem", color: "#166534" }}>
+                  <Typography sx={{ fontSize: "0.85rem", color: "#374151" }}>
                     Acepto recibir notificaciones sobre el estado de mi pedido vía WhatsApp.
                   </Typography>
                 }
               />
             </Box>
 
-            <Typography variant="h6" sx={{ fontWeight: 700, mt: 4, mb: 3, color: "#0a0d15", fontSize: "1.1rem" }}>2. Método de pago</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 700, mt: 4, mb: 3, color: "#0a0d15", fontSize: "1.1rem" }}>3. Método de pago</Typography>
             <Card sx={{ p: 2.5, borderRadius: 2, border: "1px solid #E0E0E0", boxShadow: "none", bgcolor: "transparent" }}>
               <Typography sx={{ mb: 1, fontWeight: 600, color: "#0a0d15", fontSize: "0.95rem" }}>Pago contra entrega o transferencia</Typography>
-              <Typography sx={{ fontSize: "0.85rem", color: "#5E6B7E", lineHeight: 1.5 }}>Al confirmar tu pedido, nos pondremos en contacto contigo vía WhatsApp para coordinar el método de pago y envío.</Typography>
+              <Typography sx={{ fontSize: "0.85rem", color: "#5E6B7E", lineHeight: 1.5 }}>Al confirmar tu pedido, coordinaremos contigo el método de pago y envío.</Typography>
             </Card>
 
             <Button type="submit" variant="contained" size="large" fullWidth disabled={loading} sx={{ mt: 4, bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, py: 1.8, borderRadius: 999, fontSize: { xs: "1rem", md: "1.1rem" } }}>
@@ -214,6 +269,7 @@ export default function CheckoutPage() {
           </Box>
         </Grid>
 
+        {/* RESUMEN DEL PEDIDO */}
         <Grid size={{ xs: 12, md: 5 }}>
           <Card sx={{ p: { xs: 3, md: 4 }, borderRadius: 4, bgcolor: "#0a0d15", color: "white", position: "sticky", top: 100 }}>
             <Typography variant="h5" sx={{ fontWeight: 800, mb: 3, fontSize: "1.2rem" }}>Resumen del pedido</Typography>
@@ -221,30 +277,23 @@ export default function CheckoutPage() {
               {state.items.map((item) => (
                 <Box key={item.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                    <Box sx={{ position: "relative" }}>
-                      <Box component="img" src={(item as any).image || "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=100&auto=format&fit=crop"} sx={{ width: 45, height: 45, borderRadius: 1, objectFit: "cover" }} />
-                      <Box sx={{ position: "absolute", top: -6, right: -6, bgcolor: "white", color: "#0a0d15", borderRadius: "50%", width: 18, height: 18, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.65rem", fontWeight: 800 }}>{item.quantity}</Box>
-                    </Box>
+                    <Box component="img" src={(item as any).image} sx={{ width: 45, height: 45, borderRadius: 1, objectFit: "cover" }} />
                     <Typography sx={{ fontSize: { xs: "0.85rem", md: "0.95rem" }, fontWeight: 600 }}>{item.name}</Typography>
                   </Box>
-                  <Typography sx={{ fontWeight: 700, fontSize: { xs: "0.85rem", md: "0.95rem" } }}>S/. {(item.price * item.quantity).toFixed(2)}</Typography>
+                  <Typography sx={{ fontWeight: 700 }}>S/. {(item.price * item.quantity).toFixed(2)}</Typography>
                 </Box>
               ))}
             </Stack>
             <Divider sx={{ bgcolor: "rgba(255,255,255,0.2)", my: 2 }} />
             <Stack spacing={1.5} sx={{ mb: 2, opacity: 0.9 }}>
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}><Typography sx={{ fontSize: "0.85rem" }}>Subtotal (sin IGV)</Typography><Typography sx={{ fontSize: "0.85rem" }}>S/. {subtotal.toFixed(2)}</Typography></Box>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}><Typography sx={{ fontSize: "0.85rem" }}>Subtotal</Typography><Typography sx={{ fontSize: "0.85rem" }}>S/. {subtotal.toFixed(2)}</Typography></Box>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}><Typography sx={{ fontSize: "0.85rem" }}>IGV (18%)</Typography><Typography sx={{ fontSize: "0.85rem" }}>S/. {igv.toFixed(2)}</Typography></Box>
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}><Typography sx={{ fontSize: "0.85rem" }}>Envío</Typography><Typography sx={{ fontWeight: 700, color: "#4ADE80", fontSize: "0.85rem" }}>Gratis (VIP)</Typography></Box>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}><Typography sx={{ fontSize: "0.85rem" }}>Envío</Typography><Typography sx={{ fontWeight: 700, color: "#4ADE80", fontSize: "0.85rem" }}>Gratis</Typography></Box>
             </Stack>
             <Divider sx={{ bgcolor: "rgba(255,255,255,0.2)", mb: 2 }} />
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, fontSize: { xs: "1.1rem", md: "1.3rem" } }}>Total</Typography>
-              <Typography variant="h5" sx={{ fontWeight: 800, fontSize: { xs: "1.2rem", md: "1.5rem" } }}>S/. {total.toFixed(2)}</Typography>
-            </Box>
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 3, opacity: 0.6 }}>
-              <LockIcon fontSize="small" />
-              <Typography sx={{ fontSize: "0.75rem" }}>Pago 100% seguro</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 800 }}>Total</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 800 }}>S/. {total.toFixed(2)}</Typography>
             </Box>
           </Card>
         </Grid>
