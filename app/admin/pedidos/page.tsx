@@ -13,6 +13,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import CloseIcon from "@mui/icons-material/Close";
 import CancelIcon from "@mui/icons-material/Cancel";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { supabase } from "../../lib/supabase";
 
 export default function AdminPedidos() {
@@ -31,18 +32,19 @@ export default function AdminPedidos() {
     fetchOrders();
   }, []);
 
-  // LÓGICA DE WHATSAPP: Formatear el número y crear el mensaje
-  const sendWhatsAppNotification = (order: any, newStatus: string) => {
+  // Lógica de WhatsApp (Manual y Automática)
+  const sendWhatsAppNotification = (order: any, newStatus?: string) => {
     let phone = order.customer_phone.replace(/\s+/g, '').replace(/-/g, '');
     if (!phone.startsWith('51')) {
       phone = `51${phone}`;
     }
     const shortId = order.id.slice(0, 8).toUpperCase();
-    const message = `Hola ${order.customer_name}, te saludamos de *Joined* 🛍️.\n\nTe informamos que el estado de tu pedido *#${shortId}* ha sido actualizado a: *${newStatus}*.\n\nGracias por tu compra.`;
+    const statusToSend = newStatus || order.status;
+    
+    const message = `Hola ${order.customer_name}, te saludamos de *Joined* 🛍️.\n\nTe informamos que el estado de tu pedido *#${shortId}* ha sido actualizado a: *${statusToSend}*.\n\nGracias por tu compra.`;
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
     
-    // Abre WhatsApp en una pestaña nueva automáticamente
     window.open(whatsappUrl, '_blank');
   };
 
@@ -50,7 +52,6 @@ export default function AdminPedidos() {
     const { error } = await supabase.from("orders").update({ status: newStatus }).eq("id", order.id);
     if (!error) {
       fetchOrders(); 
-      
       // SI EL CLIENTE AUTORIZÓ, ENVIAMOS EL WHATSAPP AUTOMÁTICAMENTE
       if (order.whatsapp_opt_in) {
         sendWhatsAppNotification(order, newStatus);
@@ -66,13 +67,14 @@ export default function AdminPedidos() {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  // PALETA DE COLORES: Solo Azul Noche, Grises y Rojo
+  const getStatusStyle = (status: string) => {
     switch (status) {
-      case "Pendiente": return { bg: "#FEF3C7", text: "#D97706" };
-      case "Procesando": return { bg: "#DBEAFE", text: "#2563EB" };
-      case "Enviado": return { bg: "#E0E7FF", text: "#4F46E5" };
-      case "Entregado": return { bg: "#D1FAE5", text: "#059669" };
-      case "Cancelado": return { bg: "#FEE2E2", text: "#DC2626" };
+      case "Pendiente": return { bg: "#F3F4F6", text: "#4B5563" }; // Gris claro / Texto gris oscuro
+      case "Procesando": return { bg: "#E5E7EB", text: "#1F2937" }; // Gris medio / Texto casi negro
+      case "Enviado": return { bg: "#0a0d15", text: "#FFFFFF" };   // Azul noche / Texto blanco
+      case "Entregado": return { bg: "#1a1d24", text: "#FFFFFF" }; // Azul noche más claro / Texto blanco
+      case "Cancelado": return { bg: "#FEE2E2", text: "#DC2626" }; // Rojo suave / Texto rojo
       default: return { bg: "#F3F4F6", text: "#374151" };
     }
   };
@@ -106,7 +108,7 @@ export default function AdminPedidos() {
                 <TableCell sx={{ fontWeight: 700 }}>Cliente</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Total</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Estado</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Notificar</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>WhatsApp</TableCell>
                 <TableCell align="right" sx={{ fontWeight: 700 }}>Acciones</TableCell>
               </TableRow>
             </TableHead>
@@ -124,12 +126,13 @@ export default function AdminPedidos() {
                       value={order.status}
                       onChange={(e) => handleStatusChange(order, e.target.value)}
                       sx={{
-                        bgcolor: getStatusColor(order.status).bg,
-                        color: getStatusColor(order.status).text,
-                        fontWeight: 700,
+                        bgcolor: getStatusStyle(order.status).bg,
+                        color: getStatusStyle(order.status).text,
+                        fontWeight: 600,
                         fontSize: "0.8rem",
                         borderRadius: 2,
-                        "& .MuiOutlinedInput-notchedOutline": { border: "none" }
+                        "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                        "& .MuiSvgIcon-root": { color: getStatusStyle(order.status).text }
                       }}
                     >
                       <MenuItem value="Pendiente">Pendiente</MenuItem>
@@ -140,13 +143,26 @@ export default function AdminPedidos() {
                     </Select>
                   </TableCell>
                   <TableCell>
+                    {/* Indicador de permiso sutil */}
                     {order.whatsapp_opt_in ? (
-                      <Chip label="Aceptado" size="small" sx={{ bgcolor: "#D1FAE5", color: "#059669", fontWeight: 700 }} />
+                      <Tooltip title="Cliente aceptó notificaciones automáticas">
+                        <CheckCircleIcon sx={{ color: "#0a0d15", fontSize: 20 }} />
+                      </Tooltip>
                     ) : (
-                      <Chip label="Sin permiso" size="small" sx={{ bgcolor: "#F3F4F6", color: "#9CA3AF", fontWeight: 700 }} />
+                      <Typography sx={{ fontSize: "0.75rem", color: "#9CA3AF" }}>Sin permiso</Typography>
                     )}
                   </TableCell>
                   <TableCell align="right">
+                    {/* BOTÓN DE WHATSAPP MANUAL RESTAURADO */}
+                    <Tooltip title="Enviar mensaje manual por WhatsApp">
+                      <IconButton 
+                        onClick={() => sendWhatsAppNotification(order)} 
+                        sx={{ color: "#0a0d15", mr: 1, "&:hover": { bgcolor: "#F3F4F6" } }}
+                      >
+                        <WhatsAppIcon />
+                      </IconButton>
+                    </Tooltip>
+
                     <IconButton color="primary" onClick={() => setSelectedOrder(order)}>
                       <VisibilityIcon />
                     </IconButton>
