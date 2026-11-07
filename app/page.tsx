@@ -114,25 +114,53 @@ export default function HomePage() {
           ) : (
             <Grid container spacing={{ xs: 3, md: 4 }}>
               {featuredProducts.map((product) => (
-                <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
-                  <Box sx={{ display: "flex", flexDirection: "column", bgcolor: "transparent" }}>
+                /* AQUI ESTA EL TRUCO: display flex en el Grid para igualar alturas */
+                <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: "flex" }}>
+                  <Box sx={{ display: "flex", flexDirection: "column", width: "100%", bgcolor: "transparent" }}>
                     
-                    {/* CONTENEDOR DE IMAGEN TOTALMENTE DESNUDO (Sin fondo, sin bordes, sin padding) */}
+                    {/* CONTENEDOR DE IMAGEN */}
                     <Box sx={{ position: "relative", overflow: "hidden", mb: 2 }}>
                       <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
                         <Box component="img" src={product.image_url} alt={product.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", display: "block" }} />
                       </Link>
                     </Box>
                     
-                    <Box sx={{ px: 1 }}>
-                      <Typography variant="h6" sx={{ fontWeight: 600, color: "#0a0d15", fontSize: "1.1rem", mb: 0.5 }}>{product.name}</Typography>
-                      <Typography sx={{ color: "#666", fontSize: "0.9rem", lineHeight: 1.5, mb: 2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{product.description}</Typography>
-                      <Typography sx={{ fontSize: "1rem", fontWeight: 500, color: "#333", mb: 2 }}>S/. {Number(product.price).toFixed(2)}</Typography>
+                    {/* CONTENEDOR DE TEXTO: flexGrow 1 empuja el botón hacia abajo */}
+                    <Box sx={{ px: 1, flexGrow: 1, display: "flex", flexDirection: "column" }}>
                       
+                      <Box sx={{ flexGrow: 1 }}>
+                        <Typography 
+                          variant="h6" 
+                          sx={{ 
+                            fontWeight: 600, 
+                            color: "#0a0d15", 
+                            fontSize: "1.1rem", 
+                            mb: 0.5,
+                            display: "-webkit-box", 
+                            WebkitLineClamp: 2, 
+                            WebkitBoxOrient: "vertical", 
+                            overflow: "hidden",
+                            minHeight: "2.4em" // Reserva espacio para 2 líneas siempre
+                          }}
+                        >
+                          {product.name}
+                        </Typography>
+                        
+                        <Typography sx={{ color: "#666", fontSize: "0.9rem", lineHeight: 1.5, mb: 2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                          {product.description}
+                        </Typography>
+                        
+                        <Typography sx={{ fontSize: "1rem", fontWeight: 500, color: "#333", mb: 2 }}>
+                          S/. {Number(product.price).toFixed(2)}
+                        </Typography>
+                      </Box>
+                      
+                      {/* BOTÓN */}
                       <Button component={Link} href={`/products/${product.id}`} variant="contained" fullWidth disableElevation sx={{ bgcolor: "#B0B3B8", color: "#111827", py: 1.2, fontSize: "0.9rem", fontWeight: 700, borderRadius: "8px", boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", transition: "all 0.3s ease", "&:hover": { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
                         Comprar ahora
                       </Button>
                     </Box>
+
                   </Box>
                 </Grid>
               ))}
