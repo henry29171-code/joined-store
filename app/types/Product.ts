@@ -6,4 +6,6 @@ export interface Product {
   category: string;
   image?: string;       // Para el carrito
   image_url?: string;   // Para la página de detalle
+  stock?: number;       // Stock disponible
+  sale_price?: number;  // Precio de oferta
 }

@@ -156,8 +156,8 @@ export default function HomePage() {
                       </Box>
                       
                       {/* BOTÓN */}
-                      <Button component={Link} href={`/products/${product.id}`} variant="contained" fullWidth disableElevation sx={{ bgcolor: "#B0B3B8", color: "#111827", py: 1.2, fontSize: "0.9rem", fontWeight: 700, borderRadius: "8px", boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", transition: "all 0.3s ease", "&:hover": { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
-                        Comprar ahora
+                      <Button component={Link} href={`/products/${product.id}`} variant="contained" fullWidth disableElevation disabled={product.stock <= 0} sx={{ bgcolor: product.stock <= 0 ? "#E5E7EB" : "#B0B3B8", color: product.stock <= 0 ? "#9CA3AF" : "#111827", py: 1.2, fontSize: "0.9rem", fontWeight: 700, borderRadius: "8px", boxShadow: product.stock <= 0 ? "none" : "0 4px 14px 0 rgba(0,0,0,0.15)", transition: product.stock <= 0 ? "none" : "all 0.3s ease", "&:hover": product.stock <= 0 ? { bgcolor: "#E5E7EB", color: "#9CA3AF", boxShadow: "none" } : { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
+                        {product.stock <= 0 ? "Agotado" : "Comprar ahora"}
                       </Button>
                     </Box>
 

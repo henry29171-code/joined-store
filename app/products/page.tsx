@@ -150,17 +150,23 @@ function ProductsContent() {
                   fullWidth 
                   onClick={() => addToCart({ ...product, image: product.image_url })} 
                   disableElevation
+                  disabled={product.stock <= 0}
                   sx={{ 
-                    bgcolor: "#B0B3B8", 
-                    color: "#111827", 
-                    border: "none",
+                    bgcolor: product.stock <= 0 ? "#E5E7EB" : "#B0B3B8", 
+                    color: product.stock <= 0 ? "#9CA3AF" : "#111827", 
+                    border: product.stock <= 0 ? "none" : "none",
                     py: 1.2, 
                     fontSize: "0.9rem", 
                     fontWeight: 700, 
                     borderRadius: "8px",
-                    boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", 
-                    transition: "all 0.3s ease",
-                    "&:hover": { 
+                    boxShadow: product.stock <= 0 ? "none" : "0 4px 14px 0 rgba(0,0,0,0.15)", 
+                    transition: product.stock <= 0 ? "none" : "all 0.3s ease",
+                    "&:hover": product.stock <= 0 ? { 
+                      bgcolor: "#E5E7EB", 
+                      color: "#9CA3AF", 
+                      boxShadow: "none",
+                      transform: "none"
+                    } : { 
                       bgcolor: "#0a0d15", 
                       color: "white", 
                       boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)",
@@ -168,7 +174,7 @@ function ProductsContent() {
                     } 
                   }}
                 >
-                  Añadir al carrito
+                  {product.stock <= 0 ? "Agotado" : "Añadir al carrito"}
                 </Button>
               </Box>
             </Box>

@@ -145,13 +145,13 @@ export default function ProductDetailPage() {
               </Box>
             )}
 
-            <Button variant="contained" onClick={() => addToCart({ ...product, image: product.image_url })} fullWidth disableElevation sx={{ bgcolor: "#B0B3B8", color: "#111827", py: 1.5, borderRadius: "8px", fontWeight: 700, boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", mt: 1, transition: "all 0.3s ease", "&:hover": { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
+            <Button variant="contained" onClick={() => addToCart({ ...product, image: product.image_url })} fullWidth disableElevation disabled={product.stock <= 0} sx={{ bgcolor: "#B0B3B8", color: "#111827", py: 1.5, borderRadius: "8px", fontWeight: 700, boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", mt: 1, transition: "all 0.3s ease", "&:hover": { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
               Añadir al carrito
             </Button>
             
-            <Button variant="contained" onClick={handleComprarAhora} fullWidth disableElevation sx={{ bgcolor: "#0a0d15", color: "white", py: 1.5, borderRadius: "8px", fontWeight: 700, boxShadow: "0 4px 14px 0 rgba(10, 13, 21, 0.2)", transition: "all 0.3s ease", "&:hover": { bgcolor: "#1a1d24", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.4)", transform: "translateY(-2px)" } }}>
-              Comprar ahora
-            </Button>
+            <Box sx={{ mt: 1, display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography sx={{ fontSize: "0.85rem", color: product.stock <= 0 ? "#9CA3AF" : "#111827" }}>Stock: {product.stock || "Unavailable"}</Typography>
+            </Box>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, color: "#718096", mt: 1 }}>
               <LocalShippingIcon fontSize="small" />

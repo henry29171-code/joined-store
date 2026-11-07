@@ -86,8 +86,37 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
+      // 1. Verificar stock actual en la base de datos
+      const productIds = state.items.map((item) => item.id);
+      const { data: currentProducts, error: stockError } = await supabase
+        .from("products")
+        .select("id, stock, name")
+        .in("id", productIds);
+
+      if (stockError) {
+        setError("Error al verificar el stock. Por favor, inténtalo de nuevo.");
+        setLoading(false);
+        return;
+      }
+
+      // Verificar que cada producto tenga stock suficiente
+      for (const cartItem of state.items) {
+        const dbProduct = currentProducts?.find((p) => p.id === cartItem.id);
+        if (!dbProduct) {
+          setError(`El producto "${cartItem.name}" ya no existe.`);
+          setLoading(false);
+          return;
+        }
+        if (dbProduct.stock < cartItem.quantity) {
+          setError(`Stock insuficiente para "${cartItem.name}". Disponible: ${dbProduct.stock}, solicitado: ${cartItem.quantity}.`);
+          setLoading(false);
+          return;
+        }
+      }
+
       const fullAddress = `${formData.direccion}, ${formData.distrito}, ${formData.departamento}. Ref: ${formData.referencia}`;
 
+      // 2. Insertar la orden
       const { error: dbError } = await supabase.from("orders").insert([
         {
           customer_name: `${formData.nombre} ${formData.apellidos}`,
@@ -105,6 +134,15 @@ export default function CheckoutPage() {
       ]);
 
       if (dbError) throw dbError;
+
+      // 3. Restar stock de cada producto después de insertar la orden exitosamente
+      for (const cartItem of state.items) {
+        const newStock = Math.max(0, (currentProducts?.find((p) => p.id === cartItem.id)?.stock || 0) - cartItem.quantity);
+        await supabase
+          .from("products")
+          .update({ stock: newStock })
+          .eq("id", cartItem.id);
+      }
 
       setSuccess(true);
       clearCart();
