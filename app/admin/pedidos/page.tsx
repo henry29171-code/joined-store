@@ -12,7 +12,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CloseIcon from "@mui/icons-material/Close";
 import CancelIcon from "@mui/icons-material/Cancel";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp"; // <-- NUEVO ICONO
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { supabase } from "../../lib/supabase";
 
 export default function AdminPedidos() {
@@ -31,40 +31,39 @@ export default function AdminPedidos() {
     fetchOrders();
   }, []);
 
-  const handleStatusChange = async (orderId: string, newStatus: string) => {
-    const { error } = await supabase.from("orders").update({ status: newStatus }).eq("id", orderId);
+  // LÓGICA DE WHATSAPP: Formatear el número y crear el mensaje
+  const sendWhatsAppNotification = (order: any, newStatus: string) => {
+    let phone = order.customer_phone.replace(/\s+/g, '').replace(/-/g, '');
+    if (!phone.startsWith('51')) {
+      phone = `51${phone}`;
+    }
+    const shortId = order.id.slice(0, 8).toUpperCase();
+    const message = `Hola ${order.customer_name}, te saludamos de *Joined* 🛍️.\n\nTe informamos que el estado de tu pedido *#${shortId}* ha sido actualizado a: *${newStatus}*.\n\nGracias por tu compra.`;
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
+    
+    // Abre WhatsApp en una pestaña nueva automáticamente
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const handleStatusChange = async (order: any, newStatus: string) => {
+    const { error } = await supabase.from("orders").update({ status: newStatus }).eq("id", order.id);
     if (!error) {
       fetchOrders(); 
+      
+      // SI EL CLIENTE AUTORIZÓ, ENVIAMOS EL WHATSAPP AUTOMÁTICAMENTE
+      if (order.whatsapp_opt_in) {
+        sendWhatsAppNotification(order, newStatus);
+      }
     } else {
       alert("Error al actualizar el estado");
     }
   };
 
-  const handleCancelOrder = async (orderId: string) => {
+  const handleCancelOrder = async (order: any) => {
     if (confirm("¿Estás seguro de cancelar este pedido?")) {
-      await handleStatusChange(orderId, "Cancelado");
+      await handleStatusChange(order, "Cancelado");
     }
-  };
-
-  // LÓGICA DE WHATSAPP: Formatear el número y crear el mensaje
-  const sendWhatsAppNotification = (order: any) => {
-    // Limpiamos el teléfono de espacios o guiones
-    let phone = order.customer_phone.replace(/\s+/g, '').replace(/-/g, '');
-    
-    // Si el número no empieza con 51 (código de Perú), se lo agregamos
-    if (!phone.startsWith('51')) {
-      phone = `51${phone}`;
-    }
-
-    const shortId = order.id.slice(0, 8).toUpperCase();
-    const message = `Hola ${order.customer_name}, te saludamos de *Joined* 🛍️.\n\nTe informamos que el estado de tu pedido *#${shortId}* ha sido actualizado a: *${order.status}*.\n\nGracias por tu compra.`;
-    
-    // Codificamos el mensaje para que viaje seguro en la URL
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
-    
-    // Abrimos WhatsApp en una nueva pestaña
-    window.open(whatsappUrl, '_blank');
   };
 
   const getStatusColor = (status: string) => {
@@ -89,7 +88,7 @@ export default function AdminPedidos() {
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
         <Box>
           <Typography variant="h4" sx={{ fontWeight: 700, color: "#0a0d15" }}>Gestión de pedidos</Typography>
-          <Typography sx={{ color: "#666" }}>Administra los estados y notifica a tus clientes</Typography>
+          <Typography sx={{ color: "#666" }}>Administra los estados y revisa las compras</Typography>
         </Box>
         <Button variant="outlined" startIcon={<RefreshIcon />} onClick={fetchOrders} sx={{ textTransform: "none", borderColor: "#0a0d15", color: "#0a0d15" }}>
           Actualizar
@@ -107,6 +106,7 @@ export default function AdminPedidos() {
                 <TableCell sx={{ fontWeight: 700 }}>Cliente</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Total</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Estado</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Notificar</TableCell>
                 <TableCell align="right" sx={{ fontWeight: 700 }}>Acciones</TableCell>
               </TableRow>
             </TableHead>
@@ -122,7 +122,7 @@ export default function AdminPedidos() {
                     <Select
                       size="small"
                       value={order.status}
-                      onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                      onChange={(e) => handleStatusChange(order, e.target.value)}
                       sx={{
                         bgcolor: getStatusColor(order.status).bg,
                         color: getStatusColor(order.status).text,
@@ -139,23 +139,20 @@ export default function AdminPedidos() {
                       <MenuItem value="Cancelado">Cancelado</MenuItem>
                     </Select>
                   </TableCell>
+                  <TableCell>
+                    {order.whatsapp_opt_in ? (
+                      <Chip label="Aceptado" size="small" sx={{ bgcolor: "#D1FAE5", color: "#059669", fontWeight: 700 }} />
+                    ) : (
+                      <Chip label="Sin permiso" size="small" sx={{ bgcolor: "#F3F4F6", color: "#9CA3AF", fontWeight: 700 }} />
+                    )}
+                  </TableCell>
                   <TableCell align="right">
-                    {/* BOTÓN DE WHATSAPP */}
-                    <Tooltip title="Notificar por WhatsApp">
-                      <IconButton 
-                        onClick={() => sendWhatsAppNotification(order)} 
-                        sx={{ color: "#25D366", mr: 1 }}
-                      >
-                        <WhatsAppIcon />
-                      </IconButton>
-                    </Tooltip>
-
                     <IconButton color="primary" onClick={() => setSelectedOrder(order)}>
                       <VisibilityIcon />
                     </IconButton>
                     
                     {order.status !== "Cancelado" && order.status !== "Entregado" && (
-                      <IconButton color="error" onClick={() => handleCancelOrder(order.id)} title="Cancelar pedido">
+                      <IconButton color="error" onClick={() => handleCancelOrder(order)} title="Cancelar pedido">
                         <CancelIcon />
                       </IconButton>
                     )}
@@ -167,7 +164,7 @@ export default function AdminPedidos() {
         </TableContainer>
       )}
 
-      {/* MODAL DE DETALLE (Se mantiene igual) */}
+      {/* MODAL DE DETALLE */}
       <Dialog open={!!selectedOrder} onClose={() => setSelectedOrder(null)} fullWidth maxWidth="sm">
         {selectedOrder && (
           <>

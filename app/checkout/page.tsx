@@ -5,7 +5,7 @@ import { useCart } from "../context/CartContext";
 import { supabase } from "../lib/supabase";
 import { 
   Container, Typography, Box, Grid, TextField, Button, Card, 
-  Divider, Stack, MenuItem, Alert, CircularProgress 
+  Divider, Stack, MenuItem, Alert, CircularProgress, Checkbox, FormControlLabel 
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LockIcon from "@mui/icons-material/Lock";
@@ -16,6 +16,7 @@ export default function CheckoutPage() {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [whatsappOptIn, setWhatsappOptIn] = useState(false); // <-- NUEVO ESTADO
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -29,12 +30,10 @@ export default function CheckoutPage() {
     referencia: ""
   });
 
-  // Lógica de Autocompletado con Google
   useEffect(() => {
     const getUserData = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        // Si el usuario ya inició sesión con Google, prellenamos los campos
         const fullName = user.user_metadata?.full_name || user.user_metadata?.name || "";
         const nameParts = fullName.split(" ");
         const firstName = nameParts[0] || "";
@@ -52,10 +51,7 @@ export default function CheckoutPage() {
   }, []);
 
   const handleGoogleLogin = async () => {
-    // Se elimina options.redirectTo para que Supabase use su URL de callback oficial
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-    });
+    await supabase.auth.signInWithOAuth({ provider: 'google' });
   };
 
   const total = state.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -82,7 +78,8 @@ export default function CheckoutPage() {
           shipping_address: fullAddress,
           total: total,
           items: state.items,
-          status: "Pendiente"
+          status: "Pendiente",
+          whatsapp_opt_in: whatsappOptIn // <-- GUARDAMOS LA AUTORIZACIÓN
         }
       ]);
 
@@ -92,7 +89,6 @@ export default function CheckoutPage() {
       clearCart();
     } catch (err: any) {
       setError("Hubo un problema al procesar tu pedido. Por favor, intenta de nuevo.");
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -104,13 +100,11 @@ export default function CheckoutPage() {
         <Alert severity="success" sx={{ mb: 4, justifyContent: "center" }}>¡Pedido realizado con éxito!</Alert>
         <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2 }}>Gracias por tu compra</Typography>
         <Typography sx={{ color: "#5E6B7E", mb: 4 }}>Hemos recibido tu pedido. Pronto nos pondremos en contacto contigo para coordinar el envío.</Typography>
-        
         <Card sx={{ p: 4, mb: 4, borderRadius: 3, bgcolor: "#F8F9FA", border: "1px solid #E5E7EB", maxWidth: 500, mx: "auto" }}>
           <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: "#0a0d15" }}>¡Haz tu compra más rápida la próxima vez!</Typography>
           <Typography sx={{ color: "#666", mb: 3, fontSize: "0.9rem" }}>Crea tu cuenta en 1 clic para guardar tus datos, hacer seguimiento a tu pedido y obtener envío gratis.</Typography>
           <Button variant="contained" sx={{ bgcolor: "#0a0d15", textTransform: "none", fontWeight: 600, borderRadius: "8px" }}>Crear mi cuenta</Button>
         </Card>
-
         <Button component={Link} href="/" variant="outlined" size="large" sx={{ borderColor: "#0a0d15", color: "#0a0d15", borderRadius: 999, px: 4, py: 1.5 }}>Volver a la tienda</Button>
       </Container>
     );
@@ -135,18 +129,10 @@ export default function CheckoutPage() {
 
       <Grid container spacing={5}>
         <Grid size={{ xs: 12, md: 7 }}>
-          
-          {/* BOTÓN DE GOOGLE - INNOVACIÓN DE LLENADO RÁPIDO */}
           <Box sx={{ mb: 4, p: 3, bgcolor: "#F8F9FA", borderRadius: 3, border: "1px solid #E5E7EB" }}>
             <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: "#0a0d15", fontSize: "1rem" }}>Compra más rápido</Typography>
             <Typography sx={{ color: "#666", mb: 2, fontSize: "0.85rem" }}>Autocompleta tus datos con tu cuenta de Google.</Typography>
-            <Button 
-              variant="outlined" 
-              fullWidth 
-              startIcon={<GoogleIcon />} 
-              onClick={handleGoogleLogin}
-              sx={{ borderColor: "#D1D5DB", color: "#374151", textTransform: "none", fontWeight: 600, py: 1.2, "&:hover": { bgcolor: "#F3F4F6" } }}
-            >
+            <Button variant="outlined" fullWidth startIcon={<GoogleIcon />} onClick={handleGoogleLogin} sx={{ borderColor: "#D1D5DB", color: "#374151", textTransform: "none", fontWeight: 600, py: 1.2, "&:hover": { bgcolor: "#F3F4F6" } }}>
               Continuar con Google
             </Button>
           </Box>
@@ -157,7 +143,6 @@ export default function CheckoutPage() {
 
           <Box component="form" onSubmit={handleSubmit}>
             <Typography variant="h6" sx={{ fontWeight: 700, mb: 3, color: "#0a0d15", fontSize: "1.1rem" }}>1. Datos de envío</Typography>
-            
             {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
 
             <Grid container spacing={2.5}>
@@ -199,6 +184,24 @@ export default function CheckoutPage() {
               </Grid>
             </Grid>
 
+            {/* CHECKBOX DE AUTORIZACIÓN WHATSAPP */}
+            <Box sx={{ mt: 3, p: 2, bgcolor: "#F0FDF4", borderRadius: 2, border: "1px solid #BBF7D0" }}>
+              <FormControlLabel
+                control={
+                  <Checkbox 
+                    checked={whatsappOptIn} 
+                    onChange={(e) => setWhatsappOptIn(e.target.checked)} 
+                    sx={{ color: "#16A34A", "&.Mui-checked": { color: "#16A34A" } }}
+                  />
+                }
+                label={
+                  <Typography sx={{ fontSize: "0.85rem", color: "#166534" }}>
+                    Acepto recibir notificaciones sobre el estado de mi pedido vía WhatsApp.
+                  </Typography>
+                }
+              />
+            </Box>
+
             <Typography variant="h6" sx={{ fontWeight: 700, mt: 4, mb: 3, color: "#0a0d15", fontSize: "1.1rem" }}>2. Método de pago</Typography>
             <Card sx={{ p: 2.5, borderRadius: 2, border: "1px solid #E0E0E0", boxShadow: "none", bgcolor: "transparent" }}>
               <Typography sx={{ mb: 1, fontWeight: 600, color: "#0a0d15", fontSize: "0.95rem" }}>Pago contra entrega o transferencia</Typography>
@@ -214,16 +217,13 @@ export default function CheckoutPage() {
         <Grid size={{ xs: 12, md: 5 }}>
           <Card sx={{ p: { xs: 3, md: 4 }, borderRadius: 4, bgcolor: "#0a0d15", color: "white", position: "sticky", top: 100 }}>
             <Typography variant="h5" sx={{ fontWeight: 800, mb: 3, fontSize: "1.2rem" }}>Resumen del pedido</Typography>
-            
             <Stack spacing={2} sx={{ mb: 3 }}>
               {state.items.map((item) => (
                 <Box key={item.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                     <Box sx={{ position: "relative" }}>
                       <Box component="img" src={(item as any).image || "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=100&auto=format&fit=crop"} sx={{ width: 45, height: 45, borderRadius: 1, objectFit: "cover" }} />
-                      <Box sx={{ position: "absolute", top: -6, right: -6, bgcolor: "white", color: "#0a0d15", borderRadius: "50%", width: 18, height: 18, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.65rem", fontWeight: 800 }}>
-                        {item.quantity}
-                      </Box>
+                      <Box sx={{ position: "absolute", top: -6, right: -6, bgcolor: "white", color: "#0a0d15", borderRadius: "50%", width: 18, height: 18, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.65rem", fontWeight: 800 }}>{item.quantity}</Box>
                     </Box>
                     <Typography sx={{ fontSize: { xs: "0.85rem", md: "0.95rem" }, fontWeight: 600 }}>{item.name}</Typography>
                   </Box>
@@ -231,22 +231,17 @@ export default function CheckoutPage() {
                 </Box>
               ))}
             </Stack>
-
             <Divider sx={{ bgcolor: "rgba(255,255,255,0.2)", my: 2 }} />
-            
             <Stack spacing={1.5} sx={{ mb: 2, opacity: 0.9 }}>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}><Typography sx={{ fontSize: "0.85rem" }}>Subtotal (sin IGV)</Typography><Typography sx={{ fontSize: "0.85rem" }}>S/. {subtotal.toFixed(2)}</Typography></Box>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}><Typography sx={{ fontSize: "0.85rem" }}>IGV (18%)</Typography><Typography sx={{ fontSize: "0.85rem" }}>S/. {igv.toFixed(2)}</Typography></Box>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}><Typography sx={{ fontSize: "0.85rem" }}>Envío</Typography><Typography sx={{ fontWeight: 700, color: "#4ADE80", fontSize: "0.85rem" }}>Gratis (VIP)</Typography></Box>
             </Stack>
-
             <Divider sx={{ bgcolor: "rgba(255,255,255,0.2)", mb: 2 }} />
-
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <Typography variant="h6" sx={{ fontWeight: 800, fontSize: { xs: "1.1rem", md: "1.3rem" } }}>Total</Typography>
               <Typography variant="h5" sx={{ fontWeight: 800, fontSize: { xs: "1.2rem", md: "1.5rem" } }}>S/. {total.toFixed(2)}</Typography>
             </Box>
-            
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 3, opacity: 0.6 }}>
               <LockIcon fontSize="small" />
               <Typography sx={{ fontSize: "0.75rem" }}>Pago 100% seguro</Typography>
