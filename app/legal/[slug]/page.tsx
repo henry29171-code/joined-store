@@ -37,11 +37,11 @@ export default function LegalPage() {
           color: "#4A5568", 
           lineHeight: 1.8, 
           fontSize: "1rem",
+          whiteSpace: "pre-wrap", // <--- ESTO RESPETA LOS SALTOS DE LÍNEA
           "& p": { mb: 2 },
           "& h2, & h3": { color: "#0a0d15", mt: 3, mb: 1, fontWeight: 600 },
           "& ul": { pl: 3, mb: 2 }
         }}
-        // Usamos dangerouslySetInnerHTML porque el admin guardará HTML
         dangerouslySetInnerHTML={{ __html: page.content }} 
       />
     </Container>
