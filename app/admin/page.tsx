@@ -8,6 +8,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import ArticleIcon from "@mui/icons-material/Article";
+import GavelIcon from "@mui/icons-material/Gavel"; // Nuevo ícono
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -80,8 +81,8 @@ export default function AdminDashboard() {
 
         {/* Tarjetas de acceso rápido */}
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)", height: "100%" }}>
               <CardContent sx={{ p: 4, textAlign: "center" }}>
                 <InventoryIcon sx={{ fontSize: 50, color: "#0a0d15", mb: 2 }} />
                 <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Productos</Typography>
@@ -101,8 +102,8 @@ export default function AdminDashboard() {
             </Card>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)", height: "100%" }}>
               <CardContent sx={{ p: 4, textAlign: "center" }}>
                 <ReceiptIcon sx={{ fontSize: 50, color: "#0a0d15", mb: 2 }} />
                 <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Pedidos</Typography>
@@ -122,15 +123,14 @@ export default function AdminDashboard() {
             </Card>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)", height: "100%" }}>
               <CardContent sx={{ p: 4, textAlign: "center" }}>
                 <ArticleIcon sx={{ fontSize: 50, color: "#0a0d15", mb: 2 }} />
                 <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Páginas legales</Typography>
                 <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
                   Actualiza las políticas y términos de tu tienda sin tocar código.
                 </Typography>
-                {/* CORREGIDO: Se agregó component={Link} y href */}
                 <Button 
                   component={Link}
                   href="/admin/paginas-legales"
@@ -139,6 +139,27 @@ export default function AdminDashboard() {
                   sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
                 >
                   Editar páginas
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)", height: "100%" }}>
+              <CardContent sx={{ p: 4, textAlign: "center" }}>
+                <GavelIcon sx={{ fontSize: 50, color: "#0a0d15", mb: 2 }} />
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Reclamaciones</Typography>
+                <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
+                  Revisa el libro de reclamaciones y quejas de tus clientes.
+                </Typography>
+                <Button 
+                  component={Link} 
+                  href="/admin/reclamaciones" 
+                  fullWidth 
+                  variant="contained" 
+                  sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
+                >
+                  Ver reclamos
                 </Button>
               </CardContent>
             </Card>
