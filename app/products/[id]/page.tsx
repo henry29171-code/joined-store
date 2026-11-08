@@ -161,6 +161,16 @@ export default function ProductDetailPage() {
                   Agotado
                 </Typography>
               )}
+{product.stock > 0 && (
+  <Typography sx={{ fontSize: "0.85rem", color: "#5E6B7E", fontWeight: 500, mr: "auto" }}>
+    Disponible
+  </Typography>
+)}
+{product.stock <= 0 && (
+  <Typography sx={{ fontSize: "0.85rem", color: "#d32f2f", fontWeight: 600, mr: "auto" }}>
+    Agotado
+  </Typography>
+)}
             </Box>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, color: "#718096", mt: 1 }}>
