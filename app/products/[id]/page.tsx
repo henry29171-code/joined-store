@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -150,7 +151,16 @@ export default function ProductDetailPage() {
             </Button>
             
             <Box sx={{ mt: 1, display: "flex", alignItems: "center", gap: 1 }}>
-              <Typography sx={{ fontSize: "0.85rem", color: product.stock <= 0 ? "#9CA3AF" : "#111827" }}>Stock: {product.stock || "Unavailable"}</Typography>
+              {product.stock > 0 && (
+                <Typography sx={{ fontSize: "0.85rem", color: "#22C55E", fontWeight: 500, mr: "auto" }}>
+                  Disponible
+                </Typography>
+              )}
+              {product.stock <= 0 && (
+                <Typography sx={{ fontSize: "0.85rem", color: "#EF4444", fontWeight: 600, mr: "auto" }}>
+                  Agotado
+                </Typography>
+              )}
             </Box>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, color: "#718096", mt: 1 }}>
