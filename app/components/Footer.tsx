@@ -57,20 +57,20 @@ export default function Footer() {
           {/* Columna 2: Enlaces Legales */}
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-              Información Legal
+              Información legal
             </Typography>
             <Stack spacing={1.5}>
               <Link href="/libro-de-reclamaciones" style={{ color: "#F8FAF8", opacity: 0.7, textDecoration: "none" }}>
-                Libro de Reclamaciones
+                Libro de reclamaciones
               </Link>
               <Link href="/legal/privacidad" style={{ color: "#F8FAF8", opacity: 0.7, textDecoration: "none" }}>
-                Políticas de Privacidad
+                Políticas de privacidad
               </Link>
               <Link href="/legal/terminos" style={{ color: "#F8FAF8", opacity: 0.7, textDecoration: "none" }}>
-                Términos y Condiciones
+                Términos y condiciones
               </Link>
               <Link href="/legal/devoluciones" style={{ color: "#F8FAF8", opacity: 0.7, textDecoration: "none" }}>
-                Políticas de Devolución
+                Políticas de devolución
               </Link>
             </Stack>
           </Grid>
@@ -78,7 +78,7 @@ export default function Footer() {
           {/* Columna 3: Contacto */}
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-              Atención al Cliente
+              Atención al cliente
             </Typography>
             <Stack spacing={1.5} sx={{ opacity: 0.7 }}>
               <Typography>Email: ventas@joined.pe</Typography>
