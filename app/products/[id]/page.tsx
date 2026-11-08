@@ -146,31 +146,22 @@ export default function ProductDetailPage() {
               </Box>
             )}
 
-            <Button variant="contained" onClick={() => addToCart({ ...product, image: product.image_url })} fullWidth disableElevation disabled={product.stock <= 0} sx={{ bgcolor: "#B0B3B8", color: "#111827", py: 1.5, borderRadius: "8px", fontWeight: 700, boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", mt: 1, transition: "all 0.3s ease", "&:hover": { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
-              Añadir al carrito
+            <Button variant="contained" onClick={() => addToCart({ ...product, image: product.image_url })} fullWidth disableElevation disabled={product.stock <= 0} sx={{ bgcolor: product.stock <= 0 ? "#E5E7EB" : "#B0B3B8", color: product.stock <= 0 ? "#9CA3AF" : "#111827", py: 1.5, borderRadius: "8px", fontWeight: 700, boxShadow: product.stock <= 0 ? "none" : "0 4px 14px 0 rgba(0,0,0,0.15)", mt: 1, transition: "all 0.3s ease", "&:hover": { bgcolor: product.stock <= 0 ? "#E5E7EB" : "#0a0d15", color: product.stock <= 0 ? "#9CA3AF" : "white", boxShadow: product.stock <= 0 ? "none" : "0 6px 20px rgba(10, 13, 21, 0.3)", transform: product.stock <= 0 ? "none" : "translateY(-2px)" } }}>
+              {product.stock <= 0 ? "Agotado" : "Añadir al carrito"}
             </Button>
             
+            {/* INDICADOR DE STOCK CORREGIDO (SOLO UNO, COLORES DE LA MARCA) */}
             <Box sx={{ mt: 1, display: "flex", alignItems: "center", gap: 1 }}>
               {product.stock > 0 && (
-                <Typography sx={{ fontSize: "0.85rem", color: "#22C55E", fontWeight: 500, mr: "auto" }}>
+                <Typography sx={{ fontSize: "0.85rem", color: "#5E6B7E", fontWeight: 500, mr: "auto" }}>
                   Disponible
                 </Typography>
               )}
               {product.stock <= 0 && (
-                <Typography sx={{ fontSize: "0.85rem", color: "#EF4444", fontWeight: 600, mr: "auto" }}>
+                <Typography sx={{ fontSize: "0.85rem", color: "#d32f2f", fontWeight: 600, mr: "auto" }}>
                   Agotado
                 </Typography>
               )}
-{product.stock > 0 && (
-  <Typography sx={{ fontSize: "0.85rem", color: "#5E6B7E", fontWeight: 500, mr: "auto" }}>
-    Disponible
-  </Typography>
-)}
-{product.stock <= 0 && (
-  <Typography sx={{ fontSize: "0.85rem", color: "#d32f2f", fontWeight: 600, mr: "auto" }}>
-    Agotado
-  </Typography>
-)}
             </Box>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, color: "#718096", mt: 1 }}>
