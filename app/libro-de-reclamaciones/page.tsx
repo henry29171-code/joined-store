@@ -53,7 +53,7 @@ export default function LibroReclamaciones() {
       </Box>
 
       <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 1 }}>Libro de reclamaciones virtual</Typography>
-      <Typography sx={{ color: "#666", mb: 2 }}>Conforme a lo establecido en el Código de Protección y Defensa del Consumidor (Ley N° 29571).</Typography>
+      <Typography sx={{ color: "#666", mb: 2 }}>Conforme a lo establecido en el código de protección y defensa del consumidor (Ley N° 29571).</Typography>
       
       <Alert severity="info" sx={{ mb: 4, fontSize: "0.85rem" }}>
         La formulación del reclamo no impide acudir a otras vías de solución de controversias ni es requisito previo para interponer una denuncia ante el INDECOPI.
