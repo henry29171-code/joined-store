@@ -63,13 +63,13 @@ export default function Footer() {
               <Link href="/libro-de-reclamaciones" style={{ color: "#F8FAF8", opacity: 0.7, textDecoration: "none" }}>
                 Libro de Reclamaciones
               </Link>
-              <Link href="/politicas-de-privacidad" style={{ color: "#F8FAF8", opacity: 0.7, textDecoration: "none" }}>
+              <Link href="/legal/privacidad" style={{ color: "#F8FAF8", opacity: 0.7, textDecoration: "none" }}>
                 Políticas de Privacidad
               </Link>
-              <Link href="/terminos-y-condiciones" style={{ color: "#F8FAF8", opacity: 0.7, textDecoration: "none" }}>
+              <Link href="/legal/terminos" style={{ color: "#F8FAF8", opacity: 0.7, textDecoration: "none" }}>
                 Términos y Condiciones
               </Link>
-              <Link href="/politicas-de-devolucion" style={{ color: "#F8FAF8", opacity: 0.7, textDecoration: "none" }}>
+              <Link href="/legal/devoluciones" style={{ color: "#F8FAF8", opacity: 0.7, textDecoration: "none" }}>
                 Políticas de Devolución
               </Link>
             </Stack>
