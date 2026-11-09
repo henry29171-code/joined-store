@@ -1,5 +1,5 @@
-export const dynamic = "force-dynamic";
 "use client";
+export const dynamic = "force-dynamic";
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Container, Typography, Box, CircularProgress, Divider } from "@mui/material";
