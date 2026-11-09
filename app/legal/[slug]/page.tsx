@@ -30,6 +30,23 @@ export default function LegalPage() {
   if (loading) return <Box sx={{ display: "flex", justifyContent: "center", py: 15 }}><CircularProgress sx={{ color: "#0a0d15" }} /></Box>;
   if (!page) return <Container maxWidth="md" sx={{ py: 15, textAlign: "center" }}><Typography variant="h4">Página no encontrada</Typography></Container>;
 
+  // --- MAGIA: Pre-procesamos el texto para que se vea bien sin que tengas que escribir código ---
+  const formatContent = (text: string) => {
+    if (!text) return "";
+    let formatted = text;
+
+    // 1. Convertir números al inicio de línea en títulos (Ej: "1. Titularidad" -> "### 1. Titularidad")
+    formatted = formatted.replace(/(\d+\.\s[A-Z].*)/g, '\n\n### $1\n');
+
+    // 2. Convertir textos como "Razon Social:" en negrita (Ej: "* Razon Social:" -> "* **Razon Social:**")
+    formatted = formatted.replace(/\*\s([A-Z][a-zA-Z\s]+):/g, '* **$1:**');
+
+    // 3. Convertir "Nota:" al inicio de párrafo en cursiva
+    formatted = formatted.replace(/(Nota:.*)/g, '*$1*');
+
+    return formatted;
+  };
+
   return (
     <Container maxWidth="md" sx={{ py: { xs: 6, md: 10 }, minHeight: "60vh" }}>
       <Typography variant="h3" sx={{ fontWeight: 700, color: "#0a0d15", mb: 3, fontSize: { xs: "2rem", md: "2.5rem" } }}>
@@ -40,7 +57,7 @@ export default function LegalPage() {
 
       <Box sx={{ color: "#4A5568", fontSize: "1rem" }}>
         <ReactMarkdown
-          remarkPlugins={[remarkBreaks]} // <--- ESTO HACE QUE LOS SALTOS DE LINEA SIMPLES FUNCIONEN
+          remarkPlugins={[remarkBreaks]}
           components={{
             h1: ({node, ...props}) => <Typography variant="h4" sx={{ fontWeight: 700, color: "#0a0d15", mt: 5, mb: 2, fontSize: "1.5rem" }} {...props} />,
             h2: ({node, ...props}) => <Typography variant="h5" sx={{ fontWeight: 700, color: "#0a0d15", mt: 4, mb: 2, fontSize: "1.25rem" }} {...props} />,
@@ -52,7 +69,7 @@ export default function LegalPage() {
             em: ({node, ...props}) => <em style={{ color: "#4A5568", fontStyle: "italic" }} {...props} />,
           }}
         >
-          {page.content}
+          {formatContent(page.content)}
         </ReactMarkdown>
       </Box>
     </Container>
