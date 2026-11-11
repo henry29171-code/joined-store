@@ -15,7 +15,9 @@ import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import BusinessIcon from "@mui/icons-material/Business";
 
 export default function CheckoutPage() {
-  const { state, clearCart } = useCart();
+  // 1. Extraemos isHydrated del contexto
+  const { state, clearCart, isHydrated } = useCart();
+  
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -53,10 +55,6 @@ export default function CheckoutPage() {
     };
     getUserData();
   }, []);
-
-  const handleGoogleLogin = async () => {
-    await supabase.auth.signInWithOAuth({ provider: 'google' });
-  };
 
   const total = state.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const subtotal = total / 1.18;
@@ -108,12 +106,22 @@ export default function CheckoutPage() {
       // Redirigimos al cliente a la pasarela de Mercado Pago
       window.location.href = data.init_point;
       
-      // Nota: No limpiamos el carrito aquí. Lo haremos en la página de éxito.
     } catch (err: any) {
       setError(err.message || "Hubo un problema al procesar tu pedido. Por favor, intenta de nuevo.");
       setLoading(false);
     }
   };
+
+  // 2. ESTA ES LA SOLUCIÓN AL ERROR #418: 
+  // Si el carrito no ha cargado de localStorage, mostramos un spinner y no renderizamos el form.
+  if (!isHydrated) {
+    return (
+      <Container maxWidth="md" sx={{ py: 15, textAlign: "center" }}>
+        <CircularProgress sx={{ color: "#0a0d15" }} />
+        <Typography sx={{ mt: 2, color: "#5E6B7E" }}>Cargando tu pedido...</Typography>
+      </Container>
+    );
+  }
 
   if (success) {
     return (

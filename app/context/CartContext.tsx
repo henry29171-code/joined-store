@@ -7,10 +7,11 @@ import {
   ReactNode,
   useEffect,
   useRef,
+  useState,
+  useMemo,
 } from "react";
 import { Product } from "../types/Product";
 
-// Agregamos 'image' aquí para que TypeScript sepa que el carrito lo tiene
 type CartItem = Product & { quantity: number; image?: string };
 
 type CartState = {
@@ -29,6 +30,7 @@ const CART_KEY = "ecom_cart_v1";
 
 const CartContext = createContext<{
   state: CartState;
+  isHydrated: boolean;
   addToCart: (p: Product, quantity?: number) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
@@ -47,12 +49,11 @@ function reducer(state: CartState, action: Action): CartState {
       const existing = state.items.find((i) => i.id === action.product.id);
       if (existing) {
         const newQuantity = existing.quantity + qty;
-        // No exceder el stock disponible
         const stock = action.product.stock ?? Infinity;
         const finalQuantity = Math.min(newQuantity, stock);
         return {
           items: state.items.map((i) =>
-            i.id === action.product.id ? { ...i, quantity: finalQuantity } : i,
+            i.id === action.product.id ? { ...i, quantity: finalQuantity } : i
           ),
         };
       }
@@ -65,17 +66,16 @@ function reducer(state: CartState, action: Action): CartState {
     case "INCREMENT":
       return {
         items: state.items.map((i) =>
-          i.id === action.id ? { ...i, quantity: i.quantity + 1 } : i,
+          i.id === action.id ? { ...i, quantity: i.quantity + 1 } : i
         ),
       };
-
     case "DECREMENT":
       return {
         items: state.items
           .map((i) =>
-            i.id === action.id ? { ...i, quantity: i.quantity - 1 } : i,
+            i.id === action.id ? { ...i, quantity: i.quantity - 1 } : i
           )
-          .filter((i) => i.quantity > 0), // remove if hits 0
+          .filter((i) => i.quantity > 0),
       };
     case "REMOVE":
       return {
@@ -92,12 +92,8 @@ function readCartFromStorage(): CartState {
   try {
     const raw = localStorage.getItem(CART_KEY);
     if (!raw) return initialState;
-
     const parsed = JSON.parse(raw) as CartState;
-
-    // tiny safety check (prevents crashes if storage is corrupted)
     if (!parsed || !Array.isArray(parsed.items)) return initialState;
-
     return parsed;
   } catch {
     return initialState;
@@ -106,24 +102,25 @@ function readCartFromStorage(): CartState {
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-
-  // prevents first render from overwriting localStorage with empty cart
+  const [isHydrated, setIsHydrated] = useState(false); // <-- NUEVO
   const hasHydrated = useRef(false);
 
-  // 1) Hydrate once (client only)
   useEffect(() => {
     const saved = readCartFromStorage();
     dispatch({ type: "HYDRATE", state: saved });
+    setIsHydrated(true); // <-- NUEVO
     hasHydrated.current = true;
   }, []);
 
-  // 2) Persist whenever state changes (after hydration)
   useEffect(() => {
     if (!hasHydrated.current) return;
     localStorage.setItem(CART_KEY, JSON.stringify(state));
   }, [state]);
-  const value = {
+
+  // Usamos useMemo para evitar re-renders innecesarios
+  const value = useMemo(() => ({
     state,
+    isHydrated, // <-- NUEVO
     addToCart: (product: Product, quantity?: number) => {
       const availableStock = product.stock ?? Infinity;
       if (availableStock <= 0) {
@@ -145,7 +142,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     clearCart: () => dispatch({ type: "CLEAR" }),
     increment: (id: string) => dispatch({ type: "INCREMENT", id }),
     decrement: (id: string) => dispatch({ type: "DECREMENT", id }),
-  };
+  }), [state, isHydrated]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
