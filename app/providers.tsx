@@ -2,11 +2,18 @@
 
 import { ThemeProvider, CssBaseline, createTheme, Box } from "@mui/material";
 import { responsiveFontSizes } from "@mui/material/styles";
-import { CartProvider } from "./context/CartContext";
+import dynamic from "next/dynamic"; // <-- Importante: Traemos dynamic
 import Navbar from "./components/Navbar";
 import { NotificationProvider } from "./context/NotificationContext";
 import Footer from "./components/Footer";
 import WhatsAppButton from "./components/WhatsAppButton"; 
+
+// ELIMINAMOS: import { CartProvider } from "./context/CartContext";
+// LO REEMPLAZAMOS POR ESTO:
+const CartProvider = dynamic(
+  () => import("./context/CartContext").then((mod) => mod.CartProvider),
+  { ssr: false }
+);
 
 export function Providers({ children }: { children: React.ReactNode }) {
   let theme = createTheme({
