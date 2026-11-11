@@ -86,69 +86,31 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
-      // 1. Verificar stock actual en la base de datos
-      const productIds = state.items.map((item) => item.id);
-      const { data: currentProducts, error: stockError } = await supabase
-        .from("products")
-        .select("id, stock, name")
-        .in("id", productIds);
-
-      if (stockError) {
-        setError("Error al verificar el stock. Por favor, inténtalo de nuevo.");
-        setLoading(false);
-        return;
-      }
-
-      // Verificar que cada producto tenga stock suficiente
-      for (const cartItem of state.items) {
-        const dbProduct = currentProducts?.find((p) => p.id === cartItem.id);
-        if (!dbProduct) {
-          setError(`El producto "${cartItem.name}" ya no existe.`);
-          setLoading(false);
-          return;
-        }
-        if (dbProduct.stock < cartItem.quantity) {
-          setError(`Stock insuficiente para "${cartItem.name}". Disponible: ${dbProduct.stock}, solicitado: ${cartItem.quantity}.`);
-          setLoading(false);
-          return;
-        }
-      }
-
-      const fullAddress = `${formData.direccion}, ${formData.distrito}, ${formData.departamento}. Ref: ${formData.referencia}`;
-
-      // 2. Insertar la orden
-      const { error: dbError } = await supabase.from("orders").insert([
-        {
-          customer_name: `${formData.nombre} ${formData.apellidos}`,
-          customer_email: formData.email,
-          customer_phone: formData.telefono,
-          shipping_address: fullAddress,
-          total: total,
+      // Llamamos a nuestra API de Mercado Pago
+      const response = await fetch('/api/checkout/mercadopago', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           items: state.items,
-          status: "Pendiente",
-          whatsapp_opt_in: whatsappOptIn,
-          tipo_comprobante: tipoComprobante,
-          documento_cliente: documento,
-          razon_social: razonSocial
-        }
-      ]);
+          formData,
+          total,
+          whatsappOptIn,
+          tipoComprobante,
+          documento,
+          razonSocial
+        })
+      });
 
-      if (dbError) throw dbError;
+      const data = await response.json();
 
-      // 3. Restar stock de cada producto después de insertar la orden exitosamente
-      for (const cartItem of state.items) {
-        const newStock = Math.max(0, (currentProducts?.find((p) => p.id === cartItem.id)?.stock || 0) - cartItem.quantity);
-        await supabase
-          .from("products")
-          .update({ stock: newStock })
-          .eq("id", cartItem.id);
-      }
+      if (!response.ok) throw new Error(data.error || "Error al procesar el pago");
 
-      setSuccess(true);
-      clearCart();
+      // Redirigimos al cliente a la pasarela de Mercado Pago
+      window.location.href = data.init_point;
+      
+      // Nota: No limpiamos el carrito aquí. Lo haremos en la página de éxito.
     } catch (err: any) {
-      setError("Hubo un problema al procesar tu pedido. Por favor, intenta de nuevo.");
-    } finally {
+      setError(err.message || "Hubo un problema al procesar tu pedido. Por favor, intenta de nuevo.");
       setLoading(false);
     }
   };
@@ -298,8 +260,8 @@ export default function CheckoutPage() {
 
             <Typography variant="h6" sx={{ fontWeight: 700, mt: 4, mb: 3, color: "#0a0d15", fontSize: "1.1rem" }}>3. Método de pago</Typography>
             <Card sx={{ p: 2.5, borderRadius: 2, border: "1px solid #E0E0E0", boxShadow: "none", bgcolor: "transparent" }}>
-              <Typography sx={{ mb: 1, fontWeight: 600, color: "#0a0d15", fontSize: "0.95rem" }}>Pago contra entrega o transferencia</Typography>
-              <Typography sx={{ fontSize: "0.85rem", color: "#5E6B7E", lineHeight: 1.5 }}>Al confirmar tu pedido, coordinaremos contigo el método de pago y envío.</Typography>
+              <Typography sx={{ mb: 1, fontWeight: 600, color: "#0a0d15", fontSize: "0.95rem" }}>Pago seguro con Mercado Pago</Typography>
+              <Typography sx={{ fontSize: "0.85rem", color: "#5E6B7E", lineHeight: 1.5 }}>Serás redirigido a la pasarela segura de Mercado Pago para completar tu compra.</Typography>
             </Card>
 
             <Button type="submit" variant="contained" size="large" fullWidth disabled={loading} sx={{ mt: 4, bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, py: 1.8, borderRadius: 999, fontSize: { xs: "1rem", md: "1.1rem" } }}>
