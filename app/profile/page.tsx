@@ -109,8 +109,32 @@ export default function ProfilePage() {
     return (
       <Grid container sx={{ minHeight: { xs: "auto", md: "100vh" } }}>
         
-        {/* LADO IZQUIERDO: FORMULARIO */}
-        <Grid size={{ xs: 12, md: 5 }} sx={{ display: "flex", alignItems: "center", justifyContent: "center", p: { xs: 3, md: 6 } }}>
+        {/* LADO IZQUIERDO: IMAGEN DEL RELOJ (Oculto en móviles) */}
+        <Grid 
+          size={{ xs: 12, md: 6 }} 
+          sx={{ 
+            display: { xs: "none", md: "block" },
+            backgroundImage: 'url("/reloj-login.jpg")', // <-- AQUI USAMOS TU IMAGEN
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            position: "relative"
+          }}
+        >
+          {/* Capa oscura sutil para darle elegancia */}
+          <Box sx={{ position: "absolute", inset: 0, bgcolor: "rgba(10, 13, 21, 0.2)" }} />
+          
+          <Box sx={{ position: "absolute", bottom: 60, left: 60, zIndex: 2 }}>
+            <Typography variant="h3" sx={{ color: "white", fontWeight: 800, mb: 1, letterSpacing: "-0.02em", textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>
+              Joined
+            </Typography>
+            <Typography variant="h6" sx={{ color: "rgba(255,255,255,0.9)", fontWeight: 400, textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>
+              Eleva tu estilo diario.
+            </Typography>
+          </Box>
+        </Grid>
+
+        {/* LADO DERECHO: FORMULARIO */}
+        <Grid size={{ xs: 12, md: 6 }} sx={{ display: "flex", alignItems: "center", justifyContent: "center", p: { xs: 3, md: 6 }, bgcolor: "#FFFFFF" }}>
           <Box sx={{ width: "100%", maxWidth: 400 }}>
             <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 1 }}>
               {isLogin ? "Iniciar sesión" : "Crear cuenta"}
@@ -166,30 +190,6 @@ export default function ProfilePage() {
                 </span>
               </Typography>
             </Box>
-          </Box>
-        </Grid>
-
-        {/* LADO DERECHO: IMAGEN DE FONDO (Solo en pantallas medianas y grandes) */}
-        <Grid 
-          size={{ xs: 12, md: 7 }} 
-          sx={{ 
-            display: { xs: "none", md: "block" },
-            backgroundImage: 'url("https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=2000&auto=format&fit=crop")',
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            position: "relative"
-          }}
-        >
-          {/* Capa oscura para que resalte el texto */}
-          <Box sx={{ position: "absolute", inset: 0, bgcolor: "rgba(10, 13, 21, 0.4)" }} />
-          
-          <Box sx={{ position: "absolute", bottom: 60, left: 60, zIndex: 2 }}>
-            <Typography variant="h3" sx={{ color: "white", fontWeight: 800, mb: 1, letterSpacing: "-0.02em" }}>
-              Joined
-            </Typography>
-            <Typography variant="h6" sx={{ color: "rgba(255,255,255,0.8)", fontWeight: 400 }}>
-              Eleva tu estilo diario.
-            </Typography>
           </Box>
         </Grid>
 
