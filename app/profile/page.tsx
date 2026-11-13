@@ -2,10 +2,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { supabase } from "../lib/supabase"; // Asegúrate de que la ruta sea correcta
+import { supabase } from "../lib/supabase"; 
 import { 
   Container, Typography, Box, TextField, Button, Card, Divider, Alert, 
-  CircularProgress, Stack, Avatar 
+  CircularProgress, Stack, Avatar, Grid 
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -17,7 +17,7 @@ export default function ProfilePage() {
   // Estados de autenticación
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [isLogin, setIsLogin] = useState(true); // true = Login, false = Registro
+  const [isLogin, setIsLogin] = useState(true); 
   
   // Estados del formulario
   const [email, setEmail] = useState("");
@@ -28,17 +28,13 @@ export default function ProfilePage() {
   const [btnLoading, setBtnLoading] = useState(false);
 
   useEffect(() => {
-    // 1. Verificar si ya hay una sesión activa
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        setUser(session.user);
-      }
+      if (session) setUser(session.user);
       setLoading(false);
     };
     checkSession();
 
-    // 2. Escuchar cambios en la autenticación (login/logout)
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         setUser(session.user);
@@ -75,11 +71,9 @@ export default function ProfilePage() {
 
     try {
       if (isLogin) {
-        // Iniciar Sesión
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       } else {
-        // Registrarse
         const { error } = await supabase.auth.signUp({ 
           email, 
           password,
@@ -87,7 +81,7 @@ export default function ProfilePage() {
         });
         if (error) throw error;
         setMensaje("Registro exitoso. Revisa tu correo para confirmar tu cuenta (o inicia sesión si no requiere confirmación).");
-        setIsLogin(true); // Cambiamos a la vista de login
+        setIsLogin(true); 
       }
     } catch (err: any) {
       setError(err.message || "Ocurrió un error en la autenticación");
@@ -101,8 +95,6 @@ export default function ProfilePage() {
     router.push("/");
   };
 
-  // --- RENDERIZADO ---
-
   if (loading) {
     return (
       <Container maxWidth="sm" sx={{ py: 15, textAlign: "center" }}>
@@ -112,96 +104,100 @@ export default function ProfilePage() {
     );
   }
 
-  // Si NO hay usuario, mostramos el Login/Registro
+  // --- PANTALLA DE LOGIN / REGISTRO (SPLIT SCREEN) ---
   if (!user) {
     return (
-      <Container maxWidth="sm" sx={{ py: { xs: 6, md: 10 } }}>
-        <Card sx={{ p: { xs: 3, md: 5 }, borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", textAlign: "center", mb: 1 }}>
-            {isLogin ? "Iniciar sesión" : "Crear cuenta"}
-          </Typography>
-          <Typography sx={{ color: "#5E6B7E", textAlign: "center", mb: 4, fontSize: "0.9rem" }}>
-            {isLogin ? "Bienvenido de vuelta a Joined. Ingresa para agilizar tus compras." : "Únete a la Comunidad Joined y obtén beneficios exclusivos."}
-          </Typography>
+      <Grid container sx={{ minHeight: { xs: "auto", md: "100vh" } }}>
+        
+        {/* LADO IZQUIERDO: FORMULARIO */}
+        <Grid size={{ xs: 12, md: 5 }} sx={{ display: "flex", alignItems: "center", justifyContent: "center", p: { xs: 3, md: 6 } }}>
+          <Box sx={{ width: "100%", maxWidth: 400 }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 1 }}>
+              {isLogin ? "Iniciar sesión" : "Crear cuenta"}
+            </Typography>
+            <Typography sx={{ color: "#5E6B7E", mb: 4, fontSize: "0.9rem" }}>
+              {isLogin ? "Bienvenido de vuelta a Joined. Ingresa para agilizar tus compras." : "Únete a la Comunidad Joined y obtén beneficios exclusivos."}
+            </Typography>
 
-          {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
-          {mensaje && <Alert severity="success" sx={{ mb: 3 }}>{mensaje}</Alert>}
+            {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+            {mensaje && <Alert severity="success" sx={{ mb: 3 }}>{mensaje}</Alert>}
 
-          {/* BOTÓN DE GOOGLE */}
-          <Button
-            fullWidth
-            variant="outlined"
-            startIcon={<GoogleIcon />}
-            onClick={handleGoogleLogin}
-            disabled={btnLoading}
-            sx={{ py: 1.5, mb: 3, color: "#0a0d15", borderColor: "#E5E7EB", textTransform: "none", fontWeight: 600, "&:hover": { bgcolor: "#F9FAFB", borderColor: "#D1D5DB" } }}
-          >
-            Continuar con Google
-          </Button>
+            <Button
+              fullWidth
+              variant="outlined"
+              startIcon={<GoogleIcon />}
+              onClick={handleGoogleLogin}
+              disabled={btnLoading}
+              sx={{ py: 1.5, mb: 3, color: "#0a0d15", borderColor: "#E5E7EB", textTransform: "none", fontWeight: 600, "&:hover": { bgcolor: "#F9FAFB", borderColor: "#D1D5DB" } }}
+            >
+              Continuar con Google
+            </Button>
 
-          <Divider sx={{ mb: 3, color: "#9CA3AF", fontSize: "0.85rem" }}>o usa tu correo</Divider>
+            <Divider sx={{ mb: 3, color: "#9CA3AF", fontSize: "0.85rem" }}>o usa tu correo</Divider>
 
-          {/* FORMULARIO DE CORREO */}
-          <Box component="form" onSubmit={handleEmailAuth}>
-            <Stack spacing={2.5}>
-              {!isLogin && (
-                <TextField
+            <Box component="form" onSubmit={handleEmailAuth}>
+              <Stack spacing={2.5}>
+                {!isLogin && (
+                  <TextField fullWidth label="Nombre completo" value={nombre} onChange={(e) => setNombre(e.target.value)} required size="small" />
+                )}
+                <TextField fullWidth label="Correo electrónico" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required size="small" />
+                <TextField fullWidth label="Contraseña" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required size="small" />
+                
+                <Button
+                  type="submit"
                   fullWidth
-                  label="Nombre completo"
-                  value={nombre}
-                  onChange={(e) => setNombre(e.target.value)}
-                  required
-                  size="small"
-                />
-              )}
-              <TextField
-                fullWidth
-                label="Correo electrónico"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                size="small"
-              />
-              <TextField
-                fullWidth
-                label="Contraseña"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                size="small"
-              />
-              
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                disabled={btnLoading}
-                sx={{ bgcolor: "#0a0d15", color: "white", py: 1.5, borderRadius: 2, fontWeight: 700, "&:hover": { bgcolor: "#1a1d24" } }}
-              >
-                {btnLoading ? <CircularProgress size={24} sx={{ color: "white" }} /> : (isLogin ? "Ingresar" : "Registrarme")}
-              </Button>
-            </Stack>
-          </Box>
+                  variant="contained"
+                  disabled={btnLoading}
+                  sx={{ bgcolor: "#0a0d15", color: "white", py: 1.5, borderRadius: 2, fontWeight: 700, "&:hover": { bgcolor: "#1a1d24" } }}
+                >
+                  {btnLoading ? <CircularProgress size={24} sx={{ color: "white" }} /> : (isLogin ? "Ingresar" : "Registrarme")}
+                </Button>
+              </Stack>
+            </Box>
 
-          <Box sx={{ mt: 3, textAlign: "center" }}>
-            <Typography sx={{ fontSize: "0.9rem", color: "#5E6B7E" }}>
-              {isLogin ? "¿No tienes cuenta? " : "¿Ya tienes cuenta? "}
-              <span 
-                onClick={() => { setIsLogin(!isLogin); setError(""); setMensaje(""); }} 
-                style={{ color: "#0a0d15", fontWeight: 700, cursor: "pointer", textDecoration: "underline" }}
-              >
-                {isLogin ? "Regístrate aquí" : "Inicia sesión"}
-              </span>
+            <Box sx={{ mt: 4, textAlign: "center" }}>
+              <Typography sx={{ fontSize: "0.9rem", color: "#5E6B7E" }}>
+                {isLogin ? "¿No tienes cuenta? " : "¿Ya tienes cuenta? "}
+                <span 
+                  onClick={() => { setIsLogin(!isLogin); setError(""); setMensaje(""); }} 
+                  style={{ color: "#0a0d15", fontWeight: 700, cursor: "pointer", textDecoration: "underline" }}
+                >
+                  {isLogin ? "Regístrate aquí" : "Inicia sesión"}
+                </span>
+              </Typography>
+            </Box>
+          </Box>
+        </Grid>
+
+        {/* LADO DERECHO: IMAGEN DE FONDO (Solo en pantallas medianas y grandes) */}
+        <Grid 
+          size={{ xs: 12, md: 7 }} 
+          sx={{ 
+            display: { xs: "none", md: "block" },
+            backgroundImage: 'url("https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=2000&auto=format&fit=crop")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            position: "relative"
+          }}
+        >
+          {/* Capa oscura para que resalte el texto */}
+          <Box sx={{ position: "absolute", inset: 0, bgcolor: "rgba(10, 13, 21, 0.4)" }} />
+          
+          <Box sx={{ position: "absolute", bottom: 60, left: 60, zIndex: 2 }}>
+            <Typography variant="h3" sx={{ color: "white", fontWeight: 800, mb: 1, letterSpacing: "-0.02em" }}>
+              Joined
+            </Typography>
+            <Typography variant="h6" sx={{ color: "rgba(255,255,255,0.8)", fontWeight: 400 }}>
+              Eleva tu estilo diario.
             </Typography>
           </Box>
-        </Card>
-      </Container>
+        </Grid>
+
+      </Grid>
     );
   }
 
-  // Si SÍ hay usuario, mostramos su Perfil
+  // --- PANTALLA DE PERFIL (CUANDO YA INICIÓ SESIÓN) ---
   const userMetadata = user.user_metadata || {};
   const userName = userMetadata.full_name || userMetadata.name || "Cliente Joined";
 
