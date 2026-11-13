@@ -96,16 +96,6 @@ export default function ProductDetailPage() {
                     "&:hover": { opacity: 1 }
                   }}
                 >
-                  sx={{ 
-                    width: 70, height: 70, 
-                    border: mainImage === img ? "2px solid #6B7280" : "1px solid #E5E7EB", 
-                    borderRadius: "8px", 
-                    overflow: "hidden", cursor: "pointer", flexShrink: 0,
-                    opacity: mainImage === img ? 1 : 0.6,
-                    transition: "all 0.2s",
-                    "&:hover": { opacity: 1 }
-                  }}
-                >
                   <Image src={img} fill style={{ objectFit: "cover" }} />
                 </Box>
               ))}

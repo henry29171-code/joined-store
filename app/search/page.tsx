@@ -17,21 +17,26 @@ function SearchResults() {
   const { addToCart } = useCart();
 
   useEffect(() => {
-    if (query) {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .filter("name", "ilike", `%${query}%`)
-        .order("name")
-        .limit(20);
+    // SOLUCIÓN: Creamos una función asíncrona interna para poder usar 'await'
+    const fetchProducts = async () => {
+      if (query) {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .filter("name", "ilike", `%${query}%`)
+          .order("name")
+          .limit(20);
 
-      if (!error && data) setProducts(data);
-      setLoading(false);
-    } else {
-      setProducts([]);
-      setLoading(false);
-    }
+        if (!error && data) setProducts(data);
+        setLoading(false);
+      } else {
+        setProducts([]);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, [query]);
 
   if (loading) {
