@@ -76,7 +76,7 @@ export default function ProductDetailPage() {
         <Grid size={{ xs: 12, md: 6 }}>
           {/* IMAGEN PRINCIPAL SIN PADDING, SIN FONDO Y SIN BORDES */}
           <Box sx={{ position: "relative", width: "100%", aspectRatio: "1/1", mb: 2 }}>
-            <Image src={mainImage} alt={product.name} fill sizes="(max-width: 600px) 100vw, 50vw" style={{ objectFit: "contain", objectPosition: "center", display: "block" }} />
+            <Image src={mainImage} alt={product.name} fill sizes="(max-width: 600px) 100vw, 50vw" style={{ objectFit: "contain", objectPosition: "center", display: "block" }} priority />
           </Box>
           
           {allImages.length > 1 && (
@@ -96,7 +96,8 @@ export default function ProductDetailPage() {
                     "&:hover": { opacity: 1 }
                   }}
                 >
-                  <Image src={img} fill style={{ objectFit: "cover" }} />
+                  {/* CORREGIDO: Se agregó la propiedad alt */}
+                  <Image src={img} alt={`Imagen de ${product.name}`} fill style={{ objectFit: "cover" }} />
                 </Box>
               ))}
             </Stack>
