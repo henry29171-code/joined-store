@@ -62,30 +62,30 @@ export default function Navbar() {
 
   return (
     <>
-      {/* CINTA SUPERIOR EN MOVIMIENTO */}
+      {/* CINTA SUPERIOR EN MOVIMIENTO (Fondo claro, texto oscuro, sin colores) */}
       <Box 
         sx={{ 
-          bgcolor: "#0a0d15", 
-          color: "white", 
+          bgcolor: "#F3F4F6", // Gris muy claro
+          color: "#0a0d15", // Azul noche
           py: 1, 
           overflow: "hidden", 
           whiteSpace: "nowrap",
-          borderBottom: "1px solid rgba(255,255,255,0.1)"
+          borderBottom: "1px solid #E5E7EB"
         }}
       >
         <Box
           sx={{
             display: "inline-block",
-            animation: "marquee 25s linear infinite",
+            animation: "marquee 30s linear infinite",
             "@keyframes marquee": {
               "0%": { transform: "translateX(0)" },
               "100%": { transform: "translateX(-50%)" }
             },
-            "&:hover": { animationPlayState: "paused" } // Se pausa al pasar el mouse
+            "&:hover": { animationPlayState: "paused" } 
           }}
         >
-          <Typography sx={{ fontSize: "0.75rem", fontWeight: 500, letterSpacing: "0.05em" }}>
-            📢 ¡Envíos 100% gratis a nivel nacional exclusivo para miembros de la comunidad! &nbsp;|&nbsp; ⭐ Únete a la comunidad y accede a beneficios exclusivos &nbsp;|&nbsp; 📢 ¡Envíos 100% gratis a nivel nacional exclusivo para miembros de la comunidad! &nbsp;|&nbsp; ⭐ Únete a la comunidad y accede a beneficios exclusivos
+          <Typography sx={{ fontSize: "0.75rem", fontWeight: 600, letterSpacing: "0.05em" }}>
+            Envíos 100% gratis a nivel nacional exclusivo para miembros de la comunidad. &nbsp;•&nbsp; Únete a la comunidad y accede a beneficios exclusivos. &nbsp;•&nbsp; Envíos 100% gratis a nivel nacional exclusivo para miembros de la comunidad. &nbsp;•&nbsp; Únete a la comunidad y accede a beneficios exclusivos.
           </Typography>
         </Box>
       </Box>
@@ -118,7 +118,7 @@ export default function Navbar() {
             </Link>
           </Box>
 
-          {/* CENTRO: Enlaces de navegación (Letras más grandes y juntas) */}
+          {/* CENTRO: Enlaces de navegación */}
           <Stack direction="row" spacing={2} sx={{ display: { xs: "none", md: "flex" } }}>
             {navLinks.map((link) => (
               <Button
@@ -128,8 +128,8 @@ export default function Navbar() {
                 sx={{
                   color: "white",
                   textTransform: "none",
-                  fontWeight: 600, // Letra en negrita
-                  fontSize: "1rem", // Letra más grande
+                  fontWeight: 600,
+                  fontSize: "1rem",
                   px: 1.5,
                   "&:hover": { color: "#9CA3AF", bgcolor: "transparent" },
                 }}
