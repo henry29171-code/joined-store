@@ -31,8 +31,9 @@ const CART_KEY = "ecom_cart_v1";
 const CartContext = createContext<{
   state: CartState;
   isHydrated: boolean;
-  lastAddedItem: CartItem | null;
-  clearLastAddedItem: () => void;
+  isCartOpen: boolean; // <-- NUEVO
+  openCart: () => void; // <-- NUEVO
+  closeCart: () => void; // <-- NUEVO
   addToCart: (p: Product, quantity?: number) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
@@ -105,7 +106,7 @@ function readCartFromStorage(): CartState {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isHydrated, setIsHydrated] = useState(false);
-  const [lastAddedItem, setLastAddedItem] = useState<CartItem | null>(null); // <-- Nuevo estado
+  const [isCartOpen, setIsCartOpen] = useState(false); // <-- ESTADO DEL DRAWER
   const hasHydrated = useRef(false);
 
   useEffect(() => {
@@ -123,8 +124,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const value = useMemo(() => ({
     state,
     isHydrated,
-    lastAddedItem,
-    clearLastAddedItem: () => setLastAddedItem(null), // <-- Nueva función
+    isCartOpen, // <-- EXPONEMOS
+    openCart: () => setIsCartOpen(true), // <-- EXPONEMOS
+    closeCart: () => setIsCartOpen(false), // <-- EXPONEMOS
     addToCart: (product: Product, quantity?: number) => {
       const availableStock = product.stock ?? Infinity;
       if (availableStock <= 0) {
@@ -144,14 +146,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
       
       if (qtyToAdd > 0) {
         dispatch({ type: "ADD", product, quantity: qtyToAdd });
-        setLastAddedItem({ ...product, quantity: qtyToAdd }); // <-- Guardamos el último producto
+        setIsCartOpen(true); // <-- ABRE EL CARRITO AUTOMÁTICAMENTE AL AÑADIR
       }
     },
     removeFromCart: (id: string) => dispatch({ type: "REMOVE", id }),
     clearCart: () => dispatch({ type: "CLEAR" }),
     increment: (id: string) => dispatch({ type: "INCREMENT", id }),
     decrement: (id: string) => dispatch({ type: "DECREMENT", id }),
-  }), [state, isHydrated, lastAddedItem]);
+  }), [state, isHydrated, isCartOpen]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

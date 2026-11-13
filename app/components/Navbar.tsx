@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image"; // <-- IMPORTANTE: Importación correcta de next/image
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   AppBar, Toolbar, Typography, Box, IconButton, Badge, InputBase,
-  Drawer, List, ListItem, ListItemText, useMediaQuery, useTheme, Stack, Button
+  Drawer, List, ListItem, ListItemText, Stack, Button
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
@@ -24,7 +24,8 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-  const { state } = useCart();
+  // EXTRAEMOS openCart PARA ABRIR EL CARRITO LATERAL
+  const { state, openCart } = useCart(); 
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,7 +41,7 @@ export default function Navbar() {
     if (e.key === "Enter" && searchTerm.trim() !== "") {
       router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
       setSearchTerm("");
-      if (mobileOpen) setMobileOpen(false); // Cierra el menú móvil si estaba abierto
+      if (mobileOpen) setMobileOpen(false);
     }
   };
 
@@ -65,7 +66,7 @@ export default function Navbar() {
     <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#0a0d15", color: "white" }}>
       <Toolbar sx={{ justifyContent: "space-between", px: { xs: 2, md: 4 }, minHeight: "70px !important" }}>
         
-        {/* LADO IZQUIERDO: Menú móvil (solo en pantallas pequeñas) + Logo */}
+        {/* LADO IZQUIERDO: Menú móvil + Logo */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <IconButton
             color="inherit"
@@ -77,15 +78,14 @@ export default function Navbar() {
             <MenuIcon />
           </IconButton>
 
-          {/* LOGO */}
           <Link href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
             <Image 
               src="/logo.png" 
               alt="Joined Logo" 
               width={110} 
               height={35} 
-              style={{ objectFit: "contain" }} // Ajusta el logo sin deformarlo
-              priority // Le dice a Next.js que cargue este logo primero (mejora la velocidad)
+              style={{ objectFit: "contain" }}
+              priority
             />
           </Link>
         </Box>
@@ -113,7 +113,6 @@ export default function Navbar() {
         {/* LADO DERECHO: Buscador + Iconos */}
         <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 1, md: 2 } }}>
           
-          {/* BUSCADOR (Se oculta en móviles muy pequeños, se muestra en tablets y PC) */}
           <Box
             sx={{
               display: { xs: "none", sm: "flex" },
@@ -135,7 +134,6 @@ export default function Navbar() {
             />
           </Box>
 
-          {/* ICONOS */}
           <IconButton component={Link} href="/profile" sx={{ color: "white" }}>
             <PersonIcon />
           </IconButton>
@@ -144,7 +142,8 @@ export default function Navbar() {
             <SettingsIcon />
           </IconButton>
 
-          <IconButton component={Link} href="/cart" sx={{ color: "white" }}>
+          {/* CARRITO: AHORA ABRE EL DRAWER EN LUGAR DE IR A /cart */}
+          <IconButton onClick={openCart} sx={{ color: "white" }}>
             <Badge badgeContent={cartItemCount} color="primary" sx={{ "& .MuiBadge-badge": { bgcolor: "#d32f2f", color: "white" } }}>
               <ShoppingCartIcon />
             </Badge>

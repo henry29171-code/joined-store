@@ -7,9 +7,9 @@ import Navbar from "./components/Navbar";
 import { NotificationProvider } from "./context/NotificationContext";
 import Footer from "./components/Footer";
 import WhatsAppButton from "./components/WhatsAppButton"; 
-import CartNotification from "./components/CartNotification"; // <-- NUEVA IMPORTACIÓN
+import CartDrawer from "./components/CartDrawer"; // <-- IMPORTAMOS EL NUEVO CARRITO LATERAL
 
-// Mantenemos la importación dinámica del CartProvider para evitar errores de SSR
+// Mantenemos la importación dinámica para evitar errores de hidratación (SSR)
 const CartProvider = dynamic(
   () => import("./context/CartContext").then((mod) => mod.CartProvider),
   { ssr: false }
@@ -70,7 +70,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             <Footer />
           </Box>
           <WhatsAppButton />
-          <CartNotification /> {/* <-- AGREGADO AQUÍ */}
+          <CartDrawer /> {/* <-- AGREGAMOS EL CARRITO LATERAL AQUÍ */}
         </CartProvider>
       </NotificationProvider>
     </ThemeProvider>
