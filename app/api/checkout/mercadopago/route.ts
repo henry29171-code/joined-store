@@ -4,9 +4,10 @@ import { createClient } from '@supabase/supabase-js';
 
 export async function POST(req: Request) {
   try {
+    // Usamos la Service Role Key para saltar el RLS y poder insertar la orden
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
+      process.env.SUPABASE_SERVICE_ROLE_KEY as string 
     );
 
     const body = await req.json();

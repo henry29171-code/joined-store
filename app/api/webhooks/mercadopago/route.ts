@@ -4,9 +4,10 @@ import { createClient } from '@supabase/supabase-js';
 
 export async function POST(req: Request) {
   try {
+    // Usamos la Service Role Key para poder actualizar el stock y la orden
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
+      process.env.SUPABASE_SERVICE_ROLE_KEY as string
     );
     
     const url = new URL(req.url);
