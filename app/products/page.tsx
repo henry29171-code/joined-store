@@ -2,6 +2,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Container, Typography, Box, Grid, Button, CircularProgress } from "@mui/material";
 import { useCart } from "../context/CartContext"; 
 import { supabase } from "../lib/supabase";
@@ -98,9 +99,9 @@ function ProductsContent() {
             <Box sx={{ display: "flex", flexDirection: "column", width: "100%", bgcolor: "transparent" }}>
               
               {/* IMAGEN SIN CAJA, SIN BORDES NI SOMBRAS */}
-              <Box sx={{ position: "relative", overflow: "hidden", mb: 2 }}>
+              <Box sx={{ position: "relative", overflow: "hidden", mb: 2, width: "100%", aspectRatio: "4/5" }}>
                 <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
-                  <Box component="img" src={product.image_url} alt={product.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.4s ease", "&:hover": { transform: "scale(1.04)" } }} />
+                  <Image src={product.image_url} alt={product.name} fill sizes="(max-width: 600px) 100vw, 50vw" style={{ objectFit: "cover", objectPosition: "center", transition: "transform 0.4s ease" }} />
                 </Link>
               </Box>
               

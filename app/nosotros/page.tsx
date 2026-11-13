@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { Container, Typography, Box, Grid, Card, CardContent } from "@mui/material";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import EnergySavingsLeafIcon from "@mui/icons-material/EnergySavingsLeaf";
@@ -50,16 +51,20 @@ export default function NosotrosPage() {
         <Grid container spacing={{ xs: 4, md: 6 }} alignItems="center" sx={{ mb: 10 }}>
           <Grid size={{ xs: 12, md: 6 }}>
             <Box 
-              component="img" 
-              src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=800&auto=format&fit=crop" 
+              width="100%" 
               sx={{ 
-                width: "100%", 
+                position: "relative",
                 height: { xs: 300, md: 450 }, 
-                objectFit: "cover", 
                 borderRadius: 4,
                 boxShadow: "0 20px 40px rgba(0,0,0,0.1)"
-              }} 
-            />
+              }} >
+              <Image 
+                src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=800&auto=format&fit=crop" 
+                alt="Hero" 
+                fill 
+                style={{ objectFit: "cover", objectPosition: "center" }}
+              />
+            </Box>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             {/* Subtítulo igualado al tamaño del principal */}

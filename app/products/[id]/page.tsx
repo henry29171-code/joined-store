@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { 
   Container, Typography, Box, Grid, Button, Stack, CircularProgress, Breadcrumbs, 
   Link as MuiLink, Divider, Accordion, AccordionSummary, AccordionDetails, Select, MenuItem, FormControl, Chip 
@@ -74,8 +75,8 @@ export default function ProductDetailPage() {
         
         <Grid size={{ xs: 12, md: 6 }}>
           {/* IMAGEN PRINCIPAL SIN PADDING, SIN FONDO Y SIN BORDES */}
-          <Box sx={{ width: "100%", mb: 2 }}>
-            <Box component="img" src={mainImage} alt={product.name} sx={{ width: "100%", aspectRatio: "1/1", objectFit: "contain", display: "block" }} />
+          <Box sx={{ position: "relative", width: "100%", aspectRatio: "1/1", mb: 2 }}>
+            <Image src={mainImage} alt={product.name} fill sizes="(max-width: 600px) 100vw, 50vw" style={{ objectFit: "contain", objectPosition: "center", display: "block" }} />
           </Box>
           
           {allImages.length > 1 && (
@@ -84,6 +85,17 @@ export default function ProductDetailPage() {
                 <Box 
                   key={idx} 
                   onClick={() => setMainImage(img)}
+                  sx={{ 
+                    position: "relative",
+                    width: 70, height: 70, 
+                    border: mainImage === img ? "2px solid #6B7280" : "1px solid #E5E7EB", 
+                    borderRadius: "8px", 
+                    overflow: "hidden", cursor: "pointer", flexShrink: 0,
+                    opacity: mainImage === img ? 1 : 0.6,
+                    transition: "all 0.2s",
+                    "&:hover": { opacity: 1 }
+                  }}
+                >
                   sx={{ 
                     width: 70, height: 70, 
                     border: mainImage === img ? "2px solid #6B7280" : "1px solid #E5E7EB", 
@@ -94,7 +106,7 @@ export default function ProductDetailPage() {
                     "&:hover": { opacity: 1 }
                   }}
                 >
-                  <Box component="img" src={img} sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <Image src={img} fill style={{ objectFit: "cover" }} />
                 </Box>
               ))}
             </Stack>
@@ -214,9 +226,9 @@ export default function ProductDetailPage() {
               <Grid key={relProduct.id} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Box sx={{ bgcolor: "transparent" }}>
                   {/* SIN CAJA, SIN BORDES */}
-                  <Box sx={{ mb: 2, overflow: "hidden" }}>
-                    <Link href={`/products/${relProduct.id}`} style={{ display: "block" }}>
-                      <Box component="img" src={relProduct.image_url} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.3s", "&:hover": { transform: "scale(1.04)" } }} />
+                  <Box sx={{ position: "relative", mb: 2, overflow: "hidden", width: "100%", aspectRatio: "4/5" }}>
+                    <Link href={`/products/${relProduct.id}`} style={{ display: "block", width: "100%" }}>
+                      <Image src={relProduct.image_url} alt={relProduct.name} fill sizes="(max-width: 600px) 100vw, 50vw" style={{ objectFit: "cover", objectPosition: "center", transition: "transform 0.3s" }} />
                     </Link>
                   </Box>
                   <Typography sx={{ fontSize: "1rem", fontWeight: 600, color: "#0a0d15", mb: 0.5 }}>{relProduct.name}</Typography>

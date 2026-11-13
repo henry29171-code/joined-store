@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import { useCart } from "@/app/context/CartContext";
 import { 
@@ -22,6 +22,7 @@ export default function Navbar() {
   const { state } = useCart();
   const totalItems = state.items.reduce((sum, item) => sum + item.quantity, 0);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     // Verificamos el usuario al cargar y cada vez que cambia de ruta
@@ -40,7 +41,7 @@ export default function Navbar() {
   const drawerContent = (
     <Box sx={{ width: 260, bgcolor: "#0a0d15", height: "100%", color: "white" }} role="presentation">
       <Box sx={{ p: 3, display: "flex", justifyContent: "center", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-        <img src="/logo.png" alt="Joined" style={{ height: "35px", width: "auto", objectFit: "contain" }} />
+        <Image src="/logo.png" alt="Joined" width={120} height={35} style={{ height: "35px", width: "auto", objectFit: "contain" }} />
       </Box>
       <List sx={{ pt: 2 }}>
         {[
@@ -121,7 +122,14 @@ export default function Navbar() {
           <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.5, sm: 1.5 } }}>
             <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", bgcolor: "rgba(255,255,255,0.1)", borderRadius: 999, px: 2, py: 0.5, width: 200 }}>
               <SearchIcon sx={{ color: "white", mr: 1, fontSize: 20 }} />
-              <InputBase placeholder="Buscar..." sx={{ color: "white", fontSize: "0.9rem", width: "100%" }} />
+              <InputBase placeholder="Buscar..." 
+                 onKeyDown={(e) => {
+                   if (e.key === 'Enter') {
+                     const value = (e.target as HTMLInputElement).value;
+                     router.push(`/search?q=${encodeURIComponent(value)}`);
+                   }
+                 }}
+                 sx={{ color: "white", fontSize: "0.9rem", width: "100%" }} />
             </Box>
 
             {/* ÍCONO DE USUARIO DINÁMICO */}

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Box, Container, Typography, Button, Stack, Grid, Chip, IconButton, SvgIcon, CircularProgress } from "@mui/material";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import EnergySavingsLeafIcon from "@mui/icons-material/EnergySavingsLeaf";
@@ -119,9 +120,9 @@ export default function HomePage() {
                   <Box sx={{ display: "flex", flexDirection: "column", width: "100%", bgcolor: "transparent" }}>
                     
                     {/* CONTENEDOR DE IMAGEN */}
-                    <Box sx={{ position: "relative", overflow: "hidden", mb: 2 }}>
+                    <Box sx={{ position: "relative", overflow: "hidden", mb: 2, width: "100%", aspectRatio: "4/5" }}>
                       <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
-                        <Box component="img" src={product.image_url} alt={product.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", display: "block" }} />
+                        <Image src={product.image_url} alt={product.name} fill sizes="(max-width: 600px) 100vw, 50vw" style={{ objectFit: "cover", objectPosition: "center" }} />
                       </Link>
                     </Box>
                     
