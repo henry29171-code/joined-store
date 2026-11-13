@@ -19,8 +19,8 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [isLogin, setIsLogin] = useState(true); 
   
-  // Estado para la imagen de fondo dinámica
-  const [bgImage, setBgImage] = useState("https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=2000&auto=format&fit=crop");
+  // Estado para la imagen: Empieza vacío para evitar el parpadeo
+  const [bgImage, setBgImage] = useState(""); 
 
   // Estados del formulario
   const [email, setEmail] = useState("");
@@ -39,9 +39,8 @@ export default function ProfilePage() {
     };
     checkSession();
 
-    // 2. Traer la imagen del reloj desde Supabase para el fondo
+    // 2. Traer y PRECARGAR la imagen del reloj desde Supabase
     const fetchBgImage = async () => {
-      // Buscamos el producto "Reloj Minimalist Classic" que aparece en tu captura
       const { data } = await supabase
         .from("products")
         .select("image_url")
@@ -49,7 +48,13 @@ export default function ProfilePage() {
         .single();
       
       if (data && data.image_url) {
-        setBgImage(data.image_url);
+        // Precargamos la imagen en la memoria del navegador
+        const img = new window.Image();
+        img.src = data.image_url;
+        // Cuando termine de cargar, la mostramos
+        img.onload = () => {
+          setBgImage(data.image_url);
+        };
       }
     };
     fetchBgImage();
@@ -129,14 +134,16 @@ export default function ProfilePage() {
     return (
       <Grid container sx={{ minHeight: { xs: "auto", md: "100vh" } }}>
         
-        {/* LADO IZQUIERDO: IMAGEN DEL RELOJ DESDE SUPABASE */}
+        {/* LADO IZQUIERDO: IMAGEN DEL RELOJ (Sin parpadeo) */}
         <Grid 
           size={{ xs: 12, md: 6 }} 
           sx={{ 
             display: { xs: "none", md: "block" },
-            backgroundImage: `url("${bgImage}")`, // <-- Usamos la variable dinámica aquí
+            bgcolor: "#0a0d15", // Fondo azul noche mientras carga
+            backgroundImage: bgImage ? `url("${bgImage}")` : "none", // Solo aplica la imagen si ya cargó
             backgroundSize: "cover",
             backgroundPosition: "center",
+            transition: "background-image 0.3s ease-in-out", // Transición suave
             position: "relative"
           }}
         >
