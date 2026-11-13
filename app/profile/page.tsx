@@ -167,7 +167,7 @@ export default function ProfilePage() {
               {isLogin ? "Iniciar sesión" : "Crear cuenta"}
             </Typography>
             <Typography sx={{ color: "#5E6B7E", mb: 4, fontSize: "0.9rem" }}>
-              {isLogin ? "Bienvenido de vuelta a Joined. Ingresa para agilizar tus compras." : "Únete a la Comunidad Joined y obtén beneficios exclusivos."}
+              {isLogin ? "Bienvenido de vuelta a Joined; ingresa para agilizar tus compras." : "Únete a la Comunidad Joined y obtén beneficios exclusivos."}
             </Typography>
 
             {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
