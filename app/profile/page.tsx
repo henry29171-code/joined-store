@@ -19,6 +19,9 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [isLogin, setIsLogin] = useState(true); 
   
+  // Estado para la imagen de fondo dinámica
+  const [bgImage, setBgImage] = useState("https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=2000&auto=format&fit=crop");
+
   // Estados del formulario
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,6 +31,7 @@ export default function ProfilePage() {
   const [btnLoading, setBtnLoading] = useState(false);
 
   useEffect(() => {
+    // 1. Verificar sesión
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) setUser(session.user);
@@ -35,6 +39,22 @@ export default function ProfilePage() {
     };
     checkSession();
 
+    // 2. Traer la imagen del reloj desde Supabase para el fondo
+    const fetchBgImage = async () => {
+      // Buscamos el producto "Reloj Minimalist Classic" que aparece en tu captura
+      const { data } = await supabase
+        .from("products")
+        .select("image_url")
+        .eq("name", "Reloj Minimalist Classic")
+        .single();
+      
+      if (data && data.image_url) {
+        setBgImage(data.image_url);
+      }
+    };
+    fetchBgImage();
+
+    // 3. Escuchar cambios de autenticación
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         setUser(session.user);
@@ -80,7 +100,7 @@ export default function ProfilePage() {
           options: { data: { full_name: nombre } }
         });
         if (error) throw error;
-        setMensaje("Registro exitoso. Revisa tu correo para confirmar tu cuenta (o inicia sesión si no requiere confirmación).");
+        setMensaje("Registro exitoso. Revisa tu correo para confirmar tu cuenta.");
         setIsLogin(true); 
       }
     } catch (err: any) {
@@ -109,19 +129,19 @@ export default function ProfilePage() {
     return (
       <Grid container sx={{ minHeight: { xs: "auto", md: "100vh" } }}>
         
-        {/* LADO IZQUIERDO: IMAGEN DEL RELOJ (Oculto en móviles) */}
+        {/* LADO IZQUIERDO: IMAGEN DEL RELOJ DESDE SUPABASE */}
         <Grid 
           size={{ xs: 12, md: 6 }} 
           sx={{ 
             display: { xs: "none", md: "block" },
-            backgroundImage: 'url("/reloj-login.jpg")', // <-- AQUI USAMOS TU IMAGEN
+            backgroundImage: `url("${bgImage}")`, // <-- Usamos la variable dinámica aquí
             backgroundSize: "cover",
             backgroundPosition: "center",
             position: "relative"
           }}
         >
-          {/* Capa oscura sutil para darle elegancia */}
-          <Box sx={{ position: "absolute", inset: 0, bgcolor: "rgba(10, 13, 21, 0.2)" }} />
+          {/* Capa oscura sutil para que el texto resalte */}
+          <Box sx={{ position: "absolute", inset: 0, bgcolor: "rgba(10, 13, 21, 0.3)" }} />
           
           <Box sx={{ position: "absolute", bottom: 60, left: 60, zIndex: 2 }}>
             <Typography variant="h3" sx={{ color: "white", fontWeight: 800, mb: 1, letterSpacing: "-0.02em", textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>
