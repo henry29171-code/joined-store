@@ -31,6 +31,8 @@ const CART_KEY = "ecom_cart_v1";
 const CartContext = createContext<{
   state: CartState;
   isHydrated: boolean;
+  lastAddedItem: CartItem | null;
+  clearLastAddedItem: () => void;
   addToCart: (p: Product, quantity?: number) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
@@ -102,13 +104,14 @@ function readCartFromStorage(): CartState {
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [isHydrated, setIsHydrated] = useState(false); // <-- NUEVO
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [lastAddedItem, setLastAddedItem] = useState<CartItem | null>(null); // <-- Nuevo estado
   const hasHydrated = useRef(false);
 
   useEffect(() => {
     const saved = readCartFromStorage();
     dispatch({ type: "HYDRATE", state: saved });
-    setIsHydrated(true); // <-- NUEVO
+    setIsHydrated(true);
     hasHydrated.current = true;
   }, []);
 
@@ -117,10 +120,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(CART_KEY, JSON.stringify(state));
   }, [state]);
 
-  // Usamos useMemo para evitar re-renders innecesarios
   const value = useMemo(() => ({
     state,
-    isHydrated, // <-- NUEVO
+    isHydrated,
+    lastAddedItem,
+    clearLastAddedItem: () => setLastAddedItem(null), // <-- Nueva función
     addToCart: (product: Product, quantity?: number) => {
       const availableStock = product.stock ?? Infinity;
       if (availableStock <= 0) {
@@ -131,18 +135,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const existing = state.items.find((i) => i.id === product.id);
       const currentQty = existing?.quantity ?? 0;
       const newTotal = currentQty + requestedQty;
+      
+      let qtyToAdd = requestedQty;
       if (newTotal > availableStock) {
-        alert(`Solo hay ${availableStock} unidades disponibles de "${product.name}". Se agregará la cantidad máxima posible.`);
-        dispatch({ type: "ADD", product, quantity: availableStock - currentQty });
-        return;
+        alert(`Solo hay ${availableStock} unidades disponibles de "${product.name}".`);
+        qtyToAdd = availableStock - currentQty;
       }
-      dispatch({ type: "ADD", product, quantity: requestedQty });
+      
+      if (qtyToAdd > 0) {
+        dispatch({ type: "ADD", product, quantity: qtyToAdd });
+        setLastAddedItem({ ...product, quantity: qtyToAdd }); // <-- Guardamos el último producto
+      }
     },
     removeFromCart: (id: string) => dispatch({ type: "REMOVE", id }),
     clearCart: () => dispatch({ type: "CLEAR" }),
     increment: (id: string) => dispatch({ type: "INCREMENT", id }),
     decrement: (id: string) => dispatch({ type: "DECREMENT", id }),
-  }), [state, isHydrated]);
+  }), [state, isHydrated, lastAddedItem]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
