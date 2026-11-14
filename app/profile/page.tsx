@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabase"; 
 import { 
   Container, Typography, Box, TextField, Button, Card, Divider, Alert, 
-  CircularProgress, Stack, Avatar, Grid 
+  CircularProgress, Stack, Avatar, Grid, Chip 
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import StarsIcon from "@mui/icons-material/Stars";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -19,8 +21,12 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [isLogin, setIsLogin] = useState(true); 
   
-  // Estado para la imagen: Empieza vacío para evitar el parpadeo
-  const [bgImage, setBgImage] = useState(""); 
+  // Estados para el Club Joined
+  const [membershipTier, setMembershipTier] = useState("free");
+  const [walletBalance, setWalletBalance] = useState(0);
+
+  // Estado para la imagen de fondo dinámica
+  const [bgImage, setBgImage] = useState("");
 
   // Estados del formulario
   const [email, setEmail] = useState("");
@@ -34,27 +40,21 @@ export default function ProfilePage() {
     // 1. Verificar sesión
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session) setUser(session.user);
+      if (session) {
+        setUser(session.user);
+        fetchUserData(session.user.id);
+      }
       setLoading(false);
     };
     checkSession();
 
-    // 2. Traer y PRECARGAR la imagen del reloj desde Supabase
+    // 2. Traer y PRECARGAR la imagen del reloj
     const fetchBgImage = async () => {
-      const { data } = await supabase
-        .from("products")
-        .select("image_url")
-        .eq("name", "Reloj Minimalist Classic")
-        .single();
-      
+      const { data } = await supabase.from("products").select("image_url").eq("name", "Reloj Minimalist Classic").single();
       if (data && data.image_url) {
-        // Precargamos la imagen en la memoria del navegador
         const img = new window.Image();
         img.src = data.image_url;
-        // Cuando termine de cargar, la mostramos
-        img.onload = () => {
-          setBgImage(data.image_url);
-        };
+        img.onload = () => setBgImage(data.image_url);
       }
     };
     fetchBgImage();
@@ -63,16 +63,37 @@ export default function ProfilePage() {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         setUser(session.user);
+        fetchUserData(session.user.id);
       } else {
         setUser(null);
       }
       setLoading(false);
     });
 
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
+    return () => authListener.subscription.unsubscribe();
   }, []);
+
+  // Función para cargar datos de la Bóveda y Membresía
+  const fetchUserData = async (userId: string) => {
+    // Obtener membresía
+    const { data: profile } = await supabase.from("profiles").select("membership_tier").eq("id", userId).single();
+    if (profile) setMembershipTier(profile.membership_tier);
+
+    // Obtener saldo de la bóveda (solo transacciones no vencidas)
+    const { data: transactions } = await supabase
+      .from("wallet_transactions")
+      .select("monto, fecha_expiracion")
+      .eq("user_id", userId);
+
+    if (transactions) {
+      const hoy = new Date();
+      const saldoActivo = transactions
+        .filter(t => !t.fecha_expiracion || new Date(t.fecha_expiracion) > hoy)
+        .reduce((sum, t) => sum + Number(t.monto), 0);
+      
+      setWalletBalance(saldoActivo);
+    }
+  };
 
   const handleGoogleLogin = async () => {
     try {
@@ -90,9 +111,7 @@ export default function ProfilePage() {
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setMensaje("");
-    setBtnLoading(true);
+    setError(""); setMensaje(""); setBtnLoading(true);
 
     try {
       if (isLogin) {
@@ -100,9 +119,7 @@ export default function ProfilePage() {
         if (error) throw error;
       } else {
         const { error } = await supabase.auth.signUp({ 
-          email, 
-          password,
-          options: { data: { full_name: nombre } }
+          email, password, options: { data: { full_name: nombre } }
         });
         if (error) throw error;
         setMensaje("Registro exitoso. Revisa tu correo para confirmar tu cuenta.");
@@ -129,108 +146,69 @@ export default function ProfilePage() {
     );
   }
 
-  // --- PANTALLA DE LOGIN / REGISTRO (SPLIT SCREEN) ---
+  // --- PANTALLA DE LOGIN / REGISTRO ---
   if (!user) {
     return (
       <Grid container sx={{ minHeight: { xs: "auto", md: "100vh" } }}>
-        
-        {/* LADO IZQUIERDO: IMAGEN DEL RELOJ (Sin parpadeo) */}
-        <Grid 
-          size={{ xs: 12, md: 6 }} 
-          sx={{ 
-            display: { xs: "none", md: "block" },
-            bgcolor: "#0a0d15", // Fondo azul noche mientras carga
-            backgroundImage: bgImage ? `url("${bgImage}")` : "none", // Solo aplica la imagen si ya cargó
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            transition: "background-image 0.3s ease-in-out", // Transición suave
-            position: "relative"
-          }}
-        >
-          {/* Capa oscura sutil para que el texto resalte */}
+        {/* LADO IZQUIERDO: IMAGEN */}
+        <Grid size={{ xs: 12, md: 6 }} sx={{ display: { xs: "none", md: "block" }, bgcolor: "#0a0d15", backgroundImage: bgImage ? `url("${bgImage}")` : "none", backgroundSize: "cover", backgroundPosition: "center", transition: "background-image 0.3s ease-in-out", position: "relative" }}>
           <Box sx={{ position: "absolute", inset: 0, bgcolor: "rgba(10, 13, 21, 0.3)" }} />
-          
           <Box sx={{ position: "absolute", bottom: 60, left: 60, zIndex: 2 }}>
-            <Typography variant="h3" sx={{ color: "white", fontWeight: 800, mb: 1, letterSpacing: "-0.02em", textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>
-              Joined
-            </Typography>
-            <Typography variant="h6" sx={{ color: "rgba(255,255,255,0.9)", fontWeight: 400, textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>
-              Eleva tu estilo diario.
-            </Typography>
+            <Typography variant="h3" sx={{ color: "white", fontWeight: 800, mb: 1, letterSpacing: "-0.02em", textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>Joined</Typography>
+            <Typography variant="h6" sx={{ color: "rgba(255,255,255,0.9)", fontWeight: 400, textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>Eleva tu estilo diario.</Typography>
           </Box>
         </Grid>
 
         {/* LADO DERECHO: FORMULARIO */}
         <Grid size={{ xs: 12, md: 6 }} sx={{ display: "flex", alignItems: "center", justifyContent: "center", p: { xs: 3, md: 6 }, bgcolor: "#FFFFFF" }}>
           <Box sx={{ width: "100%", maxWidth: 400 }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 1 }}>
-              {isLogin ? "Iniciar sesión" : "Crear cuenta"}
-            </Typography>
-            <Typography sx={{ color: "#5E6B7E", mb: 4, fontSize: "0.9rem" }}>
-              {isLogin ? "Bienvenido de vuelta a Joined, ingresa para agilizar tus compras." : "Únete a la Comunidad Joined y obtén beneficios exclusivos."}
-            </Typography>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: "#0a0d15", mb: 1 }}>{isLogin ? "Iniciar sesión" : "Crear cuenta"}</Typography>
+            <Typography sx={{ color: "#5E6B7E", mb: 4, fontSize: "0.9rem" }}>{isLogin ? "Bienvenido de vuelta a Joined. Ingresa para agilizar tus compras." : "Únete a la Comunidad Joined y obtén beneficios exclusivos."}</Typography>
 
             {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
             {mensaje && <Alert severity="success" sx={{ mb: 3 }}>{mensaje}</Alert>}
 
-            <Button
-              fullWidth
-              variant="outlined"
-              startIcon={<GoogleIcon />}
-              onClick={handleGoogleLogin}
-              disabled={btnLoading}
-              sx={{ py: 1.5, mb: 3, color: "#0a0d15", borderColor: "#E5E7EB", textTransform: "none", fontWeight: 600, "&:hover": { bgcolor: "#F9FAFB", borderColor: "#D1D5DB" } }}
-            >
-              Continuar con Google
-            </Button>
-
+            <Button fullWidth variant="outlined" startIcon={<GoogleIcon />} onClick={handleGoogleLogin} disabled={btnLoading} sx={{ py: 1.5, mb: 3, color: "#0a0d15", borderColor: "#E5E7EB", textTransform: "none", fontWeight: 600, "&:hover": { bgcolor: "#F9FAFB", borderColor: "#D1D5DB" } }}>Continuar con Google</Button>
             <Divider sx={{ mb: 3, color: "#9CA3AF", fontSize: "0.85rem" }}>o usa tu correo</Divider>
 
             <Box component="form" onSubmit={handleEmailAuth}>
               <Stack spacing={2.5}>
-                {!isLogin && (
-                  <TextField fullWidth label="Nombre completo" value={nombre} onChange={(e) => setNombre(e.target.value)} required size="small" />
-                )}
+                {!isLogin && <TextField fullWidth label="Nombre completo" value={nombre} onChange={(e) => setNombre(e.target.value)} required size="small" />}
                 <TextField fullWidth label="Correo electrónico" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required size="small" />
                 <TextField fullWidth label="Contraseña" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required size="small" />
-                
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  disabled={btnLoading}
-                  sx={{ bgcolor: "#0a0d15", color: "white", py: 1.5, borderRadius: 2, fontWeight: 700, "&:hover": { bgcolor: "#1a1d24" } }}
-                >
-                  {btnLoading ? <CircularProgress size={24} sx={{ color: "white" }} /> : (isLogin ? "Ingresar" : "Registrarme")}
-                </Button>
+                <Button type="submit" fullWidth variant="contained" disabled={btnLoading} sx={{ bgcolor: "#0a0d15", color: "white", py: 1.5, borderRadius: 2, fontWeight: 700, "&:hover": { bgcolor: "#1a1d24" } }}>{btnLoading ? <CircularProgress size={24} sx={{ color: "white" }} /> : (isLogin ? "Ingresar" : "Registrarme")}</Button>
               </Stack>
             </Box>
 
             <Box sx={{ mt: 4, textAlign: "center" }}>
               <Typography sx={{ fontSize: "0.9rem", color: "#5E6B7E" }}>
                 {isLogin ? "¿No tienes cuenta? " : "¿Ya tienes cuenta? "}
-                <span 
-                  onClick={() => { setIsLogin(!isLogin); setError(""); setMensaje(""); }} 
-                  style={{ color: "#0a0d15", fontWeight: 700, cursor: "pointer", textDecoration: "underline" }}
-                >
-                  {isLogin ? "Regístrate aquí" : "Inicia sesión"}
-                </span>
+                <span onClick={() => { setIsLogin(!isLogin); setError(""); setMensaje(""); }} style={{ color: "#0a0d15", fontWeight: 700, cursor: "pointer", textDecoration: "underline" }}>{isLogin ? "Regístrate aquí" : "Inicia sesión"}</span>
               </Typography>
             </Box>
           </Box>
         </Grid>
-
       </Grid>
     );
   }
 
-  // --- PANTALLA DE PERFIL (CUANDO YA INICIÓ SESIÓN) ---
+  // --- PANTALLA DE PERFIL (CON LA BÓVEDA) ---
   const userMetadata = user.user_metadata || {};
   const userName = userMetadata.full_name || userMetadata.name || "Cliente Joined";
+
+  // Configuración visual según el nivel
+  const tierConfig = {
+    free: { label: "Miembro Joined", color: "#5E6B7E" },
+    silver: { label: "Joined Silver", color: "#9CA3AF" },
+    black: { label: "Joined Black", color: "#0a0d15" }
+  };
+  const currentTier = tierConfig[membershipTier as keyof typeof tierConfig] || tierConfig.free;
 
   return (
     <Container maxWidth="md" sx={{ py: { xs: 6, md: 10 } }}>
       <Card sx={{ p: { xs: 3, md: 5 }, borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
+        
+        {/* HEADER DEL PERFIL */}
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 4 }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <Avatar sx={{ bgcolor: "#0a0d15", width: 60, height: 60 }}>
@@ -245,19 +223,43 @@ export default function ProfilePage() {
               </Typography>
             </Box>
           </Box>
-          <Button
-            variant="outlined"
-            color="error"
-            startIcon={<LogoutIcon />}
-            onClick={handleLogout}
-            sx={{ textTransform: "none", fontWeight: 600, borderRadius: 2 }}
-          >
+          <Button variant="outlined" color="error" startIcon={<LogoutIcon />} onClick={handleLogout} sx={{ textTransform: "none", fontWeight: 600, borderRadius: 2 }}>
             Cerrar sesión
           </Button>
         </Box>
 
         <Divider sx={{ mb: 4 }} />
 
+        {/* TARJETA DE LA BÓVEDA JOINED */}
+        <Typography variant="h6" sx={{ fontWeight: 700, color: "#0a0d15", mb: 2 }}>
+          Mi Club Joined
+        </Typography>
+        
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          {/* Nivel de Membresía */}
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Box sx={{ p: 3, bgcolor: "#F8F9FA", borderRadius: 3, border: "1px solid #E5E7EB", display: "flex", alignItems: "center", gap: 2, height: "100%" }}>
+              <StarsIcon sx={{ fontSize: 40, color: currentTier.color }} />
+              <Box>
+                <Typography sx={{ fontSize: "0.85rem", color: "#5E6B7E", fontWeight: 600 }}>Nivel de membresía</Typography>
+                <Typography sx={{ fontSize: "1.2rem", fontWeight: 800, color: currentTier.color }}>{currentTier.label}</Typography>
+              </Box>
+            </Box>
+          </Grid>
+
+          {/* Saldo en Bóveda */}
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Box sx={{ p: 3, bgcolor: "#0a0d15", color: "white", borderRadius: 3, display: "flex", alignItems: "center", gap: 2, height: "100%", boxShadow: "0 10px 20px rgba(10, 13, 21, 0.2)" }}>
+              <AccountBalanceWalletIcon sx={{ fontSize: 40, color: "#9CA3AF" }} />
+              <Box>
+                <Typography sx={{ fontSize: "0.85rem", color: "#9CA3AF", fontWeight: 600 }}>Bóveda Joined</Typography>
+                <Typography sx={{ fontSize: "1.5rem", fontWeight: 800 }}>S/ {walletBalance.toFixed(2)}</Typography>
+              </Box>
+            </Box>
+          </Grid>
+        </Grid>
+
+        {/* HISTORIAL DE PEDIDOS (Placeholder por ahora) */}
         <Typography variant="h6" sx={{ fontWeight: 700, color: "#0a0d15", mb: 2 }}>
           Mi historial de pedidos
         </Typography>
