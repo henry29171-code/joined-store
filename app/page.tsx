@@ -57,7 +57,7 @@ export default function HomePage() {
                     Explorar colección
                   </Button>
                   <Button component={Link} href="/comunidad" variant="outlined" sx={{ borderColor: "#0a0d15", color: "#0a0d15", px: 4, py: 1.5, borderRadius: "8px", fontWeight: 600, "&:hover": { bgcolor: "#F9FAFB" } }}>
-                    Unirme al Club Joined
+                    Unirme al club Joined
                   </Button>
                 </Stack>
               </Stack>
@@ -212,7 +212,7 @@ export default function HomePage() {
             gap: 4 
           }}>
             <Box sx={{ maxWidth: 600 }}>
-              <Typography variant="h4" sx={{ color: "#0a0d15", fontWeight: 700, mb: 2, fontSize: { xs: "1.6rem", md: "2rem" } }}>Únete al Club Joined</Typography>
+              <Typography variant="h4" sx={{ color: "#0a0d15", fontWeight: 700, mb: 2, fontSize: { xs: "1.6rem", md: "2rem" } }}>Únete al club Joined</Typography>
               <Typography sx={{ color: "#374151", fontSize: "1rem", lineHeight: 1.6, fontWeight: 500 }}>Obtén envío de cortesía en Lima y Callao, servicio de mantenimiento de cuero y acceso anticipado a nuestras nuevas colecciones.</Typography>
             </Box>
             <Button component={Link} href="/comunidad" variant="contained" size="large" endIcon={<ArrowForwardIcon />} disableElevation sx={{ bgcolor: "#0a0d15", color: "white", fontWeight: 600, px: 5, py: 1.5, borderRadius: "8px", flexShrink: 0, boxShadow: "0 4px 14px 0 rgba(10, 13, 21, 0.3)", "&:hover": { bgcolor: "#1a1d24", transform: "translateY(-2px)", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.5)" } }}>

@@ -1,148 +1,174 @@
 "use client";
-import { Container, Typography, Box, Grid, Card, CardContent, CardMedia, Button, Stack, Chip, Divider } from "@mui/material";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "../lib/supabase";
+import { 
+  Container, Typography, Box, Grid, Button, Card, CardContent, 
+  Stack, Divider, CircularProgress, Alert, Chip 
+} from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import StarIcon from "@mui/icons-material/Star";
-import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
+import StarsIcon from "@mui/icons-material/Stars";
+import DiamondIcon from "@mui/icons-material/Diamond";
 
-const blogPosts = [
-  { title: "Cómo mantener tu morral de cuero", excerpt: "Descubre los secretos de limpieza para que dure años.", image: "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=800&h=600&auto=format&fit=crop", date: "15 de octubre, 2026" },
-  { title: "5 combinaciones de relojes", excerpt: "Encuentra el reloj perfecto para cada ocasión.", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&h=600&auto=format&fit=crop", date: "10 de octubre, 2026" },
-  { title: "El aroma correcto: guía de perfumes", excerpt: "Te ayudamos a elegir tu firma olfativa ideal.", image: "https://images.unsplash.com/photo-1592914610354-fd354ea45e48?q=80&w=800&h=600&auto=format&fit=crop", date: "5 de octubre, 2026" },
-];
+export default function ClubJoinedPage() {
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [btnLoading, setBtnLoading] = useState("");
+  const [error, setError] = useState("");
 
-export default function ComunidadPage() {
-  return (
-    <Box sx={{ bgcolor: "#F8F9FA", minHeight: "100vh", pb: 10 }}>
-      <Box sx={{ textAlign: "center", pt: { xs: 6, md: 10 }, pb: { xs: 4, md: 6 }, px: 2 }}>
-        <Typography variant="overline" sx={{ color: "#5E6B7E", fontWeight: 700 }}>Únete al movimiento</Typography>
-        <Typography variant="h3" sx={{ color: "#0a0d15", mt: 1, mb: 2, fontSize: { xs: "1.8rem", md: "2.5rem" } }}>Comunidad Joined</Typography>
-        <Typography sx={{ color: "#5E6B7E", maxWidth: 600, mx: "auto", fontSize: { xs: "0.95rem", md: "1.1rem" }, textAlign: { xs: "left", md: "center" } }}>
-          Elige el nivel de experiencia que mejor se adapte a ti, desde beneficios gratuitos hasta un servicio de cuidado de lujo para tus accesorios.
-        </Typography>
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) setUser(session.user);
+      setLoading(false);
+    };
+    checkUser();
+  }, []);
+
+  const handleSubscribe = async (plan: "silver" | "black") => {
+    if (!user) {
+      // Si no está logueado, lo enviamos al perfil para que se registre
+      router.push("/profile");
+      return;
+    }
+
+    setBtnLoading(plan);
+    setError("");
+
+    try {
+      const response = await fetch('/api/subscriptions/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          plan,
+          userEmail: user.email,
+          userName: user.user_metadata?.full_name || "Cliente Joined"
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Error al crear la suscripción");
+
+      // Redirigimos a Mercado Pago para que ingrese la tarjeta
+      window.location.href = data.init_point;
+
+    } catch (err: any) {
+      setError(err.message);
+      setBtnLoading("");
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", py: 15 }}>
+        <CircularProgress sx={{ color: "#0a0d15" }} />
       </Box>
+    );
+  }
 
+  return (
+    <Box sx={{ bgcolor: "#FAFAFA", minHeight: "100vh", py: { xs: 8, md: 12 } }}>
       <Container maxWidth="lg">
-        {/* SECCIÓN DE 3 NIVELES (PRICING CARDS) */}
-        <Grid container spacing={4} alignItems="stretch" sx={{ mb: 10 }}>
-          
-          {/* NIVEL 1: GRATIS */}
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Card sx={{ height: "100%", display: "flex", flexDirection: "column", borderRadius: 4, border: "1px solid rgba(10,13,21,0.1)", boxShadow: "none" }}>
-              <CardContent sx={{ p: 4, flexGrow: 1 }}>
-                {/* Altura mínima agregada para alinear la línea divisoria */}
-                <Box sx={{ minHeight: { xs: "auto", md: "160px" } }}>
-                  <Typography variant="h6" sx={{ fontWeight: 800, color: "#5E6B7E", mb: 1 }}>Miembro Joined</Typography>
-                  <Typography variant="h3" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2 }}>Gratis</Typography>
-                  <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem" }}>Solo por registrarte en la tienda.</Typography>
-                </Box>
-                
-                <Divider sx={{ my: 3 }} />
-                
-                <Stack spacing={2}>
-                  {["Envíos gratis en Lima Metropolitana", "Seguimiento de pedido (tracking)", "Asesoría de vestimenta básica vía WhatsApp", "Acceso a guías de estilo (blog)"].map((item) => (
-                    <Stack key={item} direction="row" spacing={1.5} alignItems="flex-start">
-                      <CheckCircleIcon sx={{ color: "#5E6B7E", fontSize: 20, mt: 0.2 }} />
-                      <Typography sx={{ color: "#0a0d15", fontSize: "0.9rem" }}>{item}</Typography>
-                    </Stack>
-                  ))}
-                </Stack>
-              </CardContent>
-              <Box sx={{ p: 4, pt: 0 }}>
-                <Button fullWidth variant="outlined" sx={{ borderColor: "#0a0d15", color: "#0a0d15", fontWeight: 700, py: 1.2 }}>
-                  Registrarse
-                </Button>
-              </Box>
-            </Card>
-          </Grid>
-
-          {/* NIVEL 2: PREMIUM */}
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Card sx={{ height: "100%", display: "flex", flexDirection: "column", borderRadius: 4, border: "2px solid #0a0d15", position: "relative" }}>
-              <Chip label="Recomendado" sx={{ position: "absolute", top: 16, right: 16, bgcolor: "#D7E0DA", color: "#0a0d15", fontWeight: 800 }} />
-              <CardContent sx={{ p: 4, flexGrow: 1 }}>
-                <Box sx={{ minHeight: { xs: "auto", md: "160px" } }}>
-                  <Typography variant="h6" sx={{ fontWeight: 800, color: "#0a0d15", mb: 1 }}>Joined Premium</Typography>
-                  <Box sx={{ display: "flex", alignItems: "baseline", mb: 2 }}>
-                    <Typography variant="h3" sx={{ fontWeight: 800, color: "#0a0d15" }}>S/ 19</Typography>
-                    <Typography sx={{ color: "#5E6B7E", ml: 1 }}>/ mes</Typography>
-                  </Box>
-                  <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem" }}>El equilibrio perfecto entre cuidado y estilo.</Typography>
-                </Box>
-                
-                <Divider sx={{ my: 3 }} />
-                
-                <Stack spacing={2}>
-                  {["Todo lo del plan miembro", "Limpieza de cuero (hasta 2 articulos al mes)", "Envíos gratis a todo el Perú", "10% de descuento en toda la tienda"].map((item) => (
-                    <Stack key={item} direction="row" spacing={1.5} alignItems="flex-start">
-                      <CheckCircleIcon sx={{ color: "#0a0d15", fontSize: 20, mt: 0.2 }} />
-                      <Typography sx={{ color: "#0a0d15", fontSize: "0.9rem", fontWeight: 500 }}>{item}</Typography>
-                    </Stack>
-                  ))}
-                </Stack>
-              </CardContent>
-              <Box sx={{ p: 4, pt: 0 }}>
-                <Button fullWidth variant="contained" sx={{ bgcolor: "#0a0d15", color: "white", fontWeight: 700, py: 1.2 }}>
-                  Suscribirme
-                </Button>
-              </Box>
-            </Card>
-          </Grid>
-
-          {/* NIVEL 3: ELITE (Destacado) */}
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Card sx={{ height: "100%", display: "flex", flexDirection: "column", borderRadius: 4, bgcolor: "#0a0d15", color: "white", boxShadow: "0 20px 40px rgba(10,13,21,0.2)" }}>
-              <CardContent sx={{ p: 4, flexGrow: 1 }}>
-                <Box sx={{ minHeight: { xs: "auto", md: "160px" } }}>
-                  <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-                    <WorkspacePremiumIcon sx={{ color: "#D7E0DA" }} />
-                    <Typography variant="h6" sx={{ fontWeight: 800, color: "#D7E0DA" }}>Joined Elite</Typography>
-                  </Stack>
-                  <Box sx={{ display: "flex", alignItems: "baseline", mb: 2 }}>
-                    <Typography variant="h3" sx={{ fontWeight: 800, color: "white" }}>S/ 49</Typography>
-                    <Typography sx={{ color: "rgba(255,255,255,0.6)", ml: 1 }}>/ mes</Typography>
-                  </Box>
-                  <Typography sx={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem" }}>La experiencia definitiva para tu colección.</Typography>
-                </Box>
-                
-                <Divider sx={{ my: 3, borderColor: "rgba(255,255,255,0.2)" }} />
-                
-                <Stack spacing={2}>
-                  {["Todo lo del plan premium", "Kit de limpieza premium a domicilio (mensual)", "20% de descuento en toda la tienda", "Acceso anticipado a ediciones limitadas"].map((item) => (
-                    <Stack key={item} direction="row" spacing={1.5} alignItems="flex-start">
-                      <StarIcon sx={{ color: "#4ADE80", fontSize: 20, mt: 0.2 }} />
-                      <Typography sx={{ color: "white", fontSize: "0.9rem", fontWeight: 500 }}>{item}</Typography>
-                    </Stack>
-                  ))}
-                </Stack>
-              </CardContent>
-              <Box sx={{ p: 4, pt: 0 }}>
-                <Button fullWidth variant="contained" sx={{ bgcolor: "white", color: "#0a0d15", fontWeight: 800, py: 1.2, "&:hover": { bgcolor: "#F0F0F0" } }}>
-                  Hacerme Elite
-                </Button>
-              </Box>
-            </Card>
-          </Grid>
-
-        </Grid>
-
-        {/* Sección del Blog */}
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" sx={{ color: "#0a0d15", fontSize: { xs: "1.5rem", md: "2rem" } }}>Estilo y tendencias</Typography>
+        
+        {/* HEADER */}
+        <Box sx={{ textAlign: "center", mb: 8 }}>
+          <Chip label="Beneficios Exclusivos" sx={{ mb: 3, fontWeight: 700, bgcolor: "#0a0d15", color: "white" }} />
+          <Typography variant="h2" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2, fontSize: { xs: "2.2rem", md: "3.5rem" }, letterSpacing: "-0.02em" }}>
+            Únete al Club Joined
+          </Typography>
+          <Typography sx={{ color: "#5E6B7E", maxWidth: 600, mx: "auto", fontSize: { xs: "1rem", md: "1.1rem" }, lineHeight: 1.6 }}>
+            Eleva tu experiencia con acceso a ediciones limitadas, mantenimiento de cuero y nuestra exclusiva óveda de crédito acumulable.
+          </Typography>
         </Box>
 
-        <Grid container spacing={3}>
-          {blogPosts.map((post, index) => (
-            <Grid key={index} size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card sx={{ height: "100%", display: "flex", flexDirection: "column", borderRadius: 4 }}>
-                <CardMedia component="img" sx={{ height: 200, objectFit: "cover" }} image={post.image} alt={post.title} />
-                <CardContent sx={{ flexGrow: 1, p: 2 }}>
-                  <Typography sx={{ fontSize: "0.8rem", color: "#5E6B7E", mb: 1 }}>{post.date}</Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 800, fontSize: "1rem", mb: 1 }}>{post.title}</Typography>
-                  <Typography sx={{ color: "#5E6B7E", fontSize: "0.85rem" }}>{post.excerpt}</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+        {error && <Alert severity="error" sx={{ mb: 4, maxWidth: 600, mx: "auto" }}>{error}</Alert>}
+
+        {/* TARJETAS DE PRECIOS */}
+        <Grid container spacing={4} alignItems="stretch" justifyContent="center">
+          
+          {/* PLAN 1: MIEMBRO JOINED (GRATIS) */}
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Card sx={{ height: "100%", borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)", border: "1px solid #E5E7EB", bgcolor: "#FFFFFF" }}>
+              <CardContent sx={{ p: 4, display: "flex", flexDirection: "column", height: "100%" }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, color: "#5E6B7E", mb: 1 }}>Miembro Joined</Typography>
+                <Typography variant="h3" sx={{ fontWeight: 800, color: "#0a0d15", mb: 2 }}>Gratis</Typography>
+                <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem", mb: 3 }}>El primer paso para pertenecer a la comunidad.</Typography>
+                <Divider sx={{ mb: 3 }} />
+                <Stack spacing={2} sx={{ mb: 4, flexGrow: 1 }}>
+                  <Box sx={{ display: "flex", gap: 1.5 }}><CheckCircleIcon sx={{ color: "#0a0d15", fontSize: 20 }} /><Typography sx={{ fontSize: "0.9rem" }}>Registro gratuito</Typography></Box>
+                  <Box sx={{ display: "flex", gap: 1.5 }}><CheckCircleIcon sx={{ color: "#0a0d15", fontSize: 20 }} /><Typography sx={{ fontSize: "0.9rem" }}>Envío de cortesía en Lima y Callao</Typography></Box>
+                  <Box sx={{ display: "flex", gap: 1.5 }}><CheckCircleIcon sx={{ color: "#0a0d15", fontSize: 20 }} /><Typography sx={{ fontSize: "0.9rem" }}>Notificaciones por WhatsApp</Typography></Box>
+                </Stack>
+                <Button fullWidth variant="outlined" disabled sx={{ borderColor: "#E5E7EB", color: "#9CA3AF", py: 1.5, borderRadius: 2, fontWeight: 700 }}>
+                  {user ? "Ya eres miembro" : "Nivel actual"}
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* PLAN 2: JOINED SILVER */}
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Card sx={{ height: "100%", borderRadius: 4, boxShadow: "0 20px 40px rgba(0,0,0,0.08)", border: "2px solid #9CA3AF", position: "relative", bgcolor: "#FFFFFF" }}>
+              <CardContent sx={{ p: 4, display: "flex", flexDirection: "column", height: "100%" }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                  <StarsIcon sx={{ color: "#9CA3AF" }} />
+                  <Typography variant="h6" sx={{ fontWeight: 700, color: "#0a0d15" }}>Joined silver</Typography>
+                </Box>
+                <Typography variant="h3" sx={{ fontWeight: 800, color: "#0a0d15", mb: 1 }}>S/ 24.90<span style={{ fontSize: "1rem", color: "#5E6B7E", fontWeight: 500 }}>/mes</span></Typography>
+                <Typography sx={{ color: "#5E6B7E", fontSize: "0.9rem", mb: 3 }}>Para quienes buscan mantenimiento y beneficios constantes.</Typography>
+                <Divider sx={{ mb: 3 }} />
+                <Stack spacing={2} sx={{ mb: 4, flexGrow: 1 }}>
+                  <Box sx={{ display: "flex", gap: 1.5 }}><CheckCircleIcon sx={{ color: "#9CA3AF", fontSize: 20 }} /><Typography sx={{ fontSize: "0.9rem" }}>Todo lo de Miembro Joined</Typography></Box>
+                  <Box sx={{ display: "flex", gap: 1.5 }}><CheckCircleIcon sx={{ color: "#9CA3AF", fontSize: 20 }} /><Typography sx={{ fontSize: "0.9rem" }}>S/ 15.00 de crédito mensual en tu Bóveda</Typography></Box>
+                  <Box sx={{ display: "flex", gap: 1.5 }}><CheckCircleIcon sx={{ color: "#9CA3AF", fontSize: 20 }} /><Typography sx={{ fontSize: "0.9rem" }}>Envíos ilimitados gratis en Lima</Typography></Box>
+                  <Box sx={{ display: "flex", gap: 1.5 }}><CheckCircleIcon sx={{ color: "#9CA3AF", fontSize: 20 }} /><Typography sx={{ fontSize: "0.9rem" }}>1 limpieza trimestral de cuero</Typography></Box>
+                </Stack>
+                <Button 
+                  fullWidth 
+                  variant="contained" 
+                  onClick={() => handleSubscribe("silver")}
+                  disabled={btnLoading !== ""}
+                  sx={{ bgcolor: "#0a0d15", color: "white", py: 1.5, borderRadius: 2, fontWeight: 700, "&:hover": { bgcolor: "#1a1d24" } }}
+                >
+                  {btnLoading === "silver" ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Suscribirme a silver"}
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* PLAN 3: JOINED BLACK */}
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Card sx={{ height: "100%", borderRadius: 4, boxShadow: "0 20px 40px rgba(10, 13, 21, 0.2)", bgcolor: "#0a0d15", color: "white", position: "relative" }}>
+              <Chip label="Recomendado" size="small" sx={{ position: "absolute", top: 16, right: 16, bgcolor: "white", color: "#0a0d15", fontWeight: 700 }} />
+              <CardContent sx={{ p: 4, display: "flex", flexDirection: "column", height: "100%" }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                  <DiamondIcon sx={{ color: "white" }} />
+                  <Typography variant="h6" sx={{ fontWeight: 700, color: "white" }}>Joined black</Typography>
+                </Box>
+                <Typography variant="h3" sx={{ fontWeight: 800, color: "white", mb: 1 }}>S/ 49.90<span style={{ fontSize: "1rem", color: "#9CA3AF", fontWeight: 500 }}>/mes</span></Typography>
+                <Typography sx={{ color: "#9CA3AF", fontSize: "0.9rem", mb: 3 }}>El máximo nivel de estatus y privilegios de la marca.</Typography>
+                <Divider sx={{ mb: 3, borderColor: "rgba(255,255,255,0.1)" }} />
+                <Stack spacing={2} sx={{ mb: 4, flexGrow: 1 }}>
+                  <Box sx={{ display: "flex", gap: 1.5 }}><CheckCircleIcon sx={{ color: "white", fontSize: 20 }} /><Typography sx={{ fontSize: "0.9rem" }}>Todo lo de Joined silver</Typography></Box>
+                  <Box sx={{ display: "flex", gap: 1.5 }}><CheckCircleIcon sx={{ color: "white", fontSize: 20 }} /><Typography sx={{ fontSize: "0.9rem" }}>S/ 35.00 de crédito mensual en tu bóveda</Typography></Box>
+                  <Box sx={{ display: "flex", gap: 1.5 }}><CheckCircleIcon sx={{ color: "white", fontSize: 20 }} /><Typography sx={{ fontSize: "0.9rem" }}>Envío priority gratis a todo el Perú</Typography></Box>
+                  <Box sx={{ display: "flex", gap: 1.5 }}><CheckCircleIcon sx={{ color: "white", fontSize: 20 }} /><Typography sx={{ fontSize: "0.9rem" }}>Kit Leather care box de bienvenida</Typography></Box>
+                  <Box sx={{ display: "flex", gap: 1.5 }}><CheckCircleIcon sx={{ color: "white", fontSize: 20 }} /><Typography sx={{ fontSize: "0.9rem" }}>Garantía vitalicia y acceso a ediciones limitadas</Typography></Box>
+                </Stack>
+                <Button 
+                  fullWidth 
+                  variant="contained" 
+                  onClick={() => handleSubscribe("black")}
+                  disabled={btnLoading !== ""}
+                  sx={{ bgcolor: "white", color: "#0a0d15", py: 1.5, borderRadius: 2, fontWeight: 700, "&:hover": { bgcolor: "#F3F4F6" } }}
+                >
+                  {btnLoading === "black" ? <CircularProgress size={24} sx={{ color: "#0a0d15" }} /> : "Suscribirme a black"}
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+
         </Grid>
       </Container>
     </Box>

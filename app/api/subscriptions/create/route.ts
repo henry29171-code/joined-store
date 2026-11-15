@@ -12,7 +12,6 @@ export async function POST(req: Request) {
     const client = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN });
     const preApproval = new PreApproval(client);
 
-    // Definir el precio y nombre según el plan elegido
     const isSilver = plan === 'silver';
     const amount = isSilver ? 24.90 : 49.90;
     const reason = isSilver ? "Suscripción Joined Silver" : "Suscripción Joined Black";
@@ -22,15 +21,15 @@ export async function POST(req: Request) {
       body: {
         reason: reason,
         auto_recurring: {
-          frequency: 1, // Cobrar cada 1...
-          frequency_type: "months", // ...mes
+          frequency: 1,
+          frequency_type: "months",
           transaction_amount: amount,
           currency_id: "PEN"
         },
         payer_email: userEmail,
         back_url: `${baseUrl}/profile?subscription=success`,
         status: "pending",
-        external_reference: `${userName} - ${plan}` // Para identificar al usuario luego
+        external_reference: `${userName} - ${plan}`
       }
     });
 
