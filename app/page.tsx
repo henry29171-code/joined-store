@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Box, Container, Typography, Button, Stack, Grid, Chip, IconButton, SvgIcon, CircularProgress } from "@mui/material";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import EnergySavingsLeafIcon from "@mui/icons-material/EnergySavingsLeaf";
@@ -46,11 +45,11 @@ export default function HomePage() {
                 <Chip label="Joined accesorios" sx={{ width: "fit-content", fontWeight: 700, bgcolor: "#F3F4F6", color: "#0a0d15" }} />
                 
                 <Typography variant="h2" sx={{ color: "#0a0d15", fontSize: { xs: "2.2rem", sm: "2.6rem", md: "3.2rem" }, lineHeight: 1.2, fontWeight: 500, letterSpacing: "-0.02em", maxWidth: 550 }}>
-                  Eleva tu estilo con accesorios que hablan por ti
+                  Accesorios esenciales para el hombre moderno
                 </Typography>
 
                 <Typography sx={{ color: "#666", fontSize: { xs: "1rem", md: "1.1rem" }, lineHeight: 1.7, maxWidth: 500 }}>
-                  Explora nuestra colección de morrales, relojes y perfumes. Piezas seleccionadas para quienes valoran el diseño y la calidad.
+                  Explora nuestra colección de cuero, relojería y fragancias. Piezas seleccionadas para quienes valoran el diseño, la calidad y la distinción.
                 </Typography>
 
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ pt: 1 }}>
@@ -58,7 +57,7 @@ export default function HomePage() {
                     Explorar colección
                   </Button>
                   <Button component={Link} href="/comunidad" variant="outlined" sx={{ borderColor: "#0a0d15", color: "#0a0d15", px: 4, py: 1.5, borderRadius: "8px", fontWeight: 600, "&:hover": { bgcolor: "#F9FAFB" } }}>
-                    Unirme al club VIP
+                    Unirme al Club Joined
                   </Button>
                 </Stack>
               </Stack>
@@ -115,18 +114,15 @@ export default function HomePage() {
           ) : (
             <Grid container spacing={{ xs: 3, md: 4 }}>
               {featuredProducts.map((product) => (
-                /* AQUI ESTA EL TRUCO: display flex en el Grid para igualar alturas */
                 <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: "flex" }}>
                   <Box sx={{ display: "flex", flexDirection: "column", width: "100%", bgcolor: "transparent" }}>
                     
-                    {/* CONTENEDOR DE IMAGEN */}
-                    <Box sx={{ position: "relative", overflow: "hidden", mb: 2, width: "100%", aspectRatio: "4/5" }}>
+                    <Box sx={{ position: "relative", overflow: "hidden", mb: 2 }}>
                       <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
-                        <Image src={product.image_url} alt={product.name} fill sizes="(max-width: 600px) 100vw, 50vw" style={{ objectFit: "cover", objectPosition: "center" }} />
+                        <Box component="img" src={product.image_url} alt={product.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", display: "block" }} />
                       </Link>
                     </Box>
                     
-                    {/* CONTENEDOR DE TEXTO: flexGrow 1 empuja el botón hacia abajo */}
                     <Box sx={{ px: 1, flexGrow: 1, display: "flex", flexDirection: "column" }}>
                       
                       <Box sx={{ flexGrow: 1 }}>
@@ -141,7 +137,7 @@ export default function HomePage() {
                             WebkitLineClamp: 2, 
                             WebkitBoxOrient: "vertical", 
                             overflow: "hidden",
-                            minHeight: "2.4em" // Reserva espacio para 2 líneas siempre
+                            minHeight: "2.4em"
                           }}
                         >
                           {product.name}
@@ -156,9 +152,8 @@ export default function HomePage() {
                         </Typography>
                       </Box>
                       
-                      {/* BOTÓN */}
-                      <Button component={Link} href={`/products/${product.id}`} variant="contained" fullWidth disableElevation disabled={product.stock <= 0} sx={{ bgcolor: product.stock <= 0 ? "#E5E7EB" : "#B0B3B8", color: product.stock <= 0 ? "#9CA3AF" : "#111827", py: 1.2, fontSize: "0.9rem", fontWeight: 700, borderRadius: "8px", boxShadow: product.stock <= 0 ? "none" : "0 4px 14px 0 rgba(0,0,0,0.15)", transition: product.stock <= 0 ? "none" : "all 0.3s ease", "&:hover": product.stock <= 0 ? { bgcolor: "#E5E7EB", color: "#9CA3AF", boxShadow: "none" } : { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
-                        {product.stock <= 0 ? "Agotado" : "Comprar ahora"}
+                      <Button component={Link} href={`/products/${product.id}`} variant="contained" fullWidth disableElevation sx={{ bgcolor: "#B0B3B8", color: "#111827", py: 1.2, fontSize: "0.9rem", fontWeight: 700, borderRadius: "8px", boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", transition: "all 0.3s ease", "&:hover": { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
+                        Comprar ahora
                       </Button>
                     </Box>
 
@@ -202,7 +197,7 @@ export default function HomePage() {
         </Container>
       </Box>
 
-      {/* 5. Banner VIP (Mismo gris de los botones #B0B3B8) */}
+      {/* 5. Banner Club Joined */}
       <Box sx={{ py: { xs: 6, md: 8 } }}>
         <Container maxWidth="lg">
           <Box sx={{ 
@@ -217,8 +212,8 @@ export default function HomePage() {
             gap: 4 
           }}>
             <Box sx={{ maxWidth: 600 }}>
-              <Typography variant="h4" sx={{ color: "#0a0d15", fontWeight: 700, mb: 2, fontSize: { xs: "1.6rem", md: "2rem" } }}>Únete al club Joined VIP</Typography>
-              <Typography sx={{ color: "#374151", fontSize: "1rem", lineHeight: 1.6, fontWeight: 500 }}>Obtén envíos gratuitos a todo el Perú, servicio de limpieza de cuero y acceso anticipado a nuestras nuevas colecciones.</Typography>
+              <Typography variant="h4" sx={{ color: "#0a0d15", fontWeight: 700, mb: 2, fontSize: { xs: "1.6rem", md: "2rem" } }}>Únete al Club Joined</Typography>
+              <Typography sx={{ color: "#374151", fontSize: "1rem", lineHeight: 1.6, fontWeight: 500 }}>Obtén envío de cortesía en Lima y Callao, servicio de mantenimiento de cuero y acceso anticipado a nuestras nuevas colecciones.</Typography>
             </Box>
             <Button component={Link} href="/comunidad" variant="contained" size="large" endIcon={<ArrowForwardIcon />} disableElevation sx={{ bgcolor: "#0a0d15", color: "white", fontWeight: 600, px: 5, py: 1.5, borderRadius: "8px", flexShrink: 0, boxShadow: "0 4px 14px 0 rgba(10, 13, 21, 0.3)", "&:hover": { bgcolor: "#1a1d24", transform: "translateY(-2px)", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.5)" } }}>
               Conocer beneficios

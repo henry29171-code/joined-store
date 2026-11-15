@@ -20,7 +20,7 @@ const navLinks = [
   { name: "Colección", path: "/products" },
   { name: "Nosotros", path: "/nosotros" },
   { name: "Contacto", path: "/contacto" },
-  { name: "Comunidad", path: "/comunidad" },
+  { name: "Club Joined", path: "/comunidad" }, // <-- CAMBIADO AQUÍ
 ];
 
 export default function Navbar() {
@@ -62,11 +62,11 @@ export default function Navbar() {
 
   return (
     <>
-      {/* CINTA SUPERIOR EN MOVIMIENTO (Fondo claro, texto oscuro, sin colores) */}
+      {/* CINTA SUPERIOR EN MOVIMIENTO */}
       <Box 
         sx={{ 
-          bgcolor: "#F3F4F6", // Gris muy claro
-          color: "#0a0d15", // Azul noche
+          bgcolor: "#F3F4F6", 
+          color: "#0a0d15", 
           py: 1, 
           overflow: "hidden", 
           whiteSpace: "nowrap",
@@ -85,7 +85,7 @@ export default function Navbar() {
           }}
         >
           <Typography sx={{ fontSize: "0.75rem", fontWeight: 600, letterSpacing: "0.05em" }}>
-            Envíos 100% gratis a nivel nacional exclusivo para miembros de la comunidad. &nbsp;•&nbsp; Únete a la comunidad y accede a beneficios exclusivos. &nbsp;•&nbsp; Envíos 100% gratis a nivel nacional exclusivo para miembros de la comunidad. &nbsp;•&nbsp; Únete a la comunidad y accede a beneficios exclusivos.
+            Envío de cortesía en Lima y Callao exclusivo para miembros registrados. &nbsp;•&nbsp; Únete al Club Joined y accede a beneficios exclusivos. &nbsp;•&nbsp; Envío de cortesía en Lima y Callao exclusivo para miembros registrados. &nbsp;•&nbsp; Únete al Club Joined y accede a beneficios exclusivos.
           </Typography>
         </Box>
       </Box>
@@ -94,7 +94,6 @@ export default function Navbar() {
       <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#0a0d15", color: "white", top: 0 }}>
         <Toolbar sx={{ justifyContent: "space-between", px: { xs: 2, md: 4 }, minHeight: "70px !important" }}>
           
-          {/* LADO IZQUIERDO: Menú móvil + Logo */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <IconButton
               color="inherit"
@@ -118,7 +117,6 @@ export default function Navbar() {
             </Link>
           </Box>
 
-          {/* CENTRO: Enlaces de navegación */}
           <Stack direction="row" spacing={2} sx={{ display: { xs: "none", md: "flex" } }}>
             {navLinks.map((link) => (
               <Button
@@ -139,7 +137,6 @@ export default function Navbar() {
             ))}
           </Stack>
 
-          {/* LADO DERECHO: Buscador + Iconos */}
           <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 1, md: 2 } }}>
             
             <Box
@@ -179,7 +176,6 @@ export default function Navbar() {
           </Box>
         </Toolbar>
 
-        {/* DRAWER PARA MÓVILES */}
         <Drawer
           anchor="left"
           open={mobileOpen}
