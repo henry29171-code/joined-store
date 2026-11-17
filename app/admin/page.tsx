@@ -1,14 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link"; // Importante para los enlaces
+import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
 import { Box, Container, Typography, Grid, Card, CardContent, Button, Stack } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import ArticleIcon from "@mui/icons-material/Article";
-import GavelIcon from "@mui/icons-material/Gavel"; // Nuevo ícono
+import GavelIcon from "@mui/icons-material/Gavel";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -79,22 +79,26 @@ export default function AdminDashboard() {
           </Button>
         </Stack>
 
-        {/* Tarjetas de acceso rápido */}
-        <Grid container spacing={3}>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)", height: "100%" }}>
-              <CardContent sx={{ p: 4, textAlign: "center" }}>
-                <InventoryIcon sx={{ fontSize: 50, color: "#0a0d15", mb: 2 }} />
-                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Productos</Typography>
-                <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
-                  Agrega, edita o elimina los productos de tu tienda.
-                </Typography>
+        {/* Tarjetas de acceso rápido con altura igualada y botones alineados */}
+        <Grid container spacing={3} alignItems="stretch">
+          
+          {/* TARJETA 1: PRODUCTOS */}
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ display: "flex" }}>
+            <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)", width: "100%", display: "flex", flexDirection: "column" }}>
+              <CardContent sx={{ p: 4, textAlign: "center", display: "flex", flexDirection: "column", flexGrow: 1 }}>
+                <Box sx={{ flexGrow: 1 }}>
+                  <InventoryIcon sx={{ fontSize: 50, color: "#0a0d15", mb: 2 }} />
+                  <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Productos</Typography>
+                  <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
+                    Agrega, edita o elimina los productos de tu tienda.
+                  </Typography>
+                </Box>
                 <Button 
                   component={Link} 
                   href="/admin/productos" 
                   fullWidth 
                   variant="contained" 
-                  sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
+                  sx={{ mt: "auto", bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
                 >
                   Gestionar productos
                 </Button>
@@ -102,20 +106,23 @@ export default function AdminDashboard() {
             </Card>
           </Grid>
 
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)", height: "100%" }}>
-              <CardContent sx={{ p: 4, textAlign: "center" }}>
-                <ReceiptIcon sx={{ fontSize: 50, color: "#0a0d15", mb: 2 }} />
-                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Pedidos</Typography>
-                <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
-                  Revisa las compras y estados de envío de tus clientes.
-                </Typography>
+          {/* TARJETA 2: PEDIDOS */}
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ display: "flex" }}>
+            <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)", width: "100%", display: "flex", flexDirection: "column" }}>
+              <CardContent sx={{ p: 4, textAlign: "center", display: "flex", flexDirection: "column", flexGrow: 1 }}>
+                <Box sx={{ flexGrow: 1 }}>
+                  <ReceiptIcon sx={{ fontSize: 50, color: "#0a0d15", mb: 2 }} />
+                  <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Pedidos</Typography>
+                  <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
+                    Revisa las compras y estados de envío de tus clientes.
+                  </Typography>
+                </Box>
                 <Button 
                   component={Link} 
                   href="/admin/pedidos" 
                   fullWidth 
                   variant="contained" 
-                  sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
+                  sx={{ mt: "auto", bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
                 >
                   Ver pedidos
                 </Button>
@@ -123,20 +130,23 @@ export default function AdminDashboard() {
             </Card>
           </Grid>
 
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)", height: "100%" }}>
-              <CardContent sx={{ p: 4, textAlign: "center" }}>
-                <ArticleIcon sx={{ fontSize: 50, color: "#0a0d15", mb: 2 }} />
-                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Páginas legales</Typography>
-                <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
-                  Actualiza las políticas y términos de tu tienda sin tocar código.
-                </Typography>
+          {/* TARJETA 3: PÁGINAS LEGALES */}
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ display: "flex" }}>
+            <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)", width: "100%", display: "flex", flexDirection: "column" }}>
+              <CardContent sx={{ p: 4, textAlign: "center", display: "flex", flexDirection: "column", flexGrow: 1 }}>
+                <Box sx={{ flexGrow: 1 }}>
+                  <ArticleIcon sx={{ fontSize: 50, color: "#0a0d15", mb: 2 }} />
+                  <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Páginas legales</Typography>
+                  <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
+                    Actualiza las políticas y términos de tu tienda sin tocar código.
+                  </Typography>
+                </Box>
                 <Button 
                   component={Link}
                   href="/admin/paginas-legales"
                   fullWidth 
                   variant="contained" 
-                  sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
+                  sx={{ mt: "auto", bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
                 >
                   Editar páginas
                 </Button>
@@ -144,26 +154,30 @@ export default function AdminDashboard() {
             </Card>
           </Grid>
 
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)", height: "100%" }}>
-              <CardContent sx={{ p: 4, textAlign: "center" }}>
-                <GavelIcon sx={{ fontSize: 50, color: "#0a0d15", mb: 2 }} />
-                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Reclamaciones</Typography>
-                <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
-                  Revisa el libro de reclamaciones y quejas de tus clientes.
-                </Typography>
+          {/* TARJETA 4: RECLAMACIONES */}
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ display: "flex" }}>
+            <Card sx={{ borderRadius: 4, boxShadow: "0 10px 30px rgba(0,0,0,0.05)", width: "100%", display: "flex", flexDirection: "column" }}>
+              <CardContent sx={{ p: 4, textAlign: "center", display: "flex", flexDirection: "column", flexGrow: 1 }}>
+                <Box sx={{ flexGrow: 1 }}>
+                  <GavelIcon sx={{ fontSize: 50, color: "#0a0d15", mb: 2 }} />
+                  <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Reclamaciones</Typography>
+                  <Typography sx={{ color: "#5E6B7E", mb: 3, fontSize: "0.9rem" }}>
+                    Revisa el libro de reclamaciones y quejas de tus clientes.
+                  </Typography>
+                </Box>
                 <Button 
                   component={Link} 
                   href="/admin/reclamaciones" 
                   fullWidth 
                   variant="contained" 
-                  sx={{ bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
+                  sx={{ mt: "auto", bgcolor: "#0a0d15", "&:hover": { bgcolor: "#1a1d24" }, textTransform: "none" }}
                 >
                   Ver reclamos
                 </Button>
               </CardContent>
             </Card>
           </Grid>
+
         </Grid>
       </Container>
     </Box>
