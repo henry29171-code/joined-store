@@ -46,7 +46,7 @@ function ProductsContent() {
           Nuestros productos
         </Typography>
         <Typography sx={{ color: "#666", fontSize: { xs: "0.95rem", md: "1.05rem" }, maxWidth: 600, mx: "auto", fontWeight: 400 }}>
-          Explora nuestra colección de accesorios diseñados para elevar tu estilo y durar toda la vida.
+          Explora nuestra colección de accesorios en cuero.
         </Typography>
       </Box>
 
