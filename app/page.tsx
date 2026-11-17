@@ -152,7 +152,31 @@ export default function HomePage() {
                         </Typography>
                       </Box>
                       
-                      <Button component={Link} href={`/products/${product.id}`} variant="contained" fullWidth disableElevation sx={{ bgcolor: "#B0B3B8", color: "#111827", py: 1.2, fontSize: "0.9rem", fontWeight: 700, borderRadius: "8px", boxShadow: "0 4px 14px 0 rgba(0,0,0,0.15)", transition: "all 0.3s ease", "&:hover": { bgcolor: "#0a0d15", color: "white", boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", transform: "translateY(-2px)" } }}>
+                      {/* BOTÓN DE COMPRA MEJORADO (BLANCO CON BORDE -> AZUL NOCHE) */}
+                      <Button 
+                        component={Link} 
+                        href={`/products/${product.id}`} 
+                        variant="outlined" 
+                        fullWidth 
+                        disableElevation 
+                        sx={{ 
+                          bgcolor: "#FFFFFF", 
+                          color: "#0a0d15", 
+                          border: "1px solid #0a0d15", 
+                          py: 1.2, 
+                          fontSize: "0.9rem", 
+                          fontWeight: 700, 
+                          borderRadius: "8px", 
+                          transition: "all 0.3s ease", 
+                          "&:hover": { 
+                            bgcolor: "#0a0d15", 
+                            color: "white", 
+                            border: "1px solid #0a0d15",
+                            boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)", 
+                            transform: "translateY(-2px)" 
+                          } 
+                        }}
+                      >
                         Comprar ahora
                       </Button>
                     </Box>

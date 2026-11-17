@@ -2,7 +2,6 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { Container, Typography, Box, Grid, Button, CircularProgress } from "@mui/material";
 import { useCart } from "../context/CartContext"; 
 import { supabase } from "../lib/supabase";
@@ -94,18 +93,17 @@ function ProductsContent() {
 
       <Grid container spacing={{ xs: 3, md: 4 }}>
         {filteredProducts.map((product) => (
-          /* FLEXBOX PARA IGUALAR ALTURAS EN TODA LA FILA */
           <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: "flex" }}>
             <Box sx={{ display: "flex", flexDirection: "column", width: "100%", bgcolor: "transparent" }}>
               
               {/* IMAGEN SIN CAJA, SIN BORDES NI SOMBRAS */}
-              <Box sx={{ position: "relative", overflow: "hidden", mb: 2, width: "100%", aspectRatio: "4/5" }}>
+              <Box sx={{ position: "relative", overflow: "hidden", mb: 2 }}>
                 <Link href={`/products/${product.id}`} style={{ display: "block", width: "100%", textDecoration: "none" }}>
-                  <Image src={product.image_url} alt={product.name} fill sizes="(max-width: 600px) 100vw, 50vw" style={{ objectFit: "cover", objectPosition: "center", transition: "transform 0.4s ease" }} />
+                  <Box component="img" src={product.image_url} alt={product.name} sx={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", transition: "transform 0.4s ease", "&:hover": { transform: "scale(1.04)" } }} />
                 </Link>
               </Box>
               
-              {/* CONTENEDOR DE TEXTOS Y BOTÓN: flexGrow 1 empuja el botón al fondo */}
+              {/* CONTENEDOR DE TEXTOS Y BOTÓN */}
               <Box sx={{ px: 1, flexGrow: 1, display: "flex", flexDirection: "column" }}>
                 
                 <Box sx={{ flexGrow: 1 }}>
@@ -120,7 +118,7 @@ function ProductsContent() {
                       WebkitLineClamp: 2, 
                       WebkitBoxOrient: "vertical", 
                       overflow: "hidden",
-                      minHeight: "2.4em" // Reserva espacio para 2 líneas siempre
+                      minHeight: "2.4em"
                     }}
                   >
                     {product.name}
@@ -146,32 +144,28 @@ function ProductsContent() {
                   </Typography>
                 </Box>
 
+                {/* BOTÓN DE COMPRA MEJORADO (MISMO ESTILO QUE EL INICIO) */}
                 <Button 
-                  variant="contained" 
+                  variant="outlined" 
                   fullWidth 
                   onClick={() => addToCart({ ...product, image: product.image_url })} 
                   disableElevation
                   disabled={product.stock <= 0}
                   sx={{ 
-                    bgcolor: product.stock <= 0 ? "#E5E7EB" : "#B0B3B8", 
-                    color: product.stock <= 0 ? "#9CA3AF" : "#111827", 
-                    border: product.stock <= 0 ? "none" : "none",
+                    bgcolor: product.stock <= 0 ? "#F3F4F6" : "#FFFFFF", 
+                    color: product.stock <= 0 ? "#9CA3AF" : "#0a0d15", 
+                    border: product.stock <= 0 ? "1px solid #E5E7EB" : "1px solid #0a0d15",
                     py: 1.2, 
                     fontSize: "0.9rem", 
                     fontWeight: 700, 
                     borderRadius: "8px",
-                    boxShadow: product.stock <= 0 ? "none" : "0 4px 14px 0 rgba(0,0,0,0.15)", 
-                    transition: product.stock <= 0 ? "none" : "all 0.3s ease",
-                    "&:hover": product.stock <= 0 ? { 
-                      bgcolor: "#E5E7EB", 
-                      color: "#9CA3AF", 
-                      boxShadow: "none",
-                      transform: "none"
-                    } : { 
-                      bgcolor: "#0a0d15", 
-                      color: "white", 
-                      boxShadow: "0 6px 20px rgba(10, 13, 21, 0.3)",
-                      transform: "translateY(-2px)"
+                    transition: "all 0.3s ease",
+                    "&:hover": { 
+                      bgcolor: product.stock <= 0 ? "#F3F4F6" : "#0a0d15", 
+                      color: product.stock <= 0 ? "#9CA3AF" : "white", 
+                      border: product.stock <= 0 ? "1px solid #E5E7EB" : "1px solid #0a0d15",
+                      boxShadow: product.stock <= 0 ? "none" : "0 6px 20px rgba(10, 13, 21, 0.3)",
+                      transform: product.stock <= 0 ? "none" : "translateY(-2px)"
                     } 
                   }}
                 >
