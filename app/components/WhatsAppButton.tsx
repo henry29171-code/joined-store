@@ -1,41 +1,43 @@
 "use client";
-import { Fab, Tooltip } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
 export default function WhatsAppButton() {
-  const phoneNumber = "51904192047"; // Tu número con código de país
-  const message = "Hola Joined, estoy en su página web y me gustaría recibir más información sobre sus productos.";
-  
-  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  const phoneNumber = "51904192047"; // Tu número de contacto
+  const message = "Hola Joined, vengo de la web y quisiera hacer una consulta.";
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
   return (
-    <Tooltip title="¿Necesitas ayuda? Escríbenos" placement="left" arrow>
-      <Fab
-        aria-label="whatsapp"
-        href={url}
+    <Box
+      sx={{
+        position: "fixed",
+        // En móviles (xs), lo subimos a 90px para que no choque con la barra de compra
+        // En computadoras (md), vuelve a su posición normal de 24px
+        bottom: { xs: 90, md: 24 }, 
+        right: { xs: 16, md: 24 },
+        zIndex: 1100, // Nos aseguramos de que esté por encima de todo
+        transition: "all 0.3s ease",
+      }}
+    >
+      <IconButton
+        component="a"
+        href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
         sx={{
-          position: "fixed",
-          bottom: { xs: 20, md: 30 },
-          right: { xs: 20, md: 30 },
-          bgcolor: "#0a0d15", // Color de tu marca
+          bgcolor: "#25D366", // Color oficial de WhatsApp
           color: "white",
-          zIndex: 9999,
-          width: { xs: 56, md: 64 },
-          height: { xs: 56, md: 64 },
-          boxShadow: "0 10px 25px rgba(10, 13, 21, 0.4)",
-          transition: "all 0.3s ease",
-          border: "1px solid rgba(255,255,255,0.1)", 
+          width: 56,
+          height: 56,
+          boxShadow: "0 4px 14px rgba(37, 211, 102, 0.4)",
           "&:hover": {
-            bgcolor: "#1a1d24",
-            transform: "scale(1.1) translateY(-5px)",
-            boxShadow: "0 15px 30px rgba(10, 13, 21, 0.6)",
+            bgcolor: "#1EBE5D",
+            transform: "scale(1.05)",
           },
         }}
       >
-        <WhatsAppIcon sx={{ fontSize: { xs: 30, md: 36 } }} />
-      </Fab>
-    </Tooltip>
+        <WhatsAppIcon sx={{ fontSize: 32 }} />
+      </IconButton>
+    </Box>
   );
 }
