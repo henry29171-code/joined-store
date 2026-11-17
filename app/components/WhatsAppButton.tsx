@@ -11,11 +11,11 @@ export default function WhatsAppButton() {
     <Box
       sx={{
         position: "fixed",
-        // En móviles (xs), lo subimos a 90px para que no choque con la barra de compra
-        // En computadoras (md), vuelve a su posición normal de 24px
+        // En móviles (xs) se sube para no tapar el botón de añadir al carrito
+        // En computadoras (md) vuelve a su posición normal
         bottom: { xs: 90, md: 24 }, 
         right: { xs: 16, md: 24 },
-        zIndex: 1100, // Nos aseguramos de que esté por encima de todo
+        zIndex: 1100,
         transition: "all 0.3s ease",
       }}
     >
@@ -25,13 +25,13 @@ export default function WhatsAppButton() {
         target="_blank"
         rel="noopener noreferrer"
         sx={{
-          bgcolor: "#25D366", // Color oficial de WhatsApp
+          bgcolor: "#0a0d15", // <-- Azul Noche de la marca
           color: "white",
           width: 56,
           height: 56,
-          boxShadow: "0 4px 14px rgba(37, 211, 102, 0.4)",
+          boxShadow: "0 4px 14px rgba(10, 13, 21, 0.3)", // Sombra sutil azul noche
           "&:hover": {
-            bgcolor: "#1EBE5D",
+            bgcolor: "#1a1d24", // Un tono ligeramente más claro al pasar el cursor
             transform: "scale(1.05)",
           },
         }}
